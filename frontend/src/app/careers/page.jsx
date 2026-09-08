@@ -1,34 +1,65 @@
 "use client";
 
 import { useState } from "react";
-
+import ResumeModal from "@/components/ResumeModal";
 const POSITIONS = [
   {
     id: 1,
-    title: "Front-End Developer",
+    title: "Videographer",
     type: "Full-time, Jaipur, India",
   },
   {
     id: 2,
-    title: "Front-End Developer",
+    title: "Video Editor",
     type: "Full-time, Jaipur, India",
+  },
+  {
+    id: 3,
+    title: "Business Development Executive / Intern",
+    type: "Full-time / Internship, Jaipur, India",
   },
 ];
 
 const POSITION_CONTENT = {
-  about:
-    "We're looking for a Front-End Developer who wants to work on modern web products with a sharp eye for design. You'll be working closely with our product, design, and development teams and helping bring ambitious ideas to life.",
+  1: {
+    about:
+      "We're looking for a creative Videographer who can turn ideas, brands, people, and everyday moments into engaging visual stories. You'll work closely with our creative, marketing, and business teams to produce high-quality video content for brands, campaigns, social media, websites, and digital platforms.",
 
-  whatYouDo:
-    "Build responsive, production-ready interfaces, work closely with designers and developers, and create reusable components that scale. You'll also collaborate with clients and project teams to deliver clear, thoughtful user experiences.",
+    whatYouDo:
+      "Plan and shoot high-quality videos for social media, marketing campaigns, websites, client projects, and brand content. Handle camera setups, framing, lighting, audio, and on-location shoots. Collaborate with creative and marketing teams to understand concepts, prepare shot lists, and bring ideas to life. You'll also help maintain visual consistency across different projects.",
 
-  whatWeLook:
-    "2+ years of experience in front-end development, strong command of HTML, CSS, and JavaScript. Experience with React, Next.js, or a similar framework. A sharp eye for detail and a genuine interest in good design.",
+    whatWeLook:
+      "1+ year of experience in videography, content production, or a similar role. Strong understanding of cameras, lenses, lighting, framing, and composition. Experience creating content for Instagram, YouTube, websites, and digital campaigns. A good visual sense, attention to detail, and the ability to work in fast-moving creative environments. Knowledge of basic video editing is a plus.",
+  },
+
+  2: {
+    about:
+      "We're looking for a creative Video Editor who knows how to turn raw footage into sharp, engaging, and story-driven content. You'll work with our creative, marketing, and production teams to create videos for social media, campaigns, brands, websites, and client projects.",
+
+    whatYouDo:
+      "Edit short-form and long-form video content for Instagram, YouTube, advertisements, websites, and brand campaigns. Select the best footage, create clean cuts, add transitions, music, sound design, subtitles, motion graphics, and basic visual effects where needed. Work with the creative and videography teams to understand the intended mood, story, and audience. Ensure every final video is polished, engaging, and aligned with the brand.",
+
+    whatWeLook:
+      "1+ year of experience in video editing, content creation, or a similar role. Strong command of Premiere Pro, DaVinci Resolve, Final Cut Pro, or similar editing software. Good understanding of pacing, storytelling, music, transitions, typography, and visual composition. Experience editing social media content such as Reels, Shorts, and promotional videos. Strong attention to detail, creativity, and the ability to work within deadlines.",
+  },
+
+  3: {
+    about:
+      "We're looking for a Business Development Executive / Intern who is energetic, confident, and genuinely interested in building relationships and growing business. You'll work closely with our leadership, sales, and marketing teams to identify opportunities, connect with potential clients, and help turn conversations into meaningful business relationships.",
+
+    whatYouDo:
+      "Research and identify potential clients, businesses, and new growth opportunities. Reach out to prospects through calls, emails, LinkedIn, social media, and other relevant channels. Understand client requirements, introduce our services, schedule meetings, maintain follow-ups, and support the sales pipeline. Work closely with internal teams to understand our services and communicate them clearly to prospects. For the internship role, you'll also receive hands-on exposure to lead generation, sales, client communication, and business development.",
+
+    whatWeLook:
+      "Strong communication and interpersonal skills with confidence in speaking to new people. Good understanding of basic sales, lead generation, and business development concepts. Ability to research prospects, write professional messages, and maintain consistent follow-ups. A proactive attitude, willingness to learn, and strong ownership of tasks. Freshers and students with strong communication skills are welcome to apply for the internship role. Prior experience in sales, business development, or client acquisition is a plus.",
+  },
 };
 
 export default function CareersSection() {
   const [hoveredApply, setHoveredApply] = useState(null);
   const [hoveredResume, setHoveredResume] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState("");
 
   return (
     <main className="careers-page">
@@ -241,76 +272,79 @@ export default function CareersSection() {
 
 
                 {/* MIDDLE */}
+<div className="career-position-details">
 
-                <div className="career-position-details">
+  <div>
+    <h4>
+      About the Role
+    </h4>
 
-                  <div>
-                    <h4>
-                      About the Role
-                    </h4>
+    <p>
+      {POSITION_CONTENT[position.id].about}
+    </p>
+  </div>
 
-                    <p>
-                      {POSITION_CONTENT.about}
-                    </p>
-                  </div>
+  <div>
+    <h4>
+      What You'll Do
+    </h4>
 
-                  <div>
-                    <h4>
-                      What You&apos;ll Do
-                    </h4>
+    <p>
+      {POSITION_CONTENT[position.id].whatYouDo}
+    </p>
+  </div>
 
-                    <p>
-                      {POSITION_CONTENT.whatYouDo}
-                    </p>
-                  </div>
+  <div>
+    <h4>
+      What We're Looking For
+    </h4>
 
-                  <div>
-                    <h4>
-                      What We&apos;re Looking For
-                    </h4>
+    <p>
+      {POSITION_CONTENT[position.id].whatWeLook}
+    </p>
+  </div>
 
-                    <p>
-                      {POSITION_CONTENT.whatWeLook}
-                    </p>
-                  </div>
-
-                </div>
+</div>
 
 
                 {/* RIGHT */}
 
                 <div className="career-position-action">
-                  <a
-                    href="#contact"
-                    className={`career-apply-button ${
-                      hoveredApply === position.id
-                        ? "is-hovered"
-                        : ""
-                    }`}
-                    onMouseEnter={() =>
-                      setHoveredApply(position.id)
-                    }
-                    onMouseLeave={() =>
-                      setHoveredApply(null)
-                    }
-                  >
-                    <span>
-                      Apply Now
-                    </span>
+                 <button
+  type="button"
+  className={`career-apply-button ${
+    hoveredApply === position.id
+      ? "is-hovered"
+      : ""
+  }`}
+  onClick={() => {
+    setSelectedPosition(position.title);
+    setResumeOpen(true);
+  }}
+  onMouseEnter={() =>
+    setHoveredApply(position.id)
+  }
+  onMouseLeave={() =>
+    setHoveredApply(null)
+  }
+>
+  <span>
+    Apply Now
+  </span>
 
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 10 10"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M5 1.2L8.7 8.2H1.3L5 1.2Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </a>
+  <svg
+    width="10"
+    height="10"
+    viewBox="0 0 10 10"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M5 1.2L8.7 8.2H1.3L5 1.2Z"
+      fill="currentColor"
+    />
+  </svg>
+</button>
                 </div>
 
               </article>
@@ -339,37 +373,40 @@ export default function CareersSection() {
                 reach out if something opens up that fits.
               </p>
 
-              <a
-                href="#contact"
-                className={`careers-resume-button ${
-                  hoveredResume
-                    ? "is-hovered"
-                    : ""
-                }`}
-                onMouseEnter={() =>
-                  setHoveredResume(true)
-                }
-                onMouseLeave={() =>
-                  setHoveredResume(false)
-                }
-              >
-                <span>
-                  Send Your Resume
-                </span>
+             <button
+  type="button"
+  className={`careers-resume-button ${
+    hoveredResume
+      ? "is-hovered"
+      : ""
+  }`}
+  onClick={() =>
+    setResumeOpen(true)
+  }
+  onMouseEnter={() =>
+    setHoveredResume(true)
+  }
+  onMouseLeave={() =>
+    setHoveredResume(false)
+  }
+>
+  <span>
+    Send Your Resume
+  </span>
 
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M5 1.2L8.7 8.2H1.3L5 1.2Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </a>
+  <svg
+    width="10"
+    height="10"
+    viewBox="0 0 10 10"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M5 1.2L8.7 8.2H1.3L5 1.2Z"
+      fill="currentColor"
+    />
+  </svg>
+</button>
 
             </div>
 
@@ -419,7 +456,13 @@ export default function CareersSection() {
         />
       </section>
 
-
+<ResumeModal
+  open={resumeOpen}
+  onClose={() =>
+    setResumeOpen(false)
+  }
+  selectedPosition={selectedPosition}
+/>
       {/* =====================================================
           CSS
       ===================================================== */}
@@ -1008,69 +1051,53 @@ export default function CareersSection() {
         }
 
         .career-apply-button {
-          width:
-            98px;
+  width: 120px;
+  height: 40px;
 
-          height:
-            35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-          display:
-            inline-flex;
+  gap: 6px;
 
-          align-items:
-            center;
+  margin: 0;
+  padding: 0;
 
-          justify-content:
-            center;
+  border: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
 
-          gap:
-            4px;
+  border-radius: 999px;
 
-          border-radius:
-            999px;
+  background:
+    linear-gradient(
+      135deg,
+      #0180FD 0%,
+      #0021AF 100%
+    );
 
-          background:
-            linear-gradient(
-              135deg,
-              #0180FD 0%,
-              #0021AF 100%
-            );
+  color: #FFFFFF;
 
-          color:
-            #FFFFFF;
+  font-family: inherit;
 
-          font-family:
-            inherit;
+  font-size: 13px;
+  line-height: 1;
 
-          font-size:
-            11px;
+  font-weight: 600;
 
-          line-height:
-            1;
+  text-decoration: none;
 
-          font-weight:
-            400;
+  white-space: nowrap;
 
-          text-decoration:
-            none;
+  cursor: pointer;
 
-          white-space:
-            nowrap;
+  box-shadow: none;
 
-          transition:
-            transform
-            0.25s ease,
-            box-shadow
-            0.25s ease;
-        }
+  box-sizing: border-box;
 
-        .career-apply-button svg {
-          display:
-            block;
-
-          flex-shrink:
-            0;
-        }
+  -webkit-tap-highlight-color: transparent;
+}
 
         .career-apply-button:hover,
         .career-apply-button.is-hovered {
@@ -1252,7 +1279,12 @@ export default function CareersSection() {
             );
         }
 
-
+.careers-resume-button {
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
         /* =====================================================
            LIFE
         ===================================================== */
@@ -1433,619 +1465,967 @@ export default function CareersSection() {
            MOBILE
         ===================================================== */
 
-        @media (max-width: 767px) {
+     /* =====================================================
+   MOBILE
+   767px and below
+===================================================== */
 
-          /* -----------------------------------------------
-             HERO
-          ----------------------------------------------- */
+@media (max-width: 767px) {
 
-          .careers-hero {
-            padding:
-              12px 20px
-              0;
-          }
+  /* ===================================================
+     HERO
+  =================================================== */
 
-          .careers-hero-inner {
-            width:
-              100%;
+  .careers-hero {
+    width: 100%;
+    padding: 18px 20px 0;
+    overflow: hidden;
+  }
 
-            max-width:
-              none;
+  .careers-hero-inner {
+    width: 100%;
+    max-width: none;
 
-            min-height:
-              auto;
+    min-height: auto;
 
-            padding:
-              0;
+    margin: 0;
+    padding: 0;
 
-            margin:
-              0;
+    display: grid;
 
-            display:
-              grid;
+    grid-template-columns: 1fr;
 
-            grid-template-columns:
-              1fr;
+    grid-template-rows:
+      auto
+      190px
+      auto;
 
-            grid-template-rows:
-              auto
-              160px
-              auto;
+    row-gap: 4px;
 
-            row-gap:
-              0;
+    align-items: center;
+  }
 
-            align-items:
-              center;
-          }
+  .careers-hero-left {
+    width: 100%;
 
-          .careers-hero-left {
-            width:
-              100%;
+    padding: 0;
 
-            padding:
-              0;
+    display: flex;
+    flex-direction: column;
 
-            align-items:
-              center;
+    align-items: center;
+    justify-content: center;
 
-            text-align:
-              center;
+    text-align: center;
 
-            order:
-              1;
-          }
+    order: 1;
+  }
 
-          .careers-hero-heading {
-            justify-content:
-              center;
+  .careers-hero-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-            font-size:
-              24px;
-          }
+    gap: 7px;
 
-          .careers-hero-left-subtitle {
-            text-align:
-              center;
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 700;
 
-            margin-top:
-              9px;
+    letter-spacing: -0.035em;
+  }
 
-            font-size:
-              11px;
-          }
+  .careers-hero-arrow {
+    font-size: 12px;
+    line-height: 1;
+  }
 
-          .careers-hero-image-wrap {
-            width:
-              100%;
+  .careers-hero-left-subtitle {
+    width: 100%;
 
-            height:
-              160px;
+    margin-top: 9px;
 
-            order:
-              2;
-          }
+    font-size: 13px;
+    line-height: 1.3;
+    font-weight: 600;
 
-          .careers-hero-image {
-            width:
-              100%;
+    text-align: center;
+  }
 
-            height:
-              160px;
+  /* ===================================================
+     HERO IMAGE
+  =================================================== */
 
-            max-width:
-              280px;
+  .careers-hero-image-wrap {
+    width: 100%;
+    height: 190px;
 
-            max-height:
-              160px;
-          }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-          .careers-hero-right {
-            width:
-              100%;
+    order: 2;
 
-            padding:
-              0;
+    overflow: visible;
+  }
 
-            text-align:
-              center;
+  .careers-hero-image {
+    display: block;
 
-            order:
-              3;
-          }
+    width: 100%;
+    height: 190px;
 
-          .careers-hero-right
-            .careers-hero-heading {
-            justify-content:
-              center;
-          }
+    max-width: 330px;
+    max-height: 190px;
 
-          .careers-hero-right-copy {
-            margin-top:
-              7px;
+    object-fit: contain;
+    object-position: center;
 
-            font-size:
-              8px;
+    user-select: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
 
-            line-height:
-              1.4;
-          }
+  /* ===================================================
+     HERO RIGHT
+  =================================================== */
 
-          .careers-hero-hours {
-            margin-top:
-              5px;
+  .careers-hero-right {
+    width: 100%;
 
-            font-size:
-              8px;
-          }
+    padding: 0;
 
+    align-self: center;
 
-          /* -----------------------------------------------
-             FULL WIDTH COLLAGE
-          ----------------------------------------------- */
+    text-align: center;
 
-          .careers-collage-section {
-            width:
-              100%;
+    order: 3;
+  }
 
-            max-width:
-              100%;
+  .careers-hero-right .careers-hero-heading {
+    justify-content: center;
+  }
 
-            padding:
-              18px 0 0;
+  .careers-hero-right-copy {
+    width: 100%;
 
-            margin:
-              0;
+    max-width: 360px;
 
-            overflow:
-              hidden;
-          }
+    margin: 9px auto 0;
 
-          .careers-collage {
-            width:
-              100%;
+    font-size: 13px;
+    line-height: 1.45;
 
-            height:
-              150px;
+    font-weight: 400;
 
-            grid-template-columns:
-              1.15fr
-              0.72fr
-              0.95fr
-              0.72fr
-              1.15fr;
+    text-align: center;
+  }
 
-            gap:
-              4px;
+  .careers-hero-hours {
+    margin-top: 8px;
 
-            overflow:
-              hidden;
-          }
+    font-size: 12px;
+    line-height: 1.3;
 
-          .collage-item {
-            height:
-              150px;
+    font-weight: 700;
 
-            border-radius:
-              5px;
-          }
+    text-align: center;
+  }
 
-          .collage-stack {
-            gap:
-              4px;
-          }
+  /* ===================================================
+     FULL WIDTH COLLAGE
+  =================================================== */
 
-          .collage-stack-item {
-            height:
-              calc(
-                50% - 2px
-              );
+  .careers-collage-section {
+    width: 100%;
+    max-width: 100%;
 
-            border-radius:
-              5px;
-          }
+    margin: 0;
+    padding: 22px 0 0;
 
+    overflow: hidden;
+  }
 
-          /* -----------------------------------------------
-             PADDED CONTENT
-          ----------------------------------------------- */
+  .careers-collage {
+    width: 100%;
 
-          .careers-content {
-            width:
-              100%;
+    height: 175px;
 
-            padding:
-              24px 20px
-              0;
-          }
+    display: grid;
 
-          .careers-container {
-            max-width:
-              none;
-          }
+    grid-template-columns:
+      1.15fr
+      0.72fr
+      0.95fr
+      0.72fr
+      1.15fr;
 
+    gap: 4px;
 
-          /* -----------------------------------------------
-             INTRO
-          ----------------------------------------------- */
+    overflow: hidden;
 
-          .careers-intro {
-            max-width:
-              100%;
+    line-height: 0;
+  }
 
-            margin-top:
-              26px;
-          }
+  .collage-item {
+    min-width: 0;
 
-          .careers-intro h2 {
-            font-size:
-              17px;
+    height: 175px;
 
-            line-height:
-              1.3;
-          }
+    overflow: hidden;
 
-          .careers-intro p {
-            margin-top:
-              18px;
+    border-radius: 5px;
 
-            max-width:
-              100%;
+    background: #E9EEF6;
+  }
 
-            font-size:
-              9px;
+  .collage-item img {
+    width: 100%;
+    height: 100%;
 
-            line-height:
-              1.7;
-          }
+    display: block;
 
-          .careers-intro p + p {
-            margin-top:
-              14px;
-          }
+    object-fit: cover;
+    object-position: center;
 
+    user-select: none;
+    pointer-events: none;
 
-          /* -----------------------------------------------
-             POSITIONS
-          ----------------------------------------------- */
+    -webkit-user-drag: none;
+  }
 
-          .careers-positions {
-            margin-top:
-              34px;
-          }
+  .collage-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-          .careers-section-heading {
-            margin-bottom:
-              18px;
+  .collage-stack-item {
+    width: 100%;
+    min-height: 0;
 
-            padding-bottom:
-              13px;
+    height: calc(50% - 2px);
 
-            font-size:
-              13px;
-          }
+    overflow: hidden;
 
-          .career-position {
-            display:
-              flex;
+    border-radius: 5px;
 
-            flex-direction:
-              column;
+    background: #E9EEF6;
 
-            gap:
-              15px;
+    line-height: 0;
+  }
 
-            padding-bottom:
-              23px;
+  .collage-stack-item img {
+    width: 100%;
+    height: 100%;
 
-            margin-bottom:
-              23px;
-          }
+    display: block;
 
-          .career-position-title h3 {
-            font-size:
-              10px;
-          }
+    object-fit: cover;
+    object-position: center;
+  }
 
-          .career-position-title p {
-            margin-top:
-              6px;
+  /* ===================================================
+     CONTENT
+  =================================================== */
 
-            font-size:
-              7.5px;
-          }
+  .careers-content {
+    width: 100%;
 
-          .career-position-details {
-            gap:
-              12px;
-          }
+    padding:
+      34px 20px 0;
+  }
 
-          .career-position-details h4 {
-            font-size:
-              7.5px;
-          }
+  .careers-container {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+  }
 
-          .career-position-details p {
-            font-size:
-              7.5px;
+  /* ===================================================
+     INTRO
+  =================================================== */
 
-            line-height:
-              1.55;
-          }
+  .careers-intro {
+    width: 100%;
+    max-width: 100%;
 
-          .career-position-action {
-            width:
-              100%;
+    margin:
+      28px auto 0;
 
-            justify-content:
-              flex-start;
+    text-align: center;
+  }
 
-            padding-top:
-              0;
-          }
+  .careers-intro h2 {
+    margin: 0;
 
-          .career-apply-button {
-            width:
-              86px;
+    font-size: 22px;
+    line-height: 1.25;
 
-            height:
-              31px;
+    font-weight: 700;
 
-            font-size:
-              7px;
-          }
+    letter-spacing: -0.025em;
+  }
 
+  .careers-intro p {
+    width: 100%;
+    max-width: 620px;
 
-          /* -----------------------------------------------
-             CTA
-          ----------------------------------------------- */
+    margin:
+      20px auto 0;
 
-          .careers-cta {
-            margin-top:
-              8px;
-          }
+    font-size: 15px;
+    line-height: 1.7;
 
-          .careers-cta-inner {
-            min-height:
-              165px;
+    font-weight: 400;
 
-            padding:
-              28px 18px;
-          }
+    color: #0E0E0E;
 
-          .careers-cta-inner h2 {
-            font-size:
-              17px;
-          }
+    text-align: center;
+  }
 
-          .careers-cta-inner p {
-            font-size:
-              7.5px;
+  .careers-intro p + p {
+    margin-top: 14px;
+  }
 
-            line-height:
-              1.6;
-          }
+  .careers-intro strong {
+    font-weight: 700;
+  }
 
-          .careers-resume-button {
-            width:
-              118px;
+  /* ===================================================
+     OPEN POSITIONS
+  =================================================== */
 
-            height:
-              31px;
+  .careers-positions {
+    width: 100%;
 
-            margin-top:
-              14px;
+    margin-top: 42px;
+  }
 
-            font-size:
-              7px;
-          }
+  .careers-section-heading {
+    width: 100%;
 
+    margin:
+      0 0 20px;
 
-          /* -----------------------------------------------
-             LIFE
-          ----------------------------------------------- */
+    padding:
+      0 0 14px;
 
-          .careers-life {
-            padding:
-              34px 0
-              22px;
-          }
+    border-bottom:
+      1px solid #D5DDE8;
 
-          .careers-life-heading {
-            grid-template-columns:
-              1fr;
+    font-size: 18px;
+    line-height: 1.2;
 
-            row-gap:
-              11px;
-          }
+    font-weight: 700;
+  }
 
-          .careers-life-heading h2 {
-            font-size:
-              14px;
-          }
+  /* ===================================================
+     POSITION CARD
+  =================================================== */
 
-          .careers-life-heading p {
-            max-width:
-              100%;
+  .career-position {
+    width: 100%;
 
-            justify-self:
-              start;
+    display: flex;
+    flex-direction: column;
 
-            font-size:
-              7.5px;
+    gap: 18px;
 
-            line-height:
-              1.6;
-          }
+    padding:
+      0 0 28px;
 
+    margin:
+      0 0 28px;
 
-          /* -----------------------------------------------
-             FINAL IMAGE
-          ----------------------------------------------- */
+    border-bottom:
+      1px solid #D5DDE8;
+  }
 
-          .careers-full-image {
-            width:
-              100%;
-          }
+  .career-position:last-child {
+    margin-bottom: 0;
+  }
 
-          .careers-full-image img {
-            width:
-              100%;
+  /* ===================================================
+     POSITION TITLE
+  =================================================== */
 
-            height:
-              auto;
+  .career-position-title {
+    width: 100%;
+    min-width: 0;
+  }
 
-            object-fit:
-              cover;
-          }
-        }
+  .career-position-title h3 {
+    margin: 0;
 
+    font-size: 20px;
+    line-height: 1.25;
 
-        /* =====================================================
-           SMALL MOBILE
-        ===================================================== */
+    font-weight: 700;
 
-        @media (max-width: 420px) {
+    color: #0E0E0E;
+  }
 
-          .careers-hero {
-            padding:
-              10px 20px
-              0;
-          }
+  .career-position-title p {
+    margin:
+      7px 0 0;
 
-          .careers-hero-inner {
-            grid-template-rows:
-              auto
-              145px
-              auto;
-          }
+    font-size: 13px;
+    line-height: 1.4;
 
-          .careers-hero-heading {
-            font-size:
-              22px;
-          }
+    font-weight: 400;
 
-          .careers-hero-left-subtitle {
-            font-size:
-              10px;
-          }
+    color: #0E0E0E;
+  }
 
-          .careers-hero-image-wrap,
-          .careers-hero-image {
-            height:
-              145px;
-          }
+  /* ===================================================
+     POSITION DETAILS
+  =================================================== */
 
-          .careers-hero-image {
-            max-width:
-              250px;
-          }
+  .career-position-details {
+    width: 100%;
+    min-width: 0;
 
-          .careers-hero-right-copy {
-            font-size:
-              7.5px;
-          }
+    display: flex;
+    flex-direction: column;
 
-          .careers-hero-hours {
-            font-size:
-              7px;
-          }
+    gap: 19px;
+  }
 
+  .career-position-details h4 {
+    margin:
+      0 0 7px;
 
-          /* FULL WIDTH COLLAGE */
+    font-size: 15px;
+    line-height: 1.25;
 
-          .careers-collage-section {
-            padding:
-              16px 0 0;
-          }
+    font-weight: 700;
 
-          .careers-collage {
-            height:
-              138px;
+    color: #0E0E0E;
+  }
 
-            gap:
-              4px;
-          }
+  .career-position-details p {
+    margin: 0;
 
-          .collage-item {
-            height:
-              138px;
-          }
+    font-size: 13px;
+    line-height: 1.65;
 
+    font-weight: 400;
 
-          /* CONTENT */
+    color: #0E0E0E;
+  }
 
-          .careers-content {
-            padding:
-              22px 20px
-              0;
-          }
+  /* ===================================================
+     APPLY BUTTON
+  =================================================== */
 
-          .careers-intro h2 {
-            font-size:
-              16px;
-          }
+  .career-position-action {
+    width: 100%;
 
-          .careers-intro p {
-            font-size:
-              8.5px;
-          }
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
 
-          .careers-section-heading {
-            font-size:
-              12px;
-          }
+    padding-top: 0;
+  }
 
-          .career-position-title h3 {
-            font-size:
-              9.5px;
-          }
+  .career-apply-button {
+    width: 120px;
+    height: 40px;
 
-          .career-position-title p,
-          .career-position-details h4,
-          .career-position-details p {
-            font-size:
-              7px;
-          }
+    display: inline-flex;
 
-          .career-apply-button {
-            width:
-              82px;
+    align-items: center;
+    justify-content: center;
 
-            height:
-              30px;
-          }
+    gap: 6px;
 
-          .careers-cta-inner {
-            min-height:
-              155px;
+    border-radius: 999px;
 
-            padding:
-              24px 15px;
-          }
+    background:
+      linear-gradient(
+        135deg,
+        #0180FD 0%,
+        #0021AF 100%
+      );
 
-          .careers-cta-inner h2 {
-            font-size:
-              16px;
-          }
+    color: #FFFFFF;
 
-          .careers-cta-inner p {
-            font-size:
-              7px;
-          }
+    font-family: inherit;
 
-          .careers-life-heading h2 {
-            font-size:
-              13px;
-          }
+    font-size: 13px;
+    line-height: 1;
 
-          .careers-life-heading p {
-            font-size:
-              7px;
-          }
-        }
+    font-weight: 600;
 
+    text-decoration: none;
 
+    white-space: nowrap;
+  }
+
+  .career-apply-button svg {
+    width: 10px;
+    height: 10px;
+
+    display: block;
+
+    flex-shrink: 0;
+  }
+
+  /* ===================================================
+     CTA
+  =================================================== */
+
+  .careers-cta {
+    width: 100%;
+
+    margin-top: 12px;
+  }
+
+  .careers-cta-inner {
+    width: 100%;
+
+    min-height: 230px;
+
+    padding:
+      32px 22px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    border-radius: 14px;
+
+    background:
+      linear-gradient(
+        180deg,
+        #0180FD 0%,
+        #0021AF 100%
+      );
+
+    color: #FFFFFF;
+  }
+
+  .careers-cta-inner h2 {
+    margin: 0;
+
+    font-size: 22px;
+    line-height: 1.25;
+
+    font-weight: 700;
+
+    letter-spacing: -0.025em;
+
+    color: #FFFFFF;
+  }
+
+  .careers-cta-inner p {
+    width: 100%;
+    max-width: 430px;
+
+    margin:
+      14px 0 0;
+
+    font-size: 14px;
+    line-height: 1.6;
+
+    font-weight: 400;
+
+    color:
+      rgba(255, 255, 255, 0.95);
+  }
+
+  .careers-resume-button {
+    width: 155px;
+    height: 40px;
+
+    margin-top: 18px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border-radius: 999px;
+
+    background: #FFFFFF;
+    color: #0021AF;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    line-height: 1;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+  }
+
+  .careers-resume-button svg {
+    width: 10px;
+    height: 10px;
+
+    display: block;
+    flex-shrink: 0;
+  }
+
+  /* ===================================================
+     LIFE
+  =================================================== */
+
+  .careers-life {
+    width: 100%;
+
+    padding:
+      44px 0 28px;
+  }
+
+  .careers-life-heading {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    row-gap: 14px;
+  }
+
+  .careers-life-heading h2 {
+    margin: 0;
+
+    font-size: 20px;
+    line-height: 1.25;
+
+    font-weight: 700;
+
+    color: #0E0E0E;
+  }
+
+  .careers-life-heading p {
+    width: 100%;
+
+    max-width: 500px;
+
+    margin: 0;
+
+    justify-self: start;
+
+    font-size: 14px;
+    line-height: 1.65;
+
+    font-weight: 400;
+
+    color: #0E0E0E;
+  }
+
+  /* ===================================================
+     FINAL IMAGE
+  =================================================== */
+
+  .careers-full-image {
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0;
+
+    padding:
+      0 0 50px;
+
+    overflow: hidden;
+
+    line-height: 0;
+
+    background: #F3F8FF;
+  }
+
+  .careers-full-image img {
+    display: block;
+
+    width: 100%;
+    max-width: none;
+
+    height: auto;
+
+    margin: 0;
+    padding: 0;
+
+    object-fit: cover;
+    object-position: center;
+
+    user-select: none;
+    pointer-events: none;
+
+    -webkit-user-drag: none;
+  }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+   420px and below
+===================================================== */
+
+@media (max-width: 420px) {
+
+  /* ===================================================
+     HERO
+  =================================================== */
+
+  .careers-hero {
+    padding:
+      14px 16px 0;
+  }
+
+  .careers-hero-inner {
+    grid-template-rows:
+      auto
+      170px
+      auto;
+
+    row-gap: 3px;
+  }
+
+  .careers-hero-heading {
+    font-size: 22px;
+  }
+
+  .careers-hero-arrow {
+    font-size: 11px;
+  }
+
+  .careers-hero-left-subtitle {
+    margin-top: 8px;
+
+    font-size: 12px;
+  }
+
+  .careers-hero-image-wrap,
+  .careers-hero-image {
+    height: 170px;
+  }
+
+  .careers-hero-image {
+    max-width: 290px;
+    max-height: 170px;
+  }
+
+  .careers-hero-right-copy {
+    max-width: 330px;
+
+    margin-top: 8px;
+
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .careers-hero-hours {
+    margin-top: 7px;
+
+    font-size: 11px;
+  }
+
+  /* ===================================================
+     COLLAGE
+  =================================================== */
+
+  .careers-collage-section {
+    padding:
+      18px 0 0;
+  }
+
+  .careers-collage {
+    height: 150px;
+
+    gap: 3px;
+  }
+
+  .collage-item {
+    height: 150px;
+
+    border-radius: 4px;
+  }
+
+  .collage-stack {
+    gap: 3px;
+  }
+
+  .collage-stack-item {
+    height:
+      calc(50% - 1.5px);
+
+    border-radius: 4px;
+  }
+
+  /* ===================================================
+     CONTENT
+  =================================================== */
+
+  .careers-content {
+    padding:
+      28px 16px 0;
+  }
+
+  /* ===================================================
+     INTRO
+  =================================================== */
+
+  .careers-intro {
+    margin-top: 24px;
+  }
+
+  .careers-intro h2 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .careers-intro p {
+    margin-top: 17px;
+
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .careers-intro p + p {
+    margin-top: 13px;
+  }
+
+  /* ===================================================
+     POSITIONS
+  =================================================== */
+
+  .careers-positions {
+    margin-top: 36px;
+  }
+
+  .careers-section-heading {
+    margin-bottom: 17px;
+    padding-bottom: 12px;
+
+    font-size: 17px;
+  }
+
+  .career-position {
+    gap: 16px;
+
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+  }
+
+  .career-position-title h3 {
+    font-size: 18px;
+  }
+
+  .career-position-title p {
+    margin-top: 6px;
+
+    font-size: 12px;
+  }
+
+  .career-position-details {
+    gap: 17px;
+  }
+
+  .career-position-details h4 {
+    margin-bottom: 6px;
+
+    font-size: 14px;
+  }
+
+  .career-position-details p {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+ .career-apply-button {
+  width: 112px;
+  height: 38px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+
+  font-size: 12px;
+
+  box-sizing: border-box;
+}
+  /* ===================================================
+     CTA
+  =================================================== */
+
+  .careers-cta {
+    margin-top: 8px;
+  }
+
+  .careers-cta-inner {
+    min-height: 215px;
+
+    padding:
+      28px 18px;
+  }
+
+  .careers-cta-inner h2 {
+    font-size: 20px;
+  }
+
+  .careers-cta-inner p {
+    max-width: 350px;
+
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .careers-resume-button {
+    width: 145px;
+    height: 38px;
+
+    margin-top: 16px;
+
+    font-size: 12px;
+  }
+
+  /* ===================================================
+     LIFE
+  =================================================== */
+
+  .careers-life {
+    padding:
+      38px 0 24px;
+  }
+
+  .careers-life-heading {
+    row-gap: 12px;
+  }
+
+  .careers-life-heading h2 {
+    font-size: 18px;
+  }
+
+  .careers-life-heading p {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  /* ===================================================
+     FINAL IMAGE
+  =================================================== */
+
+  .careers-full-image {
+    padding-bottom: 40px;
+  }
+}
         /* =====================================================
            TOUCH
         ===================================================== */

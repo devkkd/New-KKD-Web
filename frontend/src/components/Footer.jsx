@@ -14,83 +14,204 @@ export default function Footer() {
     );
   };
 
-  const sections = [
+ const sections = [
+  {
+    id: "company",
+    title: "Company",
+    items: [
+      {
+        label: "About Us",
+        href: "/about/",
+      },
+      {
+        label: "Leadership Team",
+        href: "/about/",
+      },
+      {
+        label: "Careers",
+        href: "/careers/",
+      },
+      {
+        label: "Corporate Responsibility",
+        href: "/about/",
+      },
+      {
+        label: "Our Process",
+        href: "/about/",
+      },
+      {
+        label: "Awards & Recognition",
+        href: "/about/",
+      },
+      {
+        label: "FAQs",
+        href: "/about/",
+      },
+      {
+        label: "Compliance & Certifications",
+        href: "/about/",
+      },
+    ],
+  },
+
+  {
+    id: "services",
+    title: "Services",
+    items: [
+      {
+        label: "Digital Transformation",
+        href: "/services/digital-product-engineering/",
+      },
+      {
+        label: "Product & Technology Consulting",
+        href: "/services/strategic-consulting/",
+      },
+      {
+        label: "Mobile App Development",
+        href: "/services/digital-product-engineering/",
+      },
+      {
+        label: "Custom Software Engineering",
+        href: "/services/digital-product-engineering/",
+      },
+      {
+        label: "Cloud & DevOps Solutions",
+        href: "/services/digital-product-engineering/",
+      },
+      {
+        label: "Managed Technology Services",
+        href: "/services/digital-product-engineering/",
+      },
+      {
+        label: "Explore All Services →",
+        href: "/services/digital-product-engineering/",
+      },
+    ],
+  },
+
+  {
+    id: "case-studies",
+    title: "Case Studies",
+    items: [
+      {
+        label: "Project - 1",
+        href: "/portfolio/",
+      },
+      {
+        label: "Project - 2",
+        href: "/portfolio/",
+      },
+      {
+        label: "Project - 3",
+        href: "/portfolio/",
+      },
+      {
+        label: "Project - 4",
+        href: "/portfolio/",
+      },
+      {
+        label: "Project - 5",
+        href: "/portfolio/",
+      },
+      {
+        label: "See All Case Studies",
+        href: "/portfolio/",
+      },
+    ],
+  },
+  {
+  id: "technologies",
+  title: "Technologies",
+  items: [
     {
-      id: "company",
-      title: "Company",
-      items: [
-        "About Us",
-        "Leadership Team",
-        "Careers",
-        "Corporate Responsibility",
-        "Our Process",
-        "Awards & Recognition",
-        "FAQs",
-        "Compliance & Certifications",
-      ],
+      label: "Frontend & Web",
+      href: "/services/digital-product-engineering/",
     },
     {
-      id: "services",
-      title: "Services",
-      items: [
-        "Digital Transformation",
-        "Product & Technology Consulting",
-        "Mobile App Development",
-        "Custom Software Engineering",
-        "Cloud & DevOps Solutions",
-        "Managed Technology Services",
-        "Explore All Services →",
-      ],
+      label: "Mobile",
+      href: "/services/digital-product-engineering/",
     },
     {
-      id: "case-studies",
-      title: "Case Studies",
-      items: [
-        "Project - 1",
-        "Project - 2",
-        "Project - 3",
-        "Project - 4",
-        "Project - 5",
-        "See All Case Studies",
-      ],
+      label: "Backend & APIs",
+      href: "/services/digital-product-engineering/",
     },
     {
-      id: "technologies",
-      title: "Technologies",
-      items: [
-        "Frontend & Web",
-        "Mobile",
-        "Backend & APIs",
-        "AI, ML & Data",
-        "Cloud, Infrastructure & DevOps",
-        "Explore All Services →",
-      ],
+      label: "AI, ML & Data",
+      href: "/services/digital-product-engineering/",
     },
     {
-      id: "industries",
-      title: "Industries",
-      items: [
-        "FinTech & Financial",
-        "Healthcare & HealthTech",
-        "E-Commerce & Retail",
-        "EdTech & Learning",
-        "Logistics & Supply Chain",
-        "SaaS & B2B Software",
-        "Real Estate & PropTech",
-        "Travel & Hospitality",
-        "Explore All Services →",
-      ],
+      label: "Cloud, Infrastructure & DevOps",
+      href: "/services/digital-product-engineering/",
     },
     {
-      id: "resources",
-      title: "Resources",
-      items: [
-        "Insights",
-        "Guides & Whitepapers",
-        "Client Success Stories",
-      ],
+      label: "Explore All Technologies →",
+      href: "/services/digital-product-engineering/",
     },
-  ];
+  ],
+},
+
+  {
+    id: "industries",
+    title: "Industries",
+    items: [
+      {
+        label: "FinTech & Financial",
+        href: "/industries/",
+      },
+      {
+        label: "Healthcare & HealthTech",
+        href: "/industries/",
+      },
+      {
+        label: "E-Commerce & Retail",
+        href: "/industries/",
+      },
+      {
+        label: "EdTech & Learning",
+        href: "/industries/",
+      },
+      {
+        label: "Logistics & Supply Chain",
+        href: "/industries/",
+      },
+      {
+        label: "SaaS & B2B Software",
+        href: "/industries/",
+      },
+      {
+        label: "Real Estate & PropTech",
+        href: "/industries/",
+      },
+      {
+        label: "Travel & Hospitality",
+        href: "/industries/",
+      },
+      {
+        label: "Explore All Industries →",
+        href: "/industries/",
+      },
+    ],
+  },
+
+  {
+    id: "resources",
+    title: "Resources",
+    items: [
+      {
+        label: "Insights",
+        href: "/",
+      },
+      {
+        label: "Guides & Whitepapers",
+        href: "/",
+      },
+      {
+        label: "Client Success Stories",
+        href: "/portfolio/",
+      },
+    ],
+  },
+];
 
   return (
     <footer className="kk-footer">
@@ -159,7 +280,7 @@ export default function Footer() {
             </div>
 
             <a
-              href="#contact"
+              href="contact"
               className="kk-strategy-button"
             >
               Start With a Free Strategy Call
@@ -183,19 +304,19 @@ export default function Footer() {
 
                 <div className="kk-footer-column-list">
                   {section.items.map((item) => (
-                    <a
-                      href="#"
-                      key={item}
-                      className={`kk-footer-link ${
-                        item.includes("Explore") ||
-                        item.includes("See All")
-                          ? "kk-footer-link-special"
-                          : ""
-                      }`}
-                    >
-                      {item}
-                    </a>
-                  ))}
+  <a
+    href={item.href}
+    key={item.label}
+    className={`kk-footer-link ${
+      item.label.includes("Explore") ||
+      item.label.includes("See All")
+        ? "kk-footer-link-special"
+        : ""
+    }`}
+  >
+    {item.label}
+  </a>
+))}
                 </div>
               </div>
             ))}
@@ -245,27 +366,21 @@ export default function Footer() {
                     <div className="kk-footer-mobile-content-inner">
                       {section.items.map(
                         (item) => (
-                          <a
-                            href="#"
-                            key={item}
-                            className={`kk-footer-mobile-link ${
-                              item.includes(
-                                "Explore"
-                              ) ||
-                              item.includes(
-                                "See All"
-                              )
-                                ? "kk-footer-link-special"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              setOpenSection(
-                                null
-                              )
-                            }
-                          >
-                            {item}
-                          </a>
+                         <a
+  href={item.href}
+  key={item.label}
+  className={`kk-footer-mobile-link ${
+    item.label.includes("Explore") ||
+    item.label.includes("See All")
+      ? "kk-footer-link-special"
+      : ""
+  }`}
+  onClick={() =>
+    setOpenSection(null)
+  }
+>
+  {item.label}
+</a>
                         )
                       )}
                     </div>
@@ -298,21 +413,21 @@ export default function Footer() {
 
               <div className="kk-socials">
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/kontent-kraft-digital-india/"
                   className="kk-social"
                 >
                   LinkedIn
                 </a>
 
                 <a
-                  href="#"
+                  href="https://www.instagram.com/kontentkraft_digital?stkn=MTgzaHd4Z3M4cWRmNA=="
                   className="kk-social"
                 >
                   Instagram
                 </a>
 
                 <a
-                  href="#"
+                  href="https://www.facebook.com/share/1ES8avW2ks/"
                   className="kk-social"
                 >
                   Facebook
@@ -348,12 +463,20 @@ export default function Footer() {
                   |
                 </span>
 
-                <strong>
-                  Email :
-                </strong>{" "}
-                <a href="mailto:hello@kontentkraftdigital.com">
-                  hello@kontentkraftdigital.com
-                </a>
+          <strong>
+  Email :
+</strong>{" "}
+
+<a href="mailto:kontentkraftdigital@gmail.com">
+  kontentkraftdigital@gmail.com
+</a>
+
+<a
+  href="mailto:daman@kontentkraftdigital.com"
+  style={{ marginLeft: "12px" }}
+>
+  daman@kontentkraftdigital.com
+</a>
               </div>
 
               <div className="kk-legal">

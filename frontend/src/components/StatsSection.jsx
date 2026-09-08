@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const stats = [
   {
@@ -45,45 +51,78 @@ const stats = [
   },
 ];
 
-function StatCard({ stat }) {
+function StatCard({ stat, index }) {
   const [value, setValue] = useState(0);
   const cardRef = useRef(null);
-  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    const node = cardRef.current;
-    if (!node) return;
+    const card = cardRef.current;
+    if (!card) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated.current) {
-            hasAnimated.current = true;
-            const duration = 1500;
-            const startTime = performance.now();
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-            const step = (now) => {
-              const progress = Math.min((now - startTime) / duration, 1);
-              const eased = 1 - Math.pow(1 - progress, 3);
-              const current = stat.target * eased;
-              setValue(current);
-              if (progress < 1) {
-                requestAnimationFrame(step);
-              } else {
-                setValue(stat.target);
-              }
-            };
-            requestAnimationFrame(step);
-            observer.unobserve(node);
-          }
+    // Accessibility fallback — skip animation, just show final value
+    if (prefersReducedMotion) {
+      setValue(stat.target);
+      gsap.set(card, { opacity: 1, scale: 1, y: 0 });
+      return;
+    }
+
+    const counter = { val: 0 };
+    const delay = index * 0.12; // one-by-one stagger feel
+
+    const ctx = gsap.context(() => {
+      gsap.set(card, { opacity: 0, scale: 0.6, y: 40 });
+
+      const playIn = () => {
+        gsap.killTweensOf(card);
+        gsap.killTweensOf(counter);
+
+        gsap.to(card, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.7,
+          delay,
+          ease: "back.out(1.4)",
+          overwrite: "auto",
         });
-      },
-      { threshold: 0.4 }
-    );
 
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [stat.target]);
+        gsap.to(counter, {
+          val: stat.target,
+          duration: 1.4,
+          delay,
+          ease: "power3.out",
+          overwrite: "auto",
+          onUpdate: () => setValue(counter.val),
+          onComplete: () => setValue(stat.target),
+        });
+      };
+
+      const playOut = () => {
+        gsap.killTweensOf(card);
+        gsap.killTweensOf(counter);
+        gsap.set(card, { opacity: 0, scale: 0.6, y: 40 });
+        counter.val = 0;
+        setValue(0);
+      };
+
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top 88%",
+        end: "bottom 12%",
+        onEnter: playIn,
+        onEnterBack: playIn,
+        onLeave: playOut,
+        onLeaveBack: playOut,
+      });
+    }, card);
+
+    return () => ctx.revert();
+  }, [stat, index]);
 
   return (
     <div className="stat-card" ref={cardRef}>
@@ -112,57 +151,40 @@ function StatCard({ stat }) {
           box-shadow: 0 4px 16px rgba(1, 128, 253, 0.06);
           display: flex;
           flex-direction: column;
+          will-change: transform, opacity;
         }
 
-       .stat-card-top {
-  padding: 34px 34px 34px 34px;
+        .stat-card-top {
+          padding: 34px 34px 34px 34px;
+          display: flex;
+          align-items: flex-start;
+          gap: 22px;
+        }
 
-  display: flex;
-  align-items: flex-start;
+        .stat-number {
+          flex-shrink: 0;
+          font-family: "Britti Sans Trial", sans-serif;
+          font-weight: 700;
+          font-size: 32px;
+          line-height: 0.95;
 
-  gap: 22px;
-}
+          background: linear-gradient(180deg, #0180fd 0%, #0021af 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
 
-       .stat-number {
-  flex-shrink: 0;
+          display: inline-block;
+          margin: 0;
+        }
 
-  font-family: "Britti Sans Trial", sans-serif;
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 0.95;
-
-  background:
-    linear-gradient(
-      180deg,
-      #0180fd 0%,
-      #0021af 100%
-    );
-
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  -webkit-text-fill-color: transparent;
-
-  display: inline-block;
-
-  margin: 0;
-}
-
-      .stat-label {
-  padding-top: 0px;
-
-  font-family:
-    "Britti Sans Trial",
-    sans-serif;
-
-  font-weight: 400;
-
-  font-size: 15px;
-
-  line-height: 1.25;
-
-  color: #16181d;
-}
+        .stat-label {
+          padding-top: 0px;
+          font-family: "Britti Sans Trial", sans-serif;
+          font-weight: 400;
+          font-size: 15px;
+          line-height: 1.25;
+          color: #16181d;
+        }
 
         .stat-card-image {
           width: 100%;
@@ -193,54 +215,58 @@ function StatCard({ stat }) {
           .stat-card {
             border-radius: 16px;
           }
-            .stat-card-top {
-    padding: 16px 14px;
-
-    display: flex;
-    align-items: flex-start;
-
-    gap: 12px;
-  }
-
-  .stat-number {
-    font-size: 32px;
-  }
-
-  .stat-label {
-    padding-top: 1px;
-    font-size: 13px;
-    line-height: 1.2;
-  }
-
+          .stat-card-top {
+            padding: 16px 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+          }
+          .stat-number {
+            font-size: 32px;
+          }
+          .stat-label {
+            padding-top: 1px;
+            font-size: 13px;
+            line-height: 1.2;
+          }
           .stat-card-image {
             height: 130px;
           }
         }
 
         @media (max-width: 380px) {
-  .stat-card-top {
-    gap: 9px;
-  }
-
-  .stat-number {
-    font-size: 28px;
-  }
-
-  .stat-label {
-    font-size: 11px;
-  }
-}
+          .stat-card-top {
+            gap: 9px;
+          }
+          .stat-number {
+            font-size: 28px;
+          }
+          .stat-label {
+            font-size: 11px;
+          }
+        }
       `}</style>
     </div>
   );
 }
 
 export default function StatsSection() {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    // Let layout/images settle, then make sure ScrollTrigger
+    // recalculates positions correctly (avoids mobile mis-trigger bugs)
+    const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => {
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <section className="stats-section">
+    <section className="stats-section" ref={sectionRef}>
       <div className="stats-grid">
-        {stats.map((stat) => (
-          <StatCard key={stat.id} stat={stat} />
+        {stats.map((stat, index) => (
+          <StatCard key={stat.id} stat={stat} index={index} />
         ))}
       </div>
 

@@ -302,6 +302,8 @@ export default function Hero() {
 
           max-width: 1700px;
 
+          min-width: 0;
+
           margin: 0 auto;
 
           padding:
@@ -323,8 +325,8 @@ export default function Hero() {
 
           gap:
             clamp(
-              35px,
-              5vw,
+              24px,
+              4vw,
               70px
             );
         }
@@ -341,6 +343,18 @@ export default function Hero() {
           min-width: 0;
         }
 
+        /*
+          TITLE
+          Fluid clamp() sizing replaces the old fixed 28px + nowrap.
+          Nowrap on a 51-character headline only actually fits on
+          very wide viewports — below roughly 1400px it was
+          overflowing/clipping past the visible hero area (worst on
+          tablet, where it was still forced to a single 28px line).
+          Letting it wrap keeps the design intact at every width and
+          removes the overflow entirely; the min-width:1400px rule
+          below restores the single-line look once there's genuinely
+          room for it.
+        */
         .kk-hero-title {
           margin: 0;
 
@@ -348,20 +362,22 @@ export default function Hero() {
 
           color: #ffffff;
 
-          font-size: 28px !important;
+          font-size: clamp(22px, 2.6vw, 28px);
 
-          line-height: 0.98;
+          line-height: 1.04;
 
           letter-spacing:
-            -0.055em;
+            -0.045em;
 
           font-weight: 700;
 
           text-transform: uppercase;
 
-          white-space: nowrap;
+          white-space: normal;
 
-          overflow: visible;
+          overflow-wrap: break-word;
+
+          text-wrap: balance;
         }
 
         .kk-hero-description {
@@ -404,6 +420,8 @@ export default function Hero() {
           gap: 24px;
 
           margin-top: 30px;
+
+          flex-wrap: wrap;
         }
 
         .kk-hero-primary {
@@ -656,8 +674,8 @@ export default function Hero() {
 
           font-size:
             clamp(
-              14px,
-              0.58vw,
+              12.5px,
+              0.9vw,
               16px
             );
 
@@ -702,9 +720,12 @@ export default function Hero() {
 
         /* =========================================
            LARGE DESKTOP
+           Only here is there reliably enough room for
+           the full headline to sit on a single line, so
+           this is the one place nowrap is restored.
         ========================================= */
 
-        @media (min-width: 1440px) {
+        @media (min-width: 1400px) {
           .kk-hero {
             min-height: 700px;
           }
@@ -718,7 +739,13 @@ export default function Hero() {
           }
 
           .kk-hero-title {
-            font-size: 28px !important;
+            font-size: 28px;
+
+            line-height: 0.98;
+
+            letter-spacing: -0.055em;
+
+            white-space: nowrap;
           }
 
           .kk-hero-image-wrap {
@@ -729,11 +756,15 @@ export default function Hero() {
 
         /* =========================================
            TABLET
+           Same two-column, bottom-aligned layout as
+           desktop — just scaled down and with the
+           title allowed to wrap to a second line so it
+           never spills past the edge of the copy column.
         ========================================= */
 
         @media (max-width: 1100px) {
           .kk-hero {
-            min-height: 640px;
+            min-height: 660px;
           }
 
           .kk-hero-content-inner {
@@ -741,16 +772,19 @@ export default function Hero() {
               0
               35px
               70px;
+
+            gap:
+              clamp(20px, 4vw, 40px);
           }
 
           .kk-hero-title {
-            font-size: 28px !important;
-
-            white-space: nowrap;
+            font-size: clamp(24px, 3.6vw, 28px);
           }
 
           .kk-hero-description {
             font-size: 14px;
+
+            max-width: 480px;
           }
 
           .kk-hero-certificates {
@@ -758,7 +792,7 @@ export default function Hero() {
           }
 
           .kk-certificate {
-            width: 100px;
+            width: clamp(80px, 10vw, 100px);
           }
 
           .kk-hero-image-wrap {
@@ -767,13 +801,39 @@ export default function Hero() {
           }
 
           .kk-hero-overlay {
-            top: 40%;
+            top: 36%;
 
             backdrop-filter:
               blur(8px);
 
             -webkit-backdrop-filter:
               blur(8px);
+          }
+        }
+
+        /* =========================================
+           SMALL TABLET / LARGE PHONE LANDSCAPE
+           Between the tablet layout and the fully
+           stacked mobile layout, the two-column grid
+           gets tight — shrink certificates further and
+           tighten the title so nothing crowds the edge.
+        ========================================= */
+
+        @media (max-width: 860px) {
+          .kk-hero-content-inner {
+            gap: clamp(16px, 3vw, 28px);
+          }
+
+          .kk-hero-title {
+            font-size: clamp(21px, 4.2vw, 25px);
+          }
+
+          .kk-hero-description {
+            max-width: 380px;
+          }
+
+          .kk-certificate {
+            width: clamp(70px, 11vw, 90px);
           }
         }
 
@@ -883,7 +943,7 @@ export default function Hero() {
                 22px,
                 7vw,
                 30px
-              ) !important;
+              );
 
             line-height: 0.96;
 
@@ -971,7 +1031,7 @@ export default function Hero() {
                 20px,
                 6.8vw,
                 27px
-              ) !important;
+              );
           }
 
           .kk-hero-description {
@@ -989,7 +1049,7 @@ export default function Hero() {
 
         @media (max-width: 360px) {
           .kk-hero-title {
-            font-size: 20px !important;
+            font-size: 20px;
           }
         }
 

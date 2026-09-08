@@ -10,21 +10,12 @@ import { useEffect, useRef, useState } from "react";
 const SERVICES = [
   {
     title: "Digital Marketing",
+
+    anchor: "digital-marketing",
+
     description:
       "At Kontent Kraft Digital, we create data-driven marketing strategies that help businesses increase visibility, attract qualified customers, and generate measurable growth. By combining creativity, analytics, and performance optimization, we turn digital channels into sustainable revenue drivers.",
-    items: [
-      "Website Design & Development",
-      "Custom Web Application Development",
-      "E-Commerce Development",
-      "Mobile App Development",
-      "CMS & Website Management Solutions",
-      "Website Revamp & Modernization",
-    ],
-  },
-  {
-    title: "Custom Software Development",
-    description:
-      "Every business has unique challenges that off-the-shelf software can't solve. We develop secure, scalable, and tailor-made software solutions that automate workflows, improve operational efficiency, and support long-term business growth.",
+
     items: [
       "Digital Marketing Strategy",
       "Brand Awareness Campaigns",
@@ -34,10 +25,15 @@ const SERVICES = [
       "Lead Generation Campaigns",
     ],
   },
+
   {
     title: "SEO & Organic Growth",
+
+    anchor: "seo-organic-growth",
+
     description:
       "Build long-term online visibility with SEO strategies designed to improve search rankings, increase organic traffic, and drive high-intent visitors to your business.",
+
     items: [
       "Technical SEO",
       "On-Page SEO",
@@ -47,10 +43,15 @@ const SERVICES = [
       "Local & International SEO",
     ],
   },
+
   {
     title: "Performance Marketing",
+
+    anchor: "performance-marketing",
+
     description:
       "Maximize your marketing ROI with targeted advertising campaigns that deliver measurable results. We optimize every campaign using real-time data, audience insights, and continuous testing.",
+
     items: [
       "Google Ads Management",
       "Meta Ads (Facebook & Instagram)",
@@ -60,10 +61,15 @@ const SERVICES = [
       "Conversion Tracking & Optimization",
     ],
   },
+
   {
     title: "Content & Email Marketing",
+
+    anchor: "content-email-marketing",
+
     description:
       "Create meaningful customer relationships through compelling content and personalized email campaigns that educate, engage, and convert audiences throughout their journey.",
+
     items: [
       "Content Strategy",
       "Blog & Website Content",
@@ -73,10 +79,15 @@ const SERVICES = [
       "Copywriting & Content Optimization",
     ],
   },
+
   {
     title: "Influencer Marketing",
+
+    anchor: "influencer-marketing",
+
     description:
       "Expand your brand reach by partnering with trusted creators who connect with your target audience and deliver authentic engagement across digital platforms.",
+
     items: [
       "Influencer Strategy",
       "Creator Discovery & Outreach",
@@ -86,10 +97,15 @@ const SERVICES = [
       "Brand Collaboration Programs",
     ],
   },
+
   {
     title: "Local SEO",
+
+    anchor: "local-seo",
+
     description:
       "Increase your visibility where it matters most: your local market. We optimize your digital presence to help nearby customers discover, trust, and choose your business.",
+
     items: [
       "Google Business Profile Optimization",
       "Local Keyword Optimization",
@@ -253,7 +269,11 @@ export default function ServicesPage() {
         <div className="services-container">
           <div className="services-list">
             {SERVICES.map((service, index) => (
-              <article className="service-row" key={service.title}>
+            <article
+  className="service-row"
+  key={service.title}
+  id={service.anchor}
+>
                 <div className="service-content">
                   <h2 className="service-title">{service.title}</h2>
                   <p className="service-description">{service.description}</p>
@@ -499,6 +519,7 @@ export default function ServicesPage() {
           display: grid;
           grid-template-columns: minmax(0, 1fr) 1px minmax(0, 0.92fr);
           border-bottom: 1px solid #d7dfea;
+          scroll-margin-top: 100px;
         }
 
         .service-row:last-child {

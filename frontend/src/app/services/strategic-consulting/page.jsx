@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 const SERVICES = [
   {
     title: "Digital Transformation Consulting",
+    anchor: "digital-transformation-consulting",
     description:
       "Transform your business with a clear digital roadmap. We help organizations modernize processes, adopt emerging technologies, and build scalable digital ecosystems that improve efficiency, agility, and long-term competitiveness.",
     items: [
@@ -23,6 +24,7 @@ const SERVICES = [
   },
   {
     title: "Software Strategy",
+    anchor: "software-strategy",
     description:
       "Successful software starts with the right strategy. We help businesses define product vision, technical architecture, development roadmaps, and scalable solutions that align with business goals and user needs.",
     items: [
@@ -36,6 +38,7 @@ const SERVICES = [
   },
   {
     title: "FinTech Advisory",
+    anchor: "fintech-advisory",
     description:
       "Navigate the complexities of digital finance with expert guidance. From payment platforms to investment products and regulatory compliance, we help FinTech businesses build secure, scalable, and customer-centric solutions.",
     items: [
@@ -49,6 +52,7 @@ const SERVICES = [
   },
   {
     title: "Mobile Strategy",
+    anchor: "mobile-strategy",
     description:
       "Create mobile experiences that engage users and drive business growth. We define mobile-first strategies that balance user needs, business objectives, and emerging technologies.",
     items: [
@@ -62,6 +66,7 @@ const SERVICES = [
   },
   {
     title: "Technology Staffing & Hiring",
+    anchor: "technology-staffing-hiring",
     description:
       "Build high-performing technology teams with the right talent. We help businesses identify, evaluate, and hire skilled professionals who align with their technical requirements and organizational culture.",
     items: [
@@ -227,7 +232,11 @@ export default function ServicesPage() {
         <div className="services-container">
           <div className="services-list">
             {SERVICES.map((service, index) => (
-              <article className="service-row" key={service.title}>
+         <article
+  className="service-row"
+  key={service.title}
+  id={service.anchor}
+>
                 <div className="service-content">
                   <h2 className="service-title">{service.title}</h2>
                   <p className="service-description">{service.description}</p>
@@ -473,6 +482,7 @@ export default function ServicesPage() {
           display: grid;
           grid-template-columns: minmax(0, 1fr) 1px minmax(0, 0.92fr);
           border-bottom: 1px solid #d7dfea;
+          scroll-margin-top: 100px;
         }
 
         .service-row:last-child {

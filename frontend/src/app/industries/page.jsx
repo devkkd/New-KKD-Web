@@ -7,65 +7,76 @@ import { useEffect, useRef, useState } from "react";
    INDUSTRIES DATA
    Add `image` later to use a different image per industry.
 ========================================================= */
-
 const INDUSTRIES = [
   {
     title: "Fintech & Financial",
+    anchor: "fintech-financial",
     description:
       "We build secure, reliable digital products for the financial sector from payment platforms and digital wallets to investment and budgeting tools designed with the security and compliance expectations financial services demand.",
   },
   {
     title: "Healthcare & HealthTech",
+    anchor: "healthcare-healthtech",
     description:
       "We develop patient-friendly, secure healthcare solutions including telehealth platforms, appointment systems, and health tracking tools, built with the privacy and data-handling standards the industry requires.",
   },
   {
     title: "E-Commerce & Retail",
+    anchor: "e-commerce-retail",
     description:
       "We build online stores and retail platforms engineered to convert browsers into buyers, manage inventory efficiently, and handle traffic at scale during peak shopping periods.",
   },
   {
     title: "EdTech & Learning",
+    anchor: "edtech-learning",
     description:
       "We create engaging learning platforms, course portals, and educational apps that make it easier for students and instructors to teach, learn, and track progress online.",
   },
   {
     title: "Logistics & Supply Chain",
+    anchor: "logistics-supply-chain",
     description:
       "We build tracking systems, fleet management tools, and supply chain platforms that give businesses real-time visibility and control over their operations.",
   },
   {
     title: "SaaS & B2B Software",
+    anchor: "saas-b2b-software",
     description:
       "We design and develop multi-tenant SaaS products and B2B platforms built to onboard users smoothly, scale with demand, and support the workflows business customers rely on.",
   },
   {
     title: "Real Estate & PropTech",
+    anchor: "real-estate-proptech",
     description:
       "We build property listing platforms, virtual tour experiences, and management tools that make it easier for buyers, renters, and agents to connect and transact.",
   },
   {
     title: "Travel & Hospitality",
+    anchor: "travel-hospitality",
     description:
       "We develop booking platforms, itinerary tools, and guest experience apps that make travel planning and hospitality management simpler for both businesses and their customers.",
   },
   {
     title: "Social Media",
+    anchor: "social-media",
     description:
       "We build social platforms and community-driven apps with the engagement features, content tools, and scalability that social products need to grow.",
   },
   {
     title: "Marketing",
+    anchor: "marketing",
     description:
       "We build websites, landing pages, and campaign tools that power marketing efforts designed to convert traffic and integrate cleanly with the analytics and automation tools your team already uses.",
   },
   {
     title: "Events",
+    anchor: "events",
     description:
       "We develop event registration platforms, ticketing systems, and event management tools that make planning and attending events smoother for organizers and attendees alike.",
   },
   {
     title: "Restaurant",
+    anchor: "restaurant",
     description:
       "We build ordering platforms, reservation systems, and delivery integrations that help restaurants serve customers efficiently online and in person.",
   },
@@ -414,12 +425,11 @@ export default function IndustriesPage() {
                 index
               ) => (
 
-                <article
-                  className="industry-card"
-                  key={
-                    industry.title
-                  }
-                >
+               <article
+  className="industry-card"
+  key={industry.title}
+  id={industry.anchor}
+>
 
                   {/* IMAGE */}
 
@@ -945,13 +955,11 @@ export default function IndustriesPage() {
            INDUSTRY CARD
         ===================================================== */
 
-        .industry-card {
-          width:
-            100%;
-
-          min-width:
-            0;
-        }
+       .industry-card {
+  width: 100%;
+  min-width: 0;
+  scroll-margin-top: 100px;
+}
 
         .industry-image-wrap {
           position:

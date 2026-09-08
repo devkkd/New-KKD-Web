@@ -21,49 +21,110 @@ const ABOUT_ITEMS = [
 
 const SERVICES_COLUMNS = [
   {
-    title: "Digital Product Engineering",
-    titleHref: "/services/digital-product-engineering",
-    items: [
-      ["Web & Mobile Development", ],
-      ["Custom Software Development",],
-      ["AI & Machine Learning", ],
-      ["Product Design (UI/UX)",],
-      ["E-Commerce Solutions", ],
+  title: "Digital Product Engineering",
+  titleHref: "/services/digital-product-engineering/",
+  items: [
+    [
+      "Web & Mobile Development",
+      "/services/digital-product-engineering/#web-mobile-development",
     ],
-  },
+    [
+      "Custom Software Development",
+      "/services/digital-product-engineering/#custom-software-development",
+    ],
+    [
+      "AI & Machine Learning",
+      "/services/digital-product-engineering/#ai-machine-learning",
+    ],
+    [
+      "Product Design (UI/UX)",
+      "/services/digital-product-engineering/#product-design-ui-ux",
+    ],
+    [
+      "E-Commerce Solutions",
+      "/services/digital-product-engineering/#e-commerce-solutions",
+    ],
+  ],
+},
+{
+  title: "",
+  titleHref: "",
+  items: [
+    [
+      "Cloud & DevOps",
+      "/services/digital-product-engineering/#cloud-devops",
+    ],
+    [
+      "Product Management",
+      "/services/digital-product-engineering/#product-management",
+    ],
+    [
+      "Managed IT Services",
+      "/services/digital-product-engineering/#managed-it-services",
+    ],
+    [
+      "Enterprise Applications",
+      "/services/digital-product-engineering/#enterprise-applications",
+    ],
+  ],
+},
+  
   {
-    title: "",
-    titleHref: "",
-    items: [
-      ["Cloud & DevOps", "#"],
-      ["Product Management", "#"],
-      ["Managed IT Services", "#"],
-      ["Enterprise Applications", "#"],
+  title: "Growth Marketing",
+  titleHref: "/services/growth-marketing/",
+  items: [
+    [
+      "Digital Marketing",
+      "/services/growth-marketing/#digital-marketing",
     ],
-  },
-  {
-    title: "Growth Marketing",
-    titleHref: "/services/growth-marketing",
-    items: [
-      ["Digital Marketing", "#"],
-      ["SEO & Organic Growth", "#"],
-      ["Performance Marketing", "#"],
-      ["Content & Email Marketing", "#"],
-      ["Influencer Marketing", "#"],
-      ["Local SEO", "#"],
+    [
+      "SEO & Organic Growth",
+      "/services/growth-marketing/#seo-organic-growth",
     ],
-  },
-  {
-    title: "Strategic Consulting",
-    titleHref: "/services/strategic-consulting",
-    items: [
-      ["Digital Transformation Consulting", "#"],
-      ["Software Strategy", "#"],
-      ["Fintech Advisory", "#"],
-      ["Mobile Strategy", "#"],
-      ["Technology Staffing & Hiring", "#"],
+    [
+      "Performance Marketing",
+      "/services/growth-marketing/#performance-marketing",
     ],
-  },
+    [
+      "Content & Email Marketing",
+      "/services/growth-marketing/#content-email-marketing",
+    ],
+    [
+      "Influencer Marketing",
+      "/services/growth-marketing/#influencer-marketing",
+    ],
+    [
+      "Local SEO",
+      "/services/growth-marketing/#local-seo",
+    ],
+  ],
+},
+ {
+  title: "Strategic Consulting",
+  titleHref: "/services/strategic-consulting/",
+  items: [
+    [
+      "Digital Transformation Consulting",
+      "/services/strategic-consulting/#digital-transformation-consulting",
+    ],
+    [
+      "Software Strategy",
+      "/services/strategic-consulting/#software-strategy",
+    ],
+    [
+      "Fintech Advisory",
+      "/services/strategic-consulting/#fintech-advisory",
+    ],
+    [
+      "Mobile Strategy",
+      "/services/strategic-consulting/#mobile-strategy",
+    ],
+    [
+      "Technology Staffing & Hiring",
+      "/services/strategic-consulting/#technology-staffing-hiring",
+    ],
+  ],
+},
 ];
 
 /* =========================================================
@@ -71,18 +132,54 @@ const SERVICES_COLUMNS = [
 ========================================================= */
 
 const INDUSTRY_ITEMS = [
-  ["FinTech & Financial", "#"],
-  ["Healthcare & HealthTech", "#"],
-  ["E-Commerce & Retail", "#"],
-  ["EdTech & Learning", "#"],
-  ["Logistics & Supply Chain", "#"],
-  ["SaaS & B2B Software", "#"],
-  ["Real Estate & PropTech", "#"],
-  ["Travel & Hospitality", "#"],
-  ["Social Media", "#"],
-  ["Marketing", "#"],
-  ["Events", "#"],
-  ["Restaurant", "#"],
+  [
+    "FinTech & Financial",
+    "/industries/#fintech-financial",
+  ],
+  [
+    "Healthcare & HealthTech",
+    "/industries/#healthcare-healthtech",
+  ],
+  [
+    "E-Commerce & Retail",
+    "/industries/#e-commerce-retail",
+  ],
+  [
+    "EdTech & Learning",
+    "/industries/#edtech-learning",
+  ],
+  [
+    "Logistics & Supply Chain",
+    "/industries/#logistics-supply-chain",
+  ],
+  [
+    "SaaS & B2B Software",
+    "/industries/#saas-b2b-software",
+  ],
+  [
+    "Real Estate & PropTech",
+    "/industries/#real-estate-proptech",
+  ],
+  [
+    "Travel & Hospitality",
+    "/industries/#travel-hospitality",
+  ],
+  [
+    "Social Media",
+    "/industries/#social-media",
+  ],
+  [
+    "Marketing",
+    "/industries/#marketing",
+  ],
+  [
+    "Events",
+    "/industries/#events",
+  ],
+  [
+    "Restaurant",
+    "/industries/#restaurant",
+  ],
 ];
 
 /* =========================================================
@@ -247,15 +344,16 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleBreakpointResize);
   }, []);
 
-  /* VIEWPORT OVERFLOW GUARD — this is the fix for the dropdown bleeding
-     off the edge of the screen and forcing the whole page to scroll
-     sideways. Every time a dropdown opens (or the window resizes while
-     one is open), measure its real position on screen and, if it would
-     spill past the right (or left) edge, nudge it back in with a
-     transform. This works regardless of where the trigger sits in the
-     page or how the surrounding layout is structured. */
+  /* VIEWPORT OVERFLOW GUARD — this is the fix for the desktop mega-menu
+     dropdown bleeding off the edge of the screen and forcing the whole
+     page to scroll sideways. Every time a dropdown opens (or the window
+     resizes while one is open), measure its real position on screen and,
+     if it would spill past the right (or left) edge, nudge it back in
+     with a transform. Only relevant above the mobile breakpoint, since
+     the mobile menu is a full-width in-flow panel, not an absolutely
+     positioned dropdown. */
   useLayoutEffect(() => {
-    if (!openMenu) {
+    if (!openMenu || mobileMenuOpen) {
       setDropdownShift(0);
       return undefined;
     }
@@ -289,7 +387,7 @@ export default function Header() {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
     };
-  }, [openMenu]);
+  }, [openMenu, mobileMenuOpen]);
 
   /* TOP MENU */
   const topMenus = [
@@ -299,6 +397,10 @@ export default function Header() {
     { key: MENU_TYPES.PORTFOLIO, label: "Portfolio", href: "/portfolio", direct: true },
     { key: MENU_TYPES.RESOURCES, label: "Resources", href: "/resources", direct: true },
   ];
+
+  /* ---------------------------------------------------------
+     DESKTOP DROPDOWNS
+  --------------------------------------------------------- */
 
   const renderAboutDropdown = () => (
     <div className="kk-simple-dropdown">
@@ -395,50 +497,33 @@ export default function Header() {
     </div>
   );
 
-const renderResourcesDropdown = () => (
-  <div className="kk-wide-dropdown kk-resources-dropdown">
+  const renderResourcesDropdown = () => (
+    <div className="kk-wide-dropdown kk-resources-dropdown">
+      <div className="kk-resource-header">Insight</div>
 
-    <div className="kk-resource-header">
-      Insight
-    </div>
+      <div className="kk-resources-list">
+        {RESOURCE_ITEMS.map((item) => (
+          <div className="kk-resource-row" key={item.label}>
+            <div className="kk-resource-image">
+              <img
+                src={item.image}
+                alt=""
+                width="360"
+                height="190"
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+              />
+            </div>
 
-    <div className="kk-resources-list">
-
-      {RESOURCE_ITEMS.map((item) => (
-        <div
-          className="kk-resource-row"
-          key={item.label}
-        >
-
-          {/* IMAGE */}
-          <div className="kk-resource-image">
-            <img
-              src={item.image}
-              alt=""
-              width="360"
-              height="190"
-              loading="lazy"
-              decoding="async"
-              draggable="false"
-            />
+            <SafeLink href={item.href} className="kk-resource-link" onClick={closeAll}>
+              {item.label}
+            </SafeLink>
           </div>
-
-          {/* TITLE */}
-          <SafeLink
-            href={item.href}
-            className="kk-resource-link"
-            onClick={closeAll}
-          >
-            {item.label}
-          </SafeLink>
-
-        </div>
-      ))}
-
+        ))}
+      </div>
     </div>
-
-  </div>
-);
+  );
 
   const renderDropdown = (menu) => {
     switch (menu) {
@@ -457,6 +542,13 @@ const renderResourcesDropdown = () => (
     }
   };
 
+  /* ---------------------------------------------------------
+     MOBILE SUBMENUS
+     Mirrors the desktop dropdown content (including images for
+     Portfolio/Resources and column headings for Services) but
+     laid out for a narrow, single-column screen.
+  --------------------------------------------------------- */
+
   const renderMobileItems = (menu) => {
     if (menu === MENU_TYPES.ABOUT) {
       return ABOUT_ITEMS.map(([label, href]) => (
@@ -467,10 +559,20 @@ const renderResourcesDropdown = () => (
     }
 
     if (menu === MENU_TYPES.SERVICES) {
-      return SERVICES_COLUMNS.flatMap((column) => column.items).map(([label, href]) => (
-        <SafeLink key={label} href={href} onClick={closeAll} className="kk-mobile-sublink">
-          {label}
-        </SafeLink>
+      return SERVICES_COLUMNS.map((column, index) => (
+        <div className="kk-mobile-sub-group" key={`${column.title}-${index}`}>
+          {column.title ? (
+            <SafeLink href={column.titleHref} onClick={closeAll} className="kk-mobile-sub-heading">
+              {column.title}
+            </SafeLink>
+          ) : null}
+
+          {column.items.map(([label, href]) => (
+            <SafeLink key={label} href={href} onClick={closeAll} className="kk-mobile-sublink">
+              {label}
+            </SafeLink>
+          ))}
+        </div>
       ));
     }
 
@@ -484,24 +586,41 @@ const renderResourcesDropdown = () => (
 
     if (menu === MENU_TYPES.PORTFOLIO) {
       return PORTFOLIO_ITEMS.map((item) => (
-        <SafeLink key={item.label} href={item.href} onClick={closeAll} className="kk-mobile-sublink">
-          {item.label}
+        <SafeLink
+          key={item.label}
+          href={item.href}
+          onClick={closeAll}
+          className="kk-mobile-portfolio-item"
+        >
+          <span className="kk-mobile-portfolio-thumb" style={{ background: item.bg }}>
+            {item.logo ? <img src={item.logo} alt="" draggable="false" /> : null}
+          </span>
+          <span className="kk-mobile-portfolio-label">{item.label}</span>
         </SafeLink>
       ));
     }
 
-   if (menu === MENU_TYPES.RESOURCES) {
-  return RESOURCE_ITEMS.map((item) => (
-    <SafeLink
-      key={item.label}
-      href={item.href}
-      onClick={closeAll}
-      className="kk-mobile-sublink"
-    >
-      {item.label}
-    </SafeLink>
-  ));
-}
+    if (menu === MENU_TYPES.RESOURCES) {
+      return RESOURCE_ITEMS.map((item) => (
+        <SafeLink
+          key={item.label}
+          href={item.href}
+          onClick={closeAll}
+          className="kk-mobile-resource-item"
+        >
+          <span className="kk-mobile-resource-image">
+            <img
+              src={item.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+            />
+          </span>
+          <span className="kk-mobile-resource-label">{item.label}</span>
+        </SafeLink>
+      ));
+    }
 
     return null;
   };
@@ -593,44 +712,60 @@ const renderResourcesDropdown = () => (
             {topMenus.map((menu) => (
               <div className="kk-mobile-dropdown-wrap" key={menu.key}>
                 <div className="kk-mobile-top-row">
-                  {menu.direct ? (
-                    <SafeLink href={menu.href} className="kk-mobile-link kk-mobile-primary-link" onClick={closeAll}>
-                      {menu.label}
-                    </SafeLink>
-                  ) : (
-                    <button
-                      type="button"
-                      className="kk-mobile-link kk-mobile-primary-link"
-                      onClick={() => toggleDropdown(menu.key)}
-                      aria-expanded={openMenu === menu.key}
-                    >
-                      {menu.label}
-                      <Chevron />
-                    </button>
-                  )}
+                 {menu.direct ? (
+  <SafeLink
+    href={menu.href}
+    className="kk-mobile-link kk-mobile-primary-link"
+    onClick={closeAll}
+  >
+    {menu.label}
+  </SafeLink>
+) : (
+  <button
+    type="button"
+    className="kk-mobile-link kk-mobile-primary-link"
+    onClick={() => toggleDropdown(menu.key)}
+    aria-expanded={openMenu === menu.key}
+  >
+    {menu.label}
+  </button>
+)}
 
-                  {menu.direct && (
-                    <button
-                      type="button"
-                      className="kk-mobile-expand"
-                      onClick={() => toggleDropdown(menu.key)}
-                      aria-label={`Open ${menu.label} submenu`}
-                      aria-expanded={openMenu === menu.key}
-                    >
-                      <Chevron />
-                    </button>
-                  )}
+<button
+  type="button"
+  className={`kk-mobile-expand ${
+    openMenu === menu.key ? "is-open" : ""
+  }`}
+  onClick={() => toggleDropdown(menu.key)}
+  aria-label={`Open ${menu.label} submenu`}
+  aria-expanded={openMenu === menu.key}
+>
+  <Chevron />
+</button>
                 </div>
 
+                {/*
+                  IMPORTANT: the grid-template-rows 0fr -> 1fr collapse
+                  trick only works cleanly when the animated grid has a
+                  SINGLE child row. Previously the sublinks were direct
+                  children of .kk-mobile-submenu, so with more than one
+                  child the extra rows fell back to "auto" sizing and
+                  never actually collapsed to 0 — that's what was
+                  leaving the big empty gaps under About/Services in the
+                  closed state. Wrapping everything in one
+                  .kk-mobile-submenu-inner element fixes that.
+                */}
                 <div className={`kk-mobile-submenu ${openMenu === menu.key ? "is-open" : ""}`}>
-                  {renderMobileItems(menu.key)}
+                  <div className="kk-mobile-submenu-inner">
+                    {renderMobileItems(menu.key)}
 
-                  {(menu.key === MENU_TYPES.SERVICES || menu.key === MENU_TYPES.INDUSTRIES) && (
-                    <SafeLink href="/book-call" onClick={closeAll} className="kk-mobile-book-link">
-                      Book a Free Strategy Call
-                      <span>▲</span>
-                    </SafeLink>
-                  )}
+                    {(menu.key === MENU_TYPES.SERVICES || menu.key === MENU_TYPES.INDUSTRIES) && (
+                      <SafeLink href="/book-call" onClick={closeAll} className="kk-mobile-book-link">
+                        Book a Free Strategy Call
+                        <span>▲</span>
+                      </SafeLink>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -969,14 +1104,6 @@ const renderResourcesDropdown = () => (
           object-fit: contain;
         }
 
-        .kk-resource-image {
-          width: 122px;
-          height: 90px;
-          border-radius: 14px;
-          background: rgba(14, 14, 14, 0.055);
-          border: 1px solid rgba(14, 14, 14, 0.08);
-        }
-
         .kk-portfolio-link, .kk-resource-link {
           color: #0e0e0e;
           text-decoration: none;
@@ -987,183 +1114,632 @@ const renderResourcesDropdown = () => (
 
         .kk-portfolio-link:hover, .kk-resource-link:hover { color: #0021af; }
 
-        /* RESOURCES */
-    /* =====================================================
-   RESOURCES
-===================================================== */
+        /* =====================================================
+           RESOURCES
+        ===================================================== */
 
-.kk-resources-dropdown {
-  width: min(1100px, calc(100vw - 80px));
-  padding: 24px 36px 26px;
-}
+        .kk-resources-dropdown {
+          width: min(1100px, calc(100vw - 80px));
+          padding: 24px 36px 26px;
+        }
 
-.kk-resource-header {
-  margin:
-    0 0 22px;
+        .kk-resource-header {
+          margin: 0 0 22px;
+          font-size: 18px;
+          line-height: 1;
+          font-weight: 500;
+          color: #0e0e0e;
+        }
 
-  font-size:
-    18px;
+        .kk-resources-list {
+          display: grid;
+          gap: 24px;
+        }
 
-  line-height:
-    1;
+        .kk-resource-row {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 360px minmax(0, 1fr);
+          align-items: start;
+          column-gap: 38px;
+          min-width: 0;
+        }
 
-  font-weight:
-    500;
+        .kk-resource-image {
+          width: 360px;
+          height: 150px;
+          min-width: 0;
+          overflow: hidden;
+          border-radius: 16px;
+          background: #e9eef6;
+        }
 
-  color:
-    #0e0e0e;
-}
+        .kk-resource-image img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          object-position: center;
+          user-select: none;
+          pointer-events: none;
+          -webkit-user-drag: none;
+        }
 
-.kk-resources-list {
-  display: grid;
-  gap: 24px;
-}
-
-.kk-resource-row {
-  width:
-    100%;
-
-  display:
-    grid;
-
-  grid-template-columns:
-    360px
-    minmax(
-      0,
-      1fr
-    );
-
-  align-items:
-    start;
-
-  column-gap:
-    38px;
-
-  min-width:
-    0;
-}
-
-.kk-resource-image {
-  width: 360px;
-  height: 150px;
-
-  min-width:
-    0;
-
-  overflow:
-    hidden;
-
-  border-radius:
-    16px;
-
-  background:
-    #e9eef6;
-}
-
-.kk-resource-image img {
-  width:
-    100%;
-
-  height:
-    100%;
-
-  display:
-    block;
-
-  object-fit:
-    cover;
-
-  object-position:
-    center;
-
-  user-select:
-    none;
-
-  pointer-events:
-    none;
-
-  -webkit-user-drag:
-    none;
-}
-
-.kk-resource-link {
-  width:
-    100%;
-
-  max-width:
-    560px;
-
-  margin:
-    7px 0 0;
-
-  display:
-    block;
-
-  font-size:
-    18px;
-
-  line-height:
-    1.45;
-
-  font-weight:
-    500;
-
-  white-space:
-    normal;
-
-  overflow-wrap:
-    break-word;
-
-  word-break:
-    normal;
-
-  color:
-    #0e0e0e;
-
-  text-decoration:
-    none;
-}
+        .kk-resource-link {
+          width: 100%;
+          max-width: 560px;
+          margin: 7px 0 0;
+          display: block;
+          font-size: 18px;
+          line-height: 1.45;
+          font-weight: 500;
+          white-space: normal;
+          overflow-wrap: break-word;
+          word-break: normal;
+          color: #0e0e0e;
+          text-decoration: none;
+        }
 
         /* MOBILE HIDDEN DEFAULT */
         .kk-menu-button, .kk-mobile-menu { display: none; }
 
-        /* TABLET */
-        @media (max-width: 1199px) {
-          .kk-header-inner {
-            height: 88px;
-            min-height: 88px;
-            padding: 0 20px;
-            column-gap: 14px;
-          }
-          .kk-nav-left { gap: 22px; }
-          .kk-nav-right { gap: 18px; }
-          .kk-nav-link { font-size: 11.5px; }
-          .kk-contact-button { min-width: 110px; height: 42px; padding: 0 15px; font-size: 12.5px; }
-          .kk-nav-dropdown-wrap { height: 88px; }
-          .kk-resource-row { grid-template-columns: 220px minmax(0, 1fr); }
-          .kk-resource-image { width: 220px; height: 130px; }
-          .kk-resource-link { font-size: 18px; }
-        }
+        /* TABLET — kept visually identical to desktop, just scaled down */
+/* =====================================================
+   TABLET HEADER
+   768px - 1199px
+===================================================== */
 
-        /* SMALLER TABLET */
-        @media (max-width: 900px) {
-          .kk-header-inner {
-            height: 82px;
-            min-height: 82px;
-            padding: 0 14px;
-            grid-template-columns: minmax(0, 1fr) 155px minmax(0, 1fr);
-            column-gap: 10px;
-          }
-          .kk-nav-left { gap: 13px; }
-          .kk-nav-right { gap: 11px; }
-          .kk-nav-link { font-size: 10.5px; }
-          .kk-contact-button { min-width: 100px; height: 40px; padding: 0 12px; font-size: 11.5px; }
-          .kk-logo-link { width: 155px; height: 46px; flex-basis: 155px; }
-          .kk-logo { width: 155px; height: 46px; max-width: 155px; max-height: 46px; }
-          .kk-nav-dropdown-wrap { height: 82px; }
-        }
+@media (min-width: 768px) and (max-width: 1199px) {
 
-        /* MOBILE */
+  .kk-header-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1900px;
+
+    height: 72px;
+    min-height: 72px;
+
+    padding: 0 12px;
+
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      120px
+      minmax(0, 1fr);
+
+    align-items: center;
+    column-gap: 10px;
+
+    margin: 0 auto;
+  }
+
+  /* =========================
+     NAV BASE
+  ========================= */
+
+  .kk-nav {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    white-space: nowrap;
+  }
+
+  .kk-nav-left {
+    justify-content: flex-start;
+    gap: 9px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .kk-nav-right {
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* =========================
+     NAV LINKS
+  ========================= */
+
+  .kk-nav-link {
+    min-width: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    padding: 0;
+    margin: 0;
+
+    border: 0;
+    background: transparent;
+
+    color: #0e0e0e;
+    font-family: inherit;
+
+    font-size: 9px;
+    line-height: 1;
+    font-weight: 500;
+
+    white-space: nowrap;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    flex: 0 0 auto;
+  }
+
+  /* =========================
+     DROPDOWN WRAPPER
+  ========================= */
+
+  .kk-nav-dropdown-wrap {
+    position: relative;
+
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  /* =========================
+     CHEVRON
+  ========================= */
+
+  .kk-chevron {
+    width: 0;
+    height: 0;
+
+    display: inline-block;
+
+    margin-top: 1px;
+
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid #0e0e0e;
+
+    flex: 0 0 auto;
+
+    transform: translateY(1px) scaleX(0.9);
+  }
+
+  /* =========================
+     LOGO
+  ========================= */
+
+  .kk-logo-link {
+    width: 120px;
+    height: 40px;
+
+    flex: 0 0 120px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    justify-self: center;
+
+    text-decoration: none;
+
+    overflow: hidden;
+  }
+
+  .kk-logo {
+    display: block;
+
+    width: 120px;
+    height: 40px;
+
+    max-width: 120px;
+    max-height: 40px;
+
+    object-fit: contain;
+    object-position: center;
+
+    flex: 0 0 auto;
+
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* =========================
+     CONTACT BUTTON
+  ========================= */
+
+  .kk-contact-button {
+    min-width: 92px;
+    width: 92px;
+    height: 34px;
+
+    padding: 0 10px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    flex: 0 0 92px;
+
+    border-radius: 999px;
+
+    background:
+      linear-gradient(
+        135deg,
+        #0180fd 0%,
+        #0021af 100%
+      );
+
+    color: #ffffff;
+
+    font-size: 9.5px;
+    line-height: 1;
+    font-weight: 500;
+
+    white-space: nowrap;
+    text-decoration: none;
+
+    box-shadow:
+      0 7px 18px
+      rgba(0, 33, 175, 0.14);
+  }
+
+  .kk-contact-star {
+    width: 9px;
+    height: 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 9px;
+    line-height: 1;
+
+    flex: 0 0 9px;
+  }
+
+  /* =========================
+     DROPDOWN HOLDER
+  ========================= */
+
+  .kk-desktop-dropdown-holder {
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+
+    width: max-content;
+    max-width: calc(100vw - 24px);
+
+    z-index: 99999;
+  }
+
+  /* =========================
+     DROPDOWN COMMON
+  ========================= */
+
+  .kk-simple-dropdown,
+  .kk-wide-dropdown {
+    position: relative;
+
+    display: block;
+
+    background: #f3f8ff;
+
+    border:
+      1px solid
+      rgba(14, 14, 14, 0.16);
+
+    border-radius:
+      0 0 10px 10px;
+
+    box-shadow:
+      0 18px 50px
+      rgba(14, 14, 14, 0.14);
+  }
+
+  .kk-simple-dropdown {
+    width: 210px;
+    padding: 16px 18px;
+  }
+
+  .kk-wide-dropdown {
+    padding: 24px;
+  }
+
+  /* =========================
+     DROPDOWN TEXT
+  ========================= */
+
+  .kk-dropdown-link {
+    display: block;
+
+    color: #0e0e0e;
+
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 500;
+
+    text-decoration: none;
+  }
+
+  .kk-dropdown-link + .kk-dropdown-link {
+    margin-top: 16px;
+  }
+
+  /* =========================
+     SERVICES
+  ========================= */
+
+  .kk-services-dropdown {
+    width:
+      min(
+        900px,
+        calc(100vw - 28px)
+      );
+  }
+
+  .kk-services-grid {
+    display: grid;
+
+    grid-template-columns:
+      1.1fr
+      1fr
+      1fr
+      1fr;
+
+    gap: 18px;
+  }
+
+  .kk-dropdown-heading {
+    margin-bottom: 16px;
+
+    color: #0021af;
+
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .kk-services-column
+  .kk-dropdown-link
+  + .kk-dropdown-link {
+    margin-top: 13px;
+  }
+
+  /* =========================
+     CTA
+  ========================= */
+
+  .kk-dropdown-cta {
+    margin-top: 22px;
+
+    min-height: 82px;
+
+    padding: 16px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    border-radius: 17px;
+
+    background:
+      linear-gradient(
+        135deg,
+        #0180fd 0%,
+        #0021af 100%
+      );
+
+    color: #ffffff;
+  }
+
+  .kk-dropdown-cta-copy {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .kk-dropdown-cta-copy strong {
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .kk-dropdown-cta-copy span {
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  .kk-dropdown-cta-button {
+    flex: 0 0 auto;
+
+    min-width: 135px;
+    height: 46px;
+
+    padding: 0 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background: #f3f8ff;
+    color: #0021af;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-decoration: none;
+  }
+
+  /* =========================
+     INDUSTRIES
+  ========================= */
+
+  .kk-industries-dropdown {
+    width:
+      min(
+        720px,
+        calc(100vw - 28px)
+      );
+  }
+
+  .kk-industries-grid {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+
+    column-gap: 28px;
+    row-gap: 17px;
+  }
+
+  /* =========================
+     PORTFOLIO
+  ========================= */
+
+  .kk-portfolio-dropdown {
+    width:
+      min(
+        820px,
+        calc(100vw - 28px)
+      );
+  }
+
+  .kk-portfolio-list {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    gap: 18px 22px;
+  }
+
+  .kk-portfolio-row {
+    display: grid;
+
+    grid-template-columns:
+      88px
+      minmax(0, 1fr);
+
+    gap: 12px;
+
+    align-items: center;
+
+    min-width: 0;
+  }
+
+  .kk-portfolio-placeholder {
+    width: 88px;
+    height: 66px;
+
+    border-radius: 10px;
+
+    border:
+      1px solid
+      rgba(14, 14, 14, 0.08);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+  }
+
+  .kk-portfolio-logo {
+    max-width: 78%;
+    max-height: 68%;
+
+    object-fit: contain;
+  }
+
+  /* =========================
+     RESOURCES
+  ========================= */
+
+  .kk-resources-dropdown {
+    width:
+      min(
+        840px,
+        calc(100vw - 28px)
+      );
+
+    padding: 20px 24px;
+  }
+
+  .kk-resource-header {
+    margin: 0 0 16px;
+
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 500;
+  }
+
+  .kk-resources-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .kk-resource-row {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      230px
+      minmax(0, 1fr);
+
+    column-gap: 20px;
+
+    align-items: start;
+  }
+
+  .kk-resource-image {
+    width: 230px;
+    height: 112px;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: #e9eef6;
+  }
+
+  .kk-resource-link {
+    width: 100%;
+
+    margin-top: 4px;
+
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+}
+
+        /* =====================================================
+           MOBILE (<=767px)
+        ===================================================== */
         @media (max-width: 767px) {
           .kk-header-inner {
             width: 100%;
@@ -1205,6 +1781,7 @@ const renderResourcesDropdown = () => (
             justify-content: center;
             flex-direction: column;
             gap: 5px;
+            flex-shrink: 0;
           }
 
           .kk-menu-button span {
@@ -1235,16 +1812,17 @@ const renderResourcesDropdown = () => (
             max-height: calc(100vh - 74px);
             opacity: 1;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
           }
 
           .kk-mobile-nav {
             width: 100%;
             display: flex;
             flex-direction: column;
-            padding: 10px 20px 24px;
+            padding: 10px 20px 32px;
           }
 
-          .kk-mobile-dropdown-wrap { width: 100%; }
+          .kk-mobile-dropdown-wrap { width: 100%; min-width: 0; }
 
           .kk-mobile-top-row {
             width: 100%;
@@ -1255,23 +1833,61 @@ const renderResourcesDropdown = () => (
           }
 
           .kk-mobile-link {
-            width: 100%;
-            min-height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #0e0e0e;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 1;
-            text-decoration: none;
-            border: 0;
-            background: transparent;
-            text-align: left;
-            cursor: pointer;
-          }
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-          .kk-mobile-primary-link { padding: 0; }
+  color: #0e0e0e;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kk-mobile-link:focus,
+.kk-mobile-link:focus-visible,
+.kk-mobile-primary-link:focus,
+.kk-mobile-primary-link:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+     .kk-mobile-primary-link {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+
+  color: #0e0e0e;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: left;
+
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+ 
 
           .kk-mobile-expand {
             width: 44px;
@@ -1282,8 +1898,19 @@ const renderResourcesDropdown = () => (
             border: 0;
             background: transparent;
             cursor: pointer;
+            flex-shrink: 0;
           }
 
+          .kk-mobile-expand .kk-chevron { transition: transform 0.25s ease; }
+          .kk-mobile-expand.is-open .kk-chevron { transform: translateY(1px) scaleX(0.9) rotate(180deg); }
+
+          /*
+            Collapse animation: the animated element (.kk-mobile-submenu)
+            has exactly ONE child (.kk-mobile-submenu-inner), which is
+            what lets grid-template-rows: 0fr -> 1fr actually shrink the
+            row to zero height when closed. min-height: 0 on the inner
+            wrapper is required so it can shrink below its content size.
+          */
           .kk-mobile-submenu {
             display: grid;
             grid-template-rows: 0fr;
@@ -1293,6 +1920,13 @@ const renderResourcesDropdown = () => (
           }
 
           .kk-mobile-submenu.is-open { grid-template-rows: 1fr; opacity: 1; }
+
+          .kk-mobile-submenu-inner {
+            min-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+          }
 
           .kk-mobile-sublink {
             min-height: 45px;
@@ -1309,6 +1943,105 @@ const renderResourcesDropdown = () => (
           .kk-mobile-sublink.kk-disabled-link {
             cursor: default;
             pointer-events: none;
+          }
+
+          /* Services column groups inside the mobile submenu */
+          .kk-mobile-sub-group {
+            display: flex;
+            flex-direction: column;
+          }
+
+          .kk-mobile-sub-group:first-child { margin-top: 6px; }
+
+          .kk-mobile-sub-heading {
+            display: block;
+            padding: 14px 6px 6px;
+            color: #0021af;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+            text-decoration: none;
+          }
+
+          .kk-mobile-sub-heading.kk-disabled-link { color: #0021af; }
+
+          /* Portfolio items — small logo tile + label, matches the
+             desktop tinted-tile treatment scaled for mobile width. */
+          .kk-mobile-portfolio-item {
+            width: 100%;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 66px;
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(14, 14, 14, 0.05);
+            color: #0e0e0e;
+            text-decoration: none;
+          }
+
+          .kk-mobile-portfolio-thumb {
+            width: 60px;
+            height: 50px;
+            flex: 0 0 60px;
+            border-radius: 10px;
+            border: 1px solid rgba(14, 14, 14, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+          }
+
+          .kk-mobile-portfolio-thumb img {
+            max-width: 78%;
+            max-height: 68%;
+            object-fit: contain;
+          }
+
+          .kk-mobile-portfolio-label {
+            min-width: 0;
+            font-size: 13.5px;
+            line-height: 1.4;
+            font-weight: 500;
+          }
+
+          /* Resource items — image on top (full width, real aspect
+             ratio so it never gets squashed), label below. */
+          .kk-mobile-resource-item {
+            width: 100%;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 14px 6px;
+            border-bottom: 1px solid rgba(14, 14, 14, 0.05);
+            color: #0e0e0e;
+            text-decoration: none;
+          }
+
+          .kk-mobile-resource-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #e9eef6;
+          }
+
+          .kk-mobile-resource-image img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+            user-select: none;
+            pointer-events: none;
+            -webkit-user-drag: none;
+          }
+
+          .kk-mobile-resource-label {
+            font-size: 15px;
+            line-height: 1.45;
+            font-weight: 500;
           }
 
           .kk-mobile-book-link {
@@ -1358,8 +2091,9 @@ const renderResourcesDropdown = () => (
           .kk-logo { width: 135px; height: 42px; max-width: 135px; max-height: 42px; }
           .kk-menu-button { width: 42px; height: 42px; min-width: 42px; min-height: 42px; }
           .kk-mobile-menu.is-open { max-height: calc(100vh - 68px); }
-          .kk-mobile-nav { padding: 8px 16px 20px; }
+          .kk-mobile-nav { padding: 8px 16px 24px; }
           .kk-mobile-link { min-height: 50px; font-size: 15px; }
+          .kk-mobile-resource-label { font-size: 14px; }
         }
 
         /* TOUCH */
@@ -1370,7 +2104,7 @@ const renderResourcesDropdown = () => (
 
         /* REDUCED MOTION */
         @media (prefers-reduced-motion: reduce) {
-          .kk-mobile-menu, .kk-menu-button span, .kk-nav-link, .kk-contact-button, .kk-mobile-submenu, .kk-desktop-dropdown-holder {
+          .kk-mobile-menu, .kk-menu-button span, .kk-nav-link, .kk-contact-button, .kk-mobile-submenu, .kk-desktop-dropdown-holder, .kk-mobile-expand .kk-chevron {
             transition: none !important;
           }
         }

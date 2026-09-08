@@ -1,13 +1,11 @@
 "use client";
 
 import {
+  useCallback,
+  useEffect,
   useRef,
   useState,
-  useEffect,
-  useCallback,
 } from "react";
-
-
 
 /* =========================================================
    DATA
@@ -16,212 +14,377 @@ import {
 const TESTIMONIAL_TEXT =
   "I've worked with agencies on three continents. Kontent Kraft is the first partner where I genuinely felt they cared about our outcome not just their invoice. They delivered everything on time, on budget, and the product our investors actually got excited about.";
 
-const testimonials = Array.from({
-  length: 10,
-}).map((_, i) => ({
+const testimonials = Array.from({ length: 10 }).map((_, i) => ({
   id: i + 1,
   image: `/home/testimonals/${(i % 2) + 1}.png`,
   name: "SARAH M.",
   role: "CPO, EDTECH PLATFORM · UK",
 }));
 
+/* =========================================================
+   DRAG HINT
+========================================================= */
+
+function DragHint() {
+  return (
+    <div
+      className="ts-drag-hint"
+      aria-hidden="true"
+    >
+      <span className="ts-drag-arrow ts-drag-arrow-left">
+        <span />
+      </span>
+
+      <span className="ts-drag-text">
+        DRAG
+      </span>
+
+      <span className="ts-drag-arrow ts-drag-arrow-right">
+        <span />
+      </span>
+    </div>
+  );
+}
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
+
 export default function TestimonialsSection({
   showLabel = true,
 }) {
-
-  /* =========================================================
-     CURRENT PATH
-  ========================================================= */
-
-
-
-  /* =========================================================
-     TRACK
-  ========================================================= */
-
   const trackRef = useRef(null);
 
-  /* =========================================================
-     DRAG STATE
-  ========================================================= */
+  /* =======================================================
+     POINTER / DRAG STATE
+  ======================================================= */
 
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const startScroll = useRef(0);
+  const pointerState = useRef({
+    active: false,
+    pointerId: null,
+    startX: 0,
+    startScrollLeft: 0,
+    moved: false,
+    pointerType: "",
+  });
 
-  const [dragging, setDragging] =
+  const hideHintTimer = useRef(null);
+
+  const [dragging, setDragging] = useState(false);
+  const [dragHintVisible, setDragHintVisible] =
     useState(false);
 
-  /* =========================================================
-     POINTER DOWN
-  ========================================================= */
+  /* =======================================================
+     HINT HELPERS
+  ======================================================= */
 
-  const onPointerDown = useCallback((e) => {
-    const track = trackRef.current;
-
-    if (!track) return;
-
-    isDragging.current = true;
-
-    setDragging(true);
-
-    startX.current =
-      e.clientX ??
-      (e.touches &&
-        e.touches[0]?.clientX) ??
-      0;
-
-    startScroll.current =
-      track.scrollLeft;
-
-    if (
-      track.setPointerCapture &&
-      e.pointerId != null
-    ) {
-      track.setPointerCapture(
-        e.pointerId
-      );
+  const clearHintTimer = useCallback(() => {
+    if (hideHintTimer.current !== null) {
+      window.clearTimeout(hideHintTimer.current);
+      hideHintTimer.current = null;
     }
   }, []);
 
-  /* =========================================================
-     POINTER MOVE
-  ========================================================= */
+  const showDragHint = useCallback(() => {
+    clearHintTimer();
+    setDragHintVisible(true);
+  }, [clearHintTimer]);
 
-  const onPointerMove = useCallback((e) => {
-    if (!isDragging.current) return;
+  const hideDragHint = useCallback(
+    (delay = 0) => {
+      clearHintTimer();
 
-    const track = trackRef.current;
+      if (delay <= 0) {
+        setDragHintVisible(false);
+        return;
+      }
 
-    if (!track) return;
-
-    const x =
-      e.clientX ??
-      (e.touches &&
-        e.touches[0]?.clientX) ??
-      0;
-
-    const delta =
-      x - startX.current;
-
-    track.scrollLeft =
-      startScroll.current -
-      delta;
-  }, []);
-
-  /* =========================================================
-     POINTER UP
-  ========================================================= */
-
-  const onPointerUp = useCallback(() => {
-    isDragging.current = false;
-
-    setDragging(false);
-  }, []);
-
-  /* =========================================================
-     EVENTS
-  ========================================================= */
+      hideHintTimer.current = window.setTimeout(() => {
+        setDragHintVisible(false);
+        hideHintTimer.current = null;
+      }, delay);
+    },
+    [clearHintTimer]
+  );
 
   useEffect(() => {
-    window.addEventListener(
-      "mousemove",
-      onPointerMove
-    );
-
-    window.addEventListener(
-      "mouseup",
-      onPointerUp
-    );
-
-    window.addEventListener(
-      "touchmove",
-      onPointerMove,
-      { passive: true }
-    );
-
-    window.addEventListener(
-      "touchend",
-      onPointerUp
-    );
-
     return () => {
-      window.removeEventListener(
-        "mousemove",
-        onPointerMove
-      );
-
-      window.removeEventListener(
-        "mouseup",
-        onPointerUp
-      );
-
-      window.removeEventListener(
-        "touchmove",
-        onPointerMove
-      );
-
-      window.removeEventListener(
-        "touchend",
-        onPointerUp
-      );
+      clearHintTimer();
     };
-  }, [
-    onPointerMove,
-    onPointerUp,
-  ]);
+  }, [clearHintTimer]);
 
-  /* =========================================================
-     HIDE ON ALL NON-HOME PAGES
-     
-     HOME = /
-  ========================================================= */
+  /* =======================================================
+     POINTER ENTER
+     Desktop hover → show hint
+  ======================================================= */
 
+  const onPointerEnter = useCallback(
+    (event) => {
+      if (event.pointerType === "mouse") {
+        showDragHint();
+      }
+    },
+    [showDragHint]
+  );
 
+  /* =======================================================
+     POINTER LEAVE
+  ======================================================= */
+
+  const onPointerLeave = useCallback(
+    (event) => {
+      if (event.pointerType === "mouse") {
+        const state = pointerState.current;
+
+        if (!state.active) {
+          hideDragHint(0);
+        }
+      }
+    },
+    [hideDragHint]
+  );
+
+  /* =======================================================
+     POINTER DOWN
+  ======================================================= */
+
+  const onPointerDown = useCallback(
+    (event) => {
+      const track = trackRef.current;
+
+      if (!track) return;
+
+      /* Only primary mouse button */
+      if (
+        event.pointerType === "mouse" &&
+        event.button !== 0
+      ) {
+        return;
+      }
+
+      clearHintTimer();
+
+      /*
+        Show hint immediately for touch.
+        For mouse it is already visible on hover.
+      */
+      setDragHintVisible(true);
+
+      pointerState.current = {
+        active: true,
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startScrollLeft: track.scrollLeft,
+        moved: false,
+        pointerType: event.pointerType,
+      };
+
+      setDragging(false);
+
+      try {
+        track.setPointerCapture(event.pointerId);
+      } catch {
+        /* Safe fallback */
+      }
+    },
+    [clearHintTimer]
+  );
+
+  /* =======================================================
+     POINTER MOVE
+  ======================================================= */
+
+  const onPointerMove = useCallback(
+    (event) => {
+      const track = trackRef.current;
+      const state = pointerState.current;
+
+      if (!track || !state.active) return;
+
+      const deltaX =
+        event.clientX - state.startX;
+
+      /*
+        Small movement = ignore.
+        This prevents accidental movement from tiny
+        finger/mouse changes.
+      */
+      if (Math.abs(deltaX) > 6) {
+        state.moved = true;
+        setDragging(true);
+        setDragHintVisible(true);
+      }
+
+      if (!state.moved) return;
+
+      track.scrollLeft =
+        state.startScrollLeft - deltaX;
+
+      /*
+        Stop native selection while dragging.
+      */
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+    },
+    []
+  );
+
+  /* =======================================================
+     POINTER UP
+  ======================================================= */
+
+  const onPointerUp = useCallback(
+    () => {
+      const track = trackRef.current;
+      const state = pointerState.current;
+
+      if (!state.active) return;
+
+      if (
+        track &&
+        state.pointerId !== null &&
+        track.hasPointerCapture?.(
+          state.pointerId
+        )
+      ) {
+        try {
+          track.releasePointerCapture(
+            state.pointerId
+          );
+        } catch {
+          /* Safe fallback */
+        }
+      }
+
+      const wasTouch =
+        state.pointerType === "touch" ||
+        state.pointerType === "pen";
+
+      const hadDragged =
+        state.moved;
+
+      pointerState.current = {
+        active: false,
+        pointerId: null,
+        startX: 0,
+        startScrollLeft:
+          track?.scrollLeft ?? 0,
+        moved: false,
+        pointerType: "",
+      };
+
+      setDragging(false);
+
+      /*
+        Touch/pen:
+        Keep hint visible briefly so user sees
+        the drag instruction, then hide it.
+      */
+      if (wasTouch) {
+        hideDragHint(
+          hadDragged ? 850 : 1000
+        );
+      }
+    },
+    [hideDragHint]
+  );
+
+  /* =======================================================
+     POINTER CANCEL
+  ======================================================= */
+
+  const onPointerCancel = useCallback(() => {
+    pointerState.current = {
+      active: false,
+      pointerId: null,
+      startX: 0,
+      startScrollLeft:
+        trackRef.current?.scrollLeft ?? 0,
+      moved: false,
+      pointerType: "",
+    };
+
+    setDragging(false);
+
+    hideDragHint(700);
+  }, [hideDragHint]);
+
+  /* =======================================================
+     RENDER
+  ======================================================= */
 
   return (
     <section className="ts-section">
-      {/* =====================================================
+
+      {/* ===================================================
           HEADER
-      ===================================================== */}
+      =================================================== */}
 
       <div className="ts-header">
-       {showLabel && (
-  <span className="ts-eyebrow">
-    TESTIMONIALS
-  </span>
-)}
+        {showLabel && (
+          <span className="ts-eyebrow">
+            TESTIMONIALS
+          </span>
+        )}
 
         <h2 className="ts-heading">
           100 companies, We&apos;ll let them talk
         </h2>
       </div>
 
-      {/* =====================================================
+      {/* ===================================================
           CAROUSEL
-      ===================================================== */}
+      =================================================== */}
 
       <div className="ts-carousel-wrap">
+
+        {/* DRAG HINT */}
+
         <div
+          className={`ts-drag-hint-layer ${
+            dragHintVisible
+              ? "is-visible"
+              : ""
+          } ${
+            dragging
+              ? "is-dragging"
+              : ""
+          }`}
+          aria-hidden="true"
+        >
+          <DragHint />
+        </div>
+
+        {/* TRACK */}
+
+        <div
+          ref={trackRef}
           className={`ts-track ${
             dragging
               ? "ts-track--dragging"
               : ""
           }`}
-          ref={trackRef}
-          onMouseDown={onPointerDown}
-          onTouchStart={onPointerDown}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerCancel}
         >
+
           {testimonials.map((t) => (
             <article
               className="ts-card"
               key={t.id}
             >
-              {/* ==========================================
-                  LEFT SIDE
-              =========================================== */}
+
+              {/* =========================================
+                  LEFT
+              ========================================= */}
 
               <div className="ts-card-left">
+
                 {/* IMAGE */}
 
                 <div className="ts-card-img">
@@ -232,10 +395,10 @@ export default function TestimonialsSection({
                   />
                 </div>
 
-                {/* NAME + LOCATION
-                    ONLY BELOW IMAGE */}
+                {/* NAME */}
 
                 <div className="ts-card-name-wrap">
+
                   <p className="ts-card-name">
                     {t.name}
                   </p>
@@ -243,14 +406,16 @@ export default function TestimonialsSection({
                   <p className="ts-card-role">
                     {t.role}
                   </p>
+
                 </div>
               </div>
 
-              {/* ==========================================
-                  RIGHT SIDE DESCRIPTION
-              =========================================== */}
+              {/* =========================================
+                  RIGHT
+              ========================================= */}
 
               <div className="ts-card-body">
+
                 <p className="ts-card-text">
                   I&apos;ve worked with agencies
                   on three continents.{" "}
@@ -265,17 +430,21 @@ export default function TestimonialsSection({
                   product our investors actually
                   got excited about.
                 </p>
+
               </div>
+
             </article>
           ))}
+
         </div>
       </div>
 
-      {/* =====================================================
+      {/* ===================================================
           CTA
-      ===================================================== */}
+      =================================================== */}
 
       <div className="ts-cta-wrap">
+
         <button
           type="button"
           className="ts-cta"
@@ -286,9 +455,11 @@ export default function TestimonialsSection({
             ▲
           </span>
         </button>
+
       </div>
 
       <style>{`
+
         /* =========================================================
            SECTION
         ========================================================= */
@@ -298,10 +469,10 @@ export default function TestimonialsSection({
 
           background: #F3F8FF;
 
-         padding:
-  clamp(32px, 5vw, 70px)
-  0
-  clamp(56px, 8vw, 88px);
+          padding:
+            clamp(32px, 5vw, 70px)
+            0
+            clamp(56px, 8vw, 88px);
 
           font-family:
             "Britti Sans Trial",
@@ -317,16 +488,19 @@ export default function TestimonialsSection({
           box-sizing: border-box;
         }
 
-        .ts-section * {
+        .ts-section *,
+        .ts-section *::before,
+        .ts-section *::after {
           box-sizing: border-box;
         }
+
 
         /* =========================================================
            HEADER
         ========================================================= */
 
         .ts-header {
-          text-align: center;
+          width: 100%;
 
           padding:
             0 20px;
@@ -337,25 +511,35 @@ export default function TestimonialsSection({
               4vw,
               44px
             );
+
+          text-align: center;
         }
 
         .ts-eyebrow {
           display: inline-block;
 
-          font-size: 14px;
+          margin-bottom:
+            14px;
 
-          font-weight: 400;
+          font-size:
+            14px;
+
+          font-weight:
+            400;
+
+          line-height:
+            1;
 
           letter-spacing:
             0.14em;
 
-          color: #0E0E0E;
-
-          margin-bottom:
-            14px;
+          color:
+            #0E0E0E;
         }
 
         .ts-heading {
+          margin: 0;
+
           font-family:
             "Britti Sans Trial",
             Arial,
@@ -369,11 +553,11 @@ export default function TestimonialsSection({
               40px
             );
 
-          font-weight: 800;
+          font-weight:
+            800;
 
-          line-height: 1.15;
-
-          margin: 0;
+          line-height:
+            1.15;
 
           letter-spacing:
             -0.01em;
@@ -382,34 +566,32 @@ export default function TestimonialsSection({
             #0E0E0E;
         }
 
+
         /* =========================================================
-           CAROUSEL
+           CAROUSEL WRAPPER
         ========================================================= */
 
         .ts-carousel-wrap {
-          position:
-            relative;
+          position: relative;
 
           width: 100%;
         }
 
+
+        /* =========================================================
+           TRACK
+        ========================================================= */
+
         .ts-track {
+          width: 100%;
+
           display: flex;
 
-          gap: 24px;
+          gap:
+            24px;
 
           overflow-x: auto;
-
           overflow-y: hidden;
-
-          scroll-behavior:
-            smooth;
-
-          -webkit-overflow-scrolling:
-            touch;
-
-          scrollbar-width:
-            none;
 
           padding:
             8px
@@ -420,16 +602,32 @@ export default function TestimonialsSection({
             )
             20px;
 
+          scrollbar-width: none;
+
+          -webkit-overflow-scrolling: touch;
+
+          scroll-behavior:
+            smooth;
+
           cursor:
             grab;
 
           user-select:
             none;
+
+          /*
+            Allow vertical scrolling on mobile while
+            keeping our horizontal drag interaction.
+          */
+          touch-action:
+            pan-y;
+
+          overscroll-behavior-x:
+            contain;
         }
 
         .ts-track::-webkit-scrollbar {
-          display:
-            none;
+          display: none;
         }
 
         .ts-track--dragging {
@@ -439,6 +637,230 @@ export default function TestimonialsSection({
           scroll-behavior:
             auto;
         }
+
+
+        /* =========================================================
+           DRAG HINT LAYER
+           
+           Hidden by default.
+           Appears only on hover / touch.
+        ========================================================= */
+
+        .ts-drag-hint-layer {
+          position: absolute;
+
+          /*
+            Center of visible carousel area.
+            Because pointer-events are disabled,
+            it never blocks dragging.
+          */
+          left:
+            50%;
+
+          top:
+            50%;
+
+          z-index:
+            20;
+
+          pointer-events:
+            none;
+
+          opacity:
+            0;
+
+          visibility:
+            hidden;
+
+          transform:
+            translate(
+              -50%,
+              -50%
+            )
+            scale(
+              0.88
+            );
+
+          transition:
+            opacity
+            0.2s ease,
+            transform
+            0.25s
+            cubic-bezier(
+              0.22,
+              1,
+              0.36,
+              1
+            ),
+            visibility
+            0.2s ease;
+        }
+
+        .ts-drag-hint-layer.is-visible {
+          opacity:
+            1;
+
+          visibility:
+            visible;
+
+          transform:
+            translate(
+              -50%,
+              -50%
+            )
+            scale(
+              1
+            );
+        }
+
+        .ts-drag-hint-layer.is-dragging {
+          transform:
+            translate(
+              -50%,
+              -50%
+            )
+            scale(
+              1.03
+            );
+        }
+
+
+        /* =========================================================
+           DRAG HINT CIRCLE
+        ========================================================= */
+
+        .ts-drag-hint {
+          width:
+            96px;
+
+          height:
+            96px;
+
+          border-radius:
+            50%;
+
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          gap:
+            7px;
+
+          padding:
+            0 10px;
+
+          background:
+            linear-gradient(
+              135deg,
+              #0180FD 0%,
+              #0021AF 100%
+            );
+
+          color:
+            #FFFFFF;
+
+          box-shadow:
+            0 14px 38px
+            rgba(
+              0,
+              33,
+              175,
+              0.24
+            );
+        }
+
+
+        /* =========================================================
+           DRAG TEXT
+        ========================================================= */
+
+        .ts-drag-text {
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          font-size:
+            12px;
+
+          line-height:
+            1;
+
+          font-weight:
+            600;
+
+          letter-spacing:
+            0.01em;
+
+          white-space:
+            nowrap;
+        }
+
+
+        /* =========================================================
+           DRAG ARROWS
+        ========================================================= */
+
+        .ts-drag-arrow {
+          width:
+            9px;
+
+          height:
+            12px;
+
+          display:
+            inline-flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          flex:
+            0 0 9px;
+        }
+
+        .ts-drag-arrow span {
+          display:
+            block;
+
+          width:
+            0;
+
+          height:
+            0;
+
+          border-top:
+            4px solid
+            transparent;
+
+          border-bottom:
+            4px solid
+            transparent;
+        }
+
+        .ts-drag-arrow-left span {
+          border-right:
+            5px solid
+            #FFFFFF;
+        }
+
+        .ts-drag-arrow-right span {
+          border-left:
+            5px solid
+            #FFFFFF;
+        }
+
 
         /* =========================================================
            CARD
@@ -455,6 +877,9 @@ export default function TestimonialsSection({
               386px
             );
 
+          min-width:
+            0;
+
           display:
             flex;
 
@@ -465,6 +890,9 @@ export default function TestimonialsSection({
             flex-start;
 
           gap:
+            18px;
+
+          padding:
             18px;
 
           background:
@@ -482,15 +910,13 @@ export default function TestimonialsSection({
           border-radius:
             16px;
 
-          padding:
-            18px;
-
           scroll-snap-align:
             start;
 
           box-sizing:
             border-box;
         }
+
 
         /* =========================================================
            LEFT COLUMN
@@ -519,6 +945,7 @@ export default function TestimonialsSection({
             flex-start;
         }
 
+
         /* =========================================================
            IMAGE
         ========================================================= */
@@ -540,10 +967,13 @@ export default function TestimonialsSection({
             hidden;
 
           background:
-            #e9edf5;
+            #E9EDF5;
         }
 
         .ts-card-img img {
+          display:
+            block;
+
           width:
             100%;
 
@@ -553,19 +983,19 @@ export default function TestimonialsSection({
           object-fit:
             cover;
 
-          display:
-            block;
-
           pointer-events:
             none;
 
           user-select:
             none;
+
+          -webkit-user-drag:
+            none;
         }
 
+
         /* =========================================================
-           NAME + LOCATION
-           UNDER IMAGE ONLY
+           NAME + ROLE
         ========================================================= */
 
         .ts-card-name-wrap {
@@ -582,9 +1012,6 @@ export default function TestimonialsSection({
             column;
 
           align-items:
-            flex-start;
-
-          justify-content:
             flex-start;
 
           gap:
@@ -640,8 +1067,9 @@ export default function TestimonialsSection({
             uppercase;
         }
 
+
         /* =========================================================
-           RIGHT SIDE TESTIMONIAL
+           CARD BODY
         ========================================================= */
 
         .ts-card-body {
@@ -659,6 +1087,9 @@ export default function TestimonialsSection({
         }
 
         .ts-card-text {
+          margin:
+            0;
+
           font-size:
             14.5px;
 
@@ -667,15 +1098,13 @@ export default function TestimonialsSection({
 
           color:
             #0E0E0E;
-
-          margin:
-            0;
         }
 
         .ts-card-text strong {
           font-weight:
             700;
         }
+
 
         /* =========================================================
            CTA
@@ -704,6 +1133,9 @@ export default function TestimonialsSection({
             inline-flex;
 
           align-items:
+            center;
+
+          justify-content:
             center;
 
           gap:
@@ -735,6 +1167,9 @@ export default function TestimonialsSection({
 
           font-weight:
             400;
+
+          line-height:
+            1;
 
           color:
             #0E0E0E;
@@ -786,18 +1221,168 @@ export default function TestimonialsSection({
             translateY(-2px);
         }
 
+
         /* =========================================================
            TABLET
         ========================================================= */
 
-        @media (max-width: 900px) {
+        @media (
+          min-width: 768px
+        ) and (
+          max-width: 1100px
+        ) {
+
+          .ts-track {
+            gap:
+              20px;
+
+            padding-left:
+              32px;
+
+            padding-right:
+              32px;
+          }
+
           .ts-card {
             width:
               clamp(
-                260px,
-                60vw,
-                320px
+                330px,
+                48vw,
+                390px
               );
+
+            padding:
+              17px;
+
+            gap:
+              17px;
+          }
+
+          .ts-card-left {
+            flex-basis:
+              92px;
+
+            width:
+              92px;
+
+            min-width:
+              92px;
+          }
+
+          .ts-card-img {
+            width:
+              92px;
+
+            height:
+              160px;
+          }
+
+          .ts-card-name {
+            font-size:
+              12px;
+          }
+
+          .ts-card-role {
+            font-size:
+              9.5px;
+          }
+
+          .ts-card-text {
+            font-size:
+              14px;
+
+            line-height:
+              1.55;
+          }
+
+          .ts-drag-hint {
+            width:
+              88px;
+
+            height:
+              88px;
+          }
+
+          .ts-drag-text {
+            font-size:
+              11px;
+          }
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (
+          max-width: 767px
+        ) {
+
+          .ts-section {
+            padding:
+              34px
+              0
+              58px;
+          }
+
+          .ts-header {
+            padding:
+              0 20px;
+
+            margin-bottom:
+              28px;
+          }
+
+          .ts-eyebrow {
+            margin-bottom:
+              12px;
+
+            font-size:
+              12px;
+
+            letter-spacing:
+              0.1em;
+          }
+
+          .ts-heading {
+            font-size:
+              26px;
+
+            line-height:
+              1.2;
+          }
+
+          .ts-track {
+            gap:
+              16px;
+
+            padding:
+              6px
+              20px
+              18px;
+
+            scroll-snap-type:
+              x proximity;
+
+            touch-action:
+              pan-y;
+          }
+
+          .ts-card {
+            width:
+              min(
+                86vw,
+                360px
+              );
+
+            padding:
+              16px;
+
+            gap:
+              15px;
+
+            border-radius:
+              15px;
           }
 
           .ts-card-left {
@@ -816,54 +1401,10 @@ export default function TestimonialsSection({
               88px;
 
             height:
-              156px;
-          }
-        }
+              154px;
 
-        /* =========================================================
-           MOBILE
-        ========================================================= */
-
-        @media (max-width: 768px) {
-          .ts-track {
-            gap:
-              16px;
-
-            scroll-snap-type:
-              x mandatory;
-          }
-
-          .ts-card {
-            width:
-              78vw;
-
-            padding:
-              14px;
-
-            gap:
-              14px;
-
-            flex-direction:
-              row;
-          }
-
-          .ts-card-left {
-            flex:
-              0 0 80px;
-
-            width:
-              80px;
-
-            min-width:
-              80px;
-          }
-
-          .ts-card-img {
-            width:
-              80px;
-
-            height:
-              140px;
+            border-radius:
+              9px;
           }
 
           .ts-card-name-wrap {
@@ -874,107 +1415,274 @@ export default function TestimonialsSection({
           .ts-card-name {
             font-size:
               12px;
+
+            line-height:
+              1.2;
           }
 
           .ts-card-role {
+            margin-top:
+              5px;
+
             font-size:
-              9px;
+              9.5px;
+
+            line-height:
+              1.35;
           }
 
           .ts-card-text {
             font-size:
-              13.5px;
+              14px;
+
+            line-height:
+              1.6;
+          }
+
+
+          /* ==============================================
+             MOBILE DRAG HINT
+          ============================================== */
+
+          .ts-drag-hint {
+            width:
+              88px;
+
+            height:
+              88px;
+
+            gap:
+              6px;
+
+            padding:
+              0 9px;
+          }
+
+          .ts-drag-text {
+            font-size:
+              11px;
+
+            font-weight:
+              600;
+          }
+
+          .ts-drag-arrow {
+            width:
+              8px;
+
+            height:
+              11px;
+
+            flex-basis:
+              8px;
+          }
+
+          .ts-drag-arrow span {
+            border-top-width:
+              4px;
+
+            border-bottom-width:
+              4px;
+          }
+
+
+          /* ==============================================
+             CTA
+          ============================================== */
+
+          .ts-cta-wrap {
+            margin-top:
+              34px;
+
+            padding:
+              0 20px;
+          }
+
+          .ts-cta {
+            width:
+              auto;
+
+            max-width:
+              100%;
+
+            padding:
+              13px 20px;
+
+            font-size:
+              13px;
           }
         }
+
 
         /* =========================================================
            SMALL MOBILE
         ========================================================= */
 
-        @media (max-width: 480px) {
+        @media (
+          max-width: 480px
+        ) {
+
+          .ts-section {
+            padding:
+              30px
+              0
+              52px;
+          }
+
           .ts-heading {
             font-size:
-              22px;
+              23px;
+          }
+
+          .ts-track {
+            gap:
+              14px;
+
+            padding-left:
+              16px;
+
+            padding-right:
+              16px;
           }
 
           .ts-card {
             width:
-              86vw;
+              calc(
+                100vw - 32px
+              );
 
-            flex-direction:
-              row;
+            max-width:
+              350px;
 
             padding:
               14px;
 
             gap:
-              12px;
+              13px;
           }
 
           .ts-card-left {
             flex:
-              0 0 76px;
+              0 0 82px;
 
             width:
-              76px;
+              82px;
 
             min-width:
-              76px;
+              82px;
           }
 
           .ts-card-img {
             width:
-              76px;
+              82px;
 
             height:
-              132px;
-          }
-
-          .ts-card-name-wrap {
-            margin-top:
-              9px;
+              145px;
           }
 
           .ts-card-name {
             font-size:
-              11px;
+              11.5px;
           }
 
           .ts-card-role {
             font-size:
-              8px;
-
-            line-height:
-              1.3;
+              9px;
           }
 
           .ts-card-text {
             font-size:
-              12px;
+              13px;
 
             line-height:
-              1.5;
+              1.58;
+          }
+
+
+          /* ==============================================
+             SMALL MOBILE DRAG HINT
+          ============================================== */
+
+          .ts-drag-hint {
+            width:
+              78px;
+
+            height:
+              78px;
+
+            gap:
+              5px;
+
+            padding:
+              0 8px;
+          }
+
+          .ts-drag-text {
+            font-size:
+              10px;
+          }
+
+          .ts-drag-arrow {
+            width:
+              7px;
+
+            height:
+              10px;
+
+            flex-basis:
+              7px;
+          }
+
+          .ts-drag-arrow span {
+            border-top-width:
+              3.5px;
+
+            border-bottom-width:
+              3.5px;
           }
 
           .ts-cta {
-            font-size:
-              13px;
+            width:
+              100%;
+
+            max-width:
+              300px;
 
             padding:
-              11px 20px;
+              12px 18px;
+
+            font-size:
+              12.5px;
           }
         }
 
+
         /* =========================================================
-           TOUCH
+           TOUCH DEVICES
         ========================================================= */
 
         @media (hover: none) {
+
           .ts-cta:hover {
             transform:
               none;
+
+            background:
+              transparent;
+
+            border-color:
+              rgba(
+                14,
+                14,
+                14,
+                0.35
+              );
+
+            color:
+              #0E0E0E;
           }
         }
+
 
         /* =========================================================
            REDUCED MOTION
@@ -983,12 +1691,19 @@ export default function TestimonialsSection({
         @media (
           prefers-reduced-motion: reduce
         ) {
-          .ts-card,
-          .ts-cta {
+
+          .ts-cta,
+          .ts-drag-hint-layer {
             transition:
               none;
           }
+
+          .ts-track {
+            scroll-behavior:
+              auto;
+          }
         }
+
       `}</style>
     </section>
   );

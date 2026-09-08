@@ -10,8 +10,12 @@ import { useEffect, useRef, useState } from "react";
 const SERVICES = [
   {
     title: "Web & Mobile Development",
+
+    anchor: "web-mobile-development",
+
     description:
       "At Kontent Kraft Digital, we build high-performance websites and mobile applications that combine exceptional user experiences with scalable engineering. From corporate websites and customer portals to enterprise web applications and cross-platform mobile apps, we create digital solutions designed to engage users, streamline operations, and accelerate business growth.",
+
     items: [
       "Website Design & Development",
       "Custom Web Application Development",
@@ -21,10 +25,15 @@ const SERVICES = [
       "Website Revamp & Modernization",
     ],
   },
+
   {
     title: "Custom Software Development",
+
+    anchor: "custom-software-development",
+
     description:
       "Every business has unique challenges that off-the-shelf software can't solve. We develop secure, scalable, and tailor-made software solutions that automate workflows, improve operational efficiency, and support long-term business growth.",
+
     items: [
       "Enterprise Software Development",
       "SaaS Product Development",
@@ -34,10 +43,15 @@ const SERVICES = [
       "Legacy Software Modernization",
     ],
   },
+
   {
     title: "AI & Machine Learning",
+
+    anchor: "ai-machine-learning",
+
     description:
       "Transform data into intelligent business decisions with AI-powered applications. We develop machine learning models, automation tools, and generative AI solutions that improve efficiency, enhance customer experiences, and unlock new opportunities for innovation.",
+
     items: [
       "Generative AI Solutions",
       "AI Chatbots & Virtual Assistants",
@@ -47,10 +61,15 @@ const SERVICES = [
       "AI Integration & Consulting",
     ],
   },
+
   {
     title: "Product Design (UI/UX)",
+
+    anchor: "product-design-ui-ux",
+
     description:
       "Great products begin with exceptional user experiences. Our design team combines user research, strategy, and modern design systems to create intuitive digital products that users love and businesses trust.",
+
     items: [
       "UX Research & Strategy",
       "User Journey Mapping",
@@ -60,10 +79,15 @@ const SERVICES = [
       "Usability Testing",
     ],
   },
+
   {
     title: "E-Commerce Solutions",
+
+    anchor: "e-commerce-solutions",
+
     description:
       "Build online shopping experiences that convert visitors into loyal customers. We develop scalable e-commerce platforms optimized for performance, customer engagement, and business growth.",
+
     items: [
       "Custom E-Commerce Development",
       "Shopify Development",
@@ -73,10 +97,15 @@ const SERVICES = [
       "E-Commerce Optimization",
     ],
   },
+
   {
     title: "Cloud & DevOps",
+
+    anchor: "cloud-devops",
+
     description:
       "Accelerate software delivery with secure cloud infrastructure and modern DevOps practices. We help businesses deploy, scale, and manage applications with greater speed, reliability, and security.",
+
     items: [
       "Cloud Infrastructure Setup",
       "AWS, Azure & Google Cloud",
@@ -86,10 +115,15 @@ const SERVICES = [
       "Cloud Migration",
     ],
   },
+
   {
     title: "Product Management",
+
+    anchor: "product-management",
+
     description:
       "From product strategy to successful delivery, we help businesses build products with clarity, focus, and measurable outcomes. Our product managers ensure every feature aligns with user needs and business objectives.",
+
     items: [
       "Product Discovery",
       "Product Roadmapping",
@@ -99,10 +133,15 @@ const SERVICES = [
       "Product Analytics",
     ],
   },
+
   {
     title: "Managed IT Services",
+
+    anchor: "managed-it-services",
+
     description:
       "Focus on growing your business while we manage your technology. Our proactive IT support ensures your infrastructure remains secure, reliable, and optimized around the clock.",
+
     items: [
       "IT Infrastructure Management",
       "Application Support",
@@ -112,10 +151,15 @@ const SERVICES = [
       "24/7 Technical Support",
     ],
   },
+
   {
     title: "Enterprise Applications",
+
+    anchor: "enterprise-applications",
+
     description:
       "We develop enterprise-grade applications that improve collaboration, streamline operations, and enable organizations to scale with confidence through secure and integrated digital ecosystems.",
+
     items: [
       "Enterprise Web Portals",
       "HRMS & ERP Systems",
@@ -125,10 +169,15 @@ const SERVICES = [
       "Enterprise System Integration",
     ],
   },
+
   {
     title: "Growth Engineering",
+
+    anchor: "growth-engineering",
+
     description:
       "Growth isn't accidental—it's engineered. We combine technology, analytics, experimentation, and optimization to help businesses acquire customers, improve conversions, and maximize lifetime value.",
+
     items: [
       "Conversion Rate Optimization (CRO)",
       "Marketing Automation",
@@ -295,8 +344,12 @@ export default function ServicesPage() {
       <section className="services-list-section">
         <div className="services-container">
           <div className="services-list">
-            {SERVICES.map((service, index) => (
-              <article className="service-row" key={service.title}>
+           {SERVICES.map((service, index) => (
+  <article
+    className="service-row"
+    key={service.title}
+    id={service.anchor}
+  >
                 <div className="service-content">
                   <h2 className="service-title">{service.title}</h2>
                   <p className="service-description">{service.description}</p>
@@ -542,6 +595,7 @@ export default function ServicesPage() {
           display: grid;
           grid-template-columns: minmax(0, 1fr) 1px minmax(0, 0.92fr);
           border-bottom: 1px solid #d7dfea;
+          scroll-margin-top: 100px;
         }
 
         .service-row:last-child {

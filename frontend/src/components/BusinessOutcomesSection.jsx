@@ -1,424 +1,600 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-/* =================================================
-   CONTENT
-================================================= */
+const content = {
+  heading: "We're in a Different Business Outcomes",
+  paragraph1:
+    "Every engagement we take begins with one question what does success actually look like for you? and ends only when we've delivered it.",
+  paragraph2:
+    "We've been doing this for 5 years, 100+ products, $5M+ raised by our clients. Tens of millions of users served. We don't have a template for your project. We have something better experience.",
+};
 
-const firstText =
-  "Every engagement we take begins with one question what does success actually look like for you? and ends only when we've delivered it.";
+function buildCharSpans(container, text) {
+  container.innerHTML = "";
+  text.split("").forEach((ch) => {
+    const span = document.createElement("span");
+    span.className = "bo-char";
+    span.dataset.char = ch;
+    span.textContent = ch;
+    container.appendChild(span);
+  });
+}
 
-const secondText =
-  "We've been doing this for 5 years, 100+ products, $5M+ raised by our clients. Tens of millions of users served. We don't have a template for your project. We have something better experience.";
+function typeReveal({ container, cursorEl, generationRef, myGeneration, typingSpeed, glitch, onDone }) {
+  const spans = Array.from(container.querySelectorAll(".bo-char"));
+  const total = spans.length;
 
-const firstWords = firstText.split(" ");
-const secondWords = secondText.split(" ");
+  if (total === 0) {
+    onDone && onDone();
+    return;
+  }
+
+  let completed = 0;
+
+  function finishChar() {
+    completed++;
+    if (completed === total) {
+      if (cursorEl && cursorEl.parentNode) cursorEl.parentNode.removeChild(cursorEl);
+      onDone && onDone();
+    }
+  }
+
+  spans.forEach((span, index) => {
+    const startDelay = index * typingSpeed;
+
+    setTimeout(() => {
+      if (generationRef.current !== myGeneration) return;
+
+      if (cursorEl) {
+        const next = spans[index + 1];
+        if (next) container.insertBefore(cursorEl, next);
+        else container.appendChild(cursorEl);
+      }
+
+      const finalChar = span.dataset.char;
+      span.classList.add("visible");
+
+      const shouldGlitch = glitch && finalChar !== " " && Math.random() < glitch.chance;
+
+      if (!shouldGlitch) {
+        span.textContent = finalChar;
+        finishChar();
+        return;
+      }
+
+      const cycles = Math.max(
+        1,
+        Math.round(
+          glitch.cycles +
+            (Math.random() * 2 - 1) * (glitch.cycleVariance || 0) * glitch.cycles
+        )
+      );
+      let cycle = 0;
+
+      function tickGlitch() {
+        if (generationRef.current !== myGeneration) return;
+
+        if (cycle >= cycles) {
+          span.textContent = finalChar;
+          finishChar();
+          return;
+        }
+
+        const progress = cycle / cycles;
+        const bias = progress + (Math.random() * 2 - 1) * (glitch.symbolsVariance || 0);
+        const pool = glitch.symbolsEnd && bias > 0.5 ? glitch.symbolsEnd : glitch.symbolsStart;
+        span.textContent = pool[Math.floor(Math.random() * pool.length)];
+        cycle++;
+        setTimeout(tickGlitch, glitch.interval);
+      }
+
+      tickGlitch();
+    }, startDelay);
+  });
+}
 
 export default function BusinessOutcomesSection() {
   const sectionRef = useRef(null);
-
-  const [isVisible, setIsVisible] = useState(false);
+  const headingRef = useRef(null);
+  const para1Ref = useRef(null);
+  const para2Ref = useRef(null);
+  const generationRef = useRef(0);
 
   useEffect(() => {
-    const section = sectionRef.current;
+  const section = sectionRef.current;
 
-    if (!section) return;
+  if (!section) return;
 
-    if (typeof IntersectionObserver === "undefined") {
-      setIsVisible(true);
-      return;
-    }
+  buildCharSpans(
+    headingRef.current,
+    content.heading
+  );
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      {
-        threshold: 0.28,
-        rootMargin: "0px 0px -80px 0px",
+  buildCharSpans(
+    para1Ref.current,
+    content.paragraph1
+  );
+
+  buildCharSpans(
+    para2Ref.current,
+    content.paragraph2
+  );
+
+  const prefersReducedMotion =
+    window.matchMedia &&
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+  /*
+   * ==========================================
+   * REDUCED MOTION
+   * ==========================================
+   */
+
+  if (prefersReducedMotion) {
+    [headingRef, para1Ref, para2Ref].forEach(
+      (ref) => {
+        if (!ref.current) return;
+
+        ref.current
+          .querySelectorAll(".bo-char")
+          .forEach((span) => {
+            span.classList.add("visible");
+          });
       }
     );
 
-    observer.observe(section);
+    return;
+  }
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  /*
+   * ==========================================
+   * CURSOR
+   * ==========================================
+   */
+
+  const cursor =
+    document.createElement("span");
+
+  cursor.className = "bo-caret";
+
+  /*
+   * ==========================================
+   * TIMERS
+   * ==========================================
+   */
+
+  const timers = [];
+
+  let destroyed = false;
+
+  /*
+   * ==========================================
+   * RESET
+   * ==========================================
+   */
+
+  function resetAll() {
+    generationRef.current++;
+
+    [
+      headingRef,
+      para1Ref,
+      para2Ref,
+    ].forEach((ref) => {
+      if (!ref.current) return;
+
+      ref.current
+        .querySelectorAll(".bo-char")
+        .forEach((span) => {
+          span.classList.remove(
+            "visible"
+          );
+
+          span.textContent =
+            span.dataset.char;
+        });
+    });
+
+    if (
+      cursor.parentNode
+    ) {
+      cursor.parentNode.removeChild(
+        cursor
+      );
+    }
+  }
+
+  /*
+   * ==========================================
+   * SEQUENCE
+   * ==========================================
+   */
+
+  function playSequence() {
+    if (destroyed) return;
+
+    /*
+     * New generation
+     */
+    generationRef.current++;
+
+    const myGen =
+      generationRef.current;
+
+    /*
+     * ----------------------------------------
+     * HEADING
+     * ----------------------------------------
+     */
+
+    typeReveal({
+      container: headingRef.current,
+      cursorEl: cursor,
+      generationRef,
+      myGeneration: myGen,
+      typingSpeed: 45,
+
+      onDone: () => {
+        if (destroyed) return;
+
+        /*
+         * Small pause after heading
+         */
+        const timer = setTimeout(() => {
+          if (destroyed) return;
+
+          /*
+           * ----------------------------------
+           * FIRST PARAGRAPH
+           * ----------------------------------
+           */
+
+          typeReveal({
+            container:
+              para1Ref.current,
+
+            cursorEl: cursor,
+
+            generationRef,
+            myGeneration: myGen,
+
+            typingSpeed: 16,
+
+            glitch: {
+              cycles: 10,
+              interval: 100,
+              chance: 1,
+
+              symbolsStart:
+                "■▇▆▅▄▃▃▁▉▊▌▍▎▏",
+
+              symbolsEnd:
+                null,
+            },
+
+            onDone: () => {
+              if (destroyed) return;
+
+              /*
+               * Small pause before second
+               * paragraph.
+               */
+
+              const timer2 =
+                setTimeout(() => {
+                  if (destroyed) return;
+
+                  /*
+                   * ------------------------
+                   * SECOND PARAGRAPH
+                   * ------------------------
+                   */
+
+                  typeReveal({
+                    container:
+                      para2Ref.current,
+
+                    cursorEl:
+                      cursor,
+
+                    generationRef,
+                    myGeneration:
+                      myGen,
+
+                    typingSpeed: 7,
+
+                    glitch: {
+                      cycles: 50,
+                      cycleVariance:
+                        0.4,
+
+                      interval: 50,
+                      chance: 0.99,
+
+                      symbolsStart:
+                        "-",
+
+                      symbolsEnd:
+                        "0123456789",
+
+                      symbolsVariance:
+                        0.5,
+                    },
+
+                    onDone: () => {
+                      if (
+                        destroyed
+                      ) {
+                        return;
+                      }
+
+                      /*
+                       * =================================
+                       * CONTENT COMPLETE
+                       * =================================
+                       *
+                       * Ab complete content user
+                       * padh sakta hai.
+                       */
+
+                      const readingTimer =
+                        setTimeout(
+                          () => {
+                            if (
+                              destroyed
+                            ) {
+                              return;
+                            }
+
+                            /*
+                             * Cursor hatao
+                             */
+                            if (
+                              cursor.parentNode
+                            ) {
+                              cursor.parentNode.removeChild(
+                                cursor
+                              );
+                            }
+
+                            /*
+                             * =================================
+                             * NEXT CYCLE
+                             * =================================
+                             *
+                             * Full animation dobara.
+                             */
+
+                            const nextCycle =
+                              setTimeout(
+                                () => {
+                                  if (
+                                    destroyed
+                                  ) {
+                                    return;
+                                  }
+
+                                  resetAll();
+
+                                  /*
+                                   * Small restart pause
+                                   */
+                                  const restartTimer =
+                                    setTimeout(
+                                      () => {
+                                        if (
+                                          destroyed
+                                        ) {
+                                          return;
+                                        }
+
+                                        playSequence();
+                                      },
+                                      350
+                                    );
+
+                                  timers.push(
+                                    restartTimer
+                                  );
+                                },
+                                10000
+                              );
+
+                            timers.push(
+                              nextCycle
+                            );
+                          },
+                          3500
+                        );
+
+                      timers.push(
+                        readingTimer
+                      );
+                    },
+                  });
+                }, 450);
+
+              timers.push(timer2);
+            },
+          });
+        }, 350);
+
+        timers.push(timer);
+      },
+    });
+  }
+
+  /*
+   * ==========================================
+   * PAGE LOAD
+   * ==========================================
+   *
+   * Page load ke baad automatically start.
+   * Section visible hona zaroori nahi.
+   */
+
+  const initialTimer =
+    setTimeout(() => {
+      if (!destroyed) {
+        resetAll();
+        playSequence();
+      }
+    }, 700);
+
+  timers.push(initialTimer);
+
+  /*
+   * ==========================================
+   * CLEANUP
+   * ==========================================
+   */
+
+  return () => {
+    destroyed = true;
+
+    generationRef.current++;
+
+    timers.forEach((timer) => {
+      clearTimeout(timer);
+    });
+
+    timers.length = 0;
+
+    if (
+      cursor.parentNode
+    ) {
+      cursor.parentNode.removeChild(
+        cursor
+      );
+    }
+  };
+}, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className={`business-outcomes-section ${
-        isVisible ? "is-visible" : ""
-      }`}
-    >
-      <div className="business-outcomes-inner">
-
-        {/* =========================================
-            HEADING
-        ========================================== */}
-
-        <h2 className="business-outcomes-title">
-          We&apos;re in a Different Business Outcomes
+    <section className="bo-section" ref={sectionRef}>
+      <div className="bo-inner">
+        <h2 className="bo-heading">
+          <span className="bo-visually-hidden">{content.heading}</span>
+          <span className="bo-chars" aria-hidden="true" ref={headingRef}></span>
         </h2>
 
-        {/* =========================================
-            FIRST PARAGRAPH
-            GRAY → BLACK
-        ========================================== */}
-
-        <p className="business-outcomes-main">
-          {firstWords.map((word, index) => (
-            <span
-              key={`first-${index}-${word}`}
-              className="business-outcomes-word"
-              style={{
-                "--word-delay": `${index * 75}ms`,
-              }}
-            >
-              {word}
-              {index < firstWords.length - 1 ? " " : ""}
-            </span>
-          ))}
+        <p className="bo-paragraph-primary">
+          <span className="bo-visually-hidden">{content.paragraph1}</span>
+          <span className="bo-chars" aria-hidden="true" ref={para1Ref}></span>
         </p>
 
-        {/* =========================================
-            SECOND PARAGRAPH
-            GRAY → BLACK
-        ========================================== */}
-
-        <p className="business-outcomes-reveal">
-          {secondWords.map((word, index) => {
-            const totalDelay =
-              firstWords.length * 75 +
-              250 +
-              index * 75;
-
-            return (
-              <span
-                key={`second-${index}-${word}`}
-                className="business-outcomes-word"
-                style={{
-                  "--word-delay": `${totalDelay}ms`,
-                }}
-              >
-                {word}
-                {index < secondWords.length - 1 ? " " : ""}
-              </span>
-            );
-          })}
+        <p className="bo-paragraph-secondary">
+          <span className="bo-visually-hidden">{content.paragraph2}</span>
+          <span className="bo-chars" aria-hidden="true" ref={para2Ref}></span>
         </p>
       </div>
 
       <style jsx>{`
-        /* =================================================
-           SECTION
-        ================================================= */
-
-        .business-outcomes-section {
-          width: 100%;
-          position: relative;
-          overflow: hidden;
-          box-sizing: border-box;
-
+        .bo-section {
           background: #f3f8ff;
-          color: #0e0e0e;
-
-          font-family:
-            "Britti Sans Trial",
-            Arial,
-            Helvetica,
-            sans-serif;
-
-          padding: 110px 32px 130px;
+          padding: 50px 24px;
+          width: 100%;
+          font-family: "Britti Sans Trial", sans-serif;
         }
 
-        /* =================================================
-           INNER
-        ================================================= */
-
-        .business-outcomes-inner {
-          width: 100%;
-          max-width: 1180px;
+        .bo-inner {
+          max-width: 980px;
           margin: 0 auto;
-
           text-align: center;
-          box-sizing: border-box;
         }
 
-        /* =================================================
-           HEADING
-        ================================================= */
-
-        .business-outcomes-title {
-          width: 100%;
-
-          margin: 0;
-
-          font-family:
-            "Britti Sans Trial",
-            Arial,
-            sans-serif;
-
-          font-size: 35px;
-          line-height: 1.12;
-
-          font-weight: 700;
-
-          letter-spacing: -0.045em;
-
+        .bo-heading {
+          font-family: "Britti Sans Trial", sans-serif;
+          font-weight: 800;
+          font-size: clamp(26px, 4.2vw, 42px);
+          line-height: 1.2;
           color: #0e0e0e;
+          margin: 0 0 28px 0;
+        }
 
+        .bo-paragraph-primary {
+          font-family: "Britti Sans Trial", sans-serif;
+          font-weight: 600;
+          font-size: clamp(16px, 2.1vw, 20px);
+          line-height: 1.6;
+          color: #0e0e0e;
+          margin: 0 0 20px 0;
+        }
+
+        .bo-paragraph-secondary {
+         font-family: "Britti Sans Trial", sans-serif;
+          font-weight: 600;
+          font-size: clamp(16px, 2.1vw, 20px);
+          line-height: 1.6;
+          color: #0e0e0e;
+          margin: 0 0 20px 0;
+        }
+
+        .bo-chars :global(.bo-char) {
           opacity: 0;
-
-          transform: translateY(25px);
-
-          transition:
-            opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-            transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-
-          box-sizing: border-box;
+          transition: opacity 0.18s ease-in;
         }
 
-        .business-outcomes-section.is-visible
-          .business-outcomes-title {
+        .bo-chars :global(.bo-char.visible) {
           opacity: 1;
-          transform: translateY(0);
         }
 
-        /* =================================================
-           FIRST PARAGRAPH
-        ================================================= */
-
-        .business-outcomes-main {
-          width: 100%;
-          max-width: 1080px;
-
-          margin: 48px auto 0;
-
-          font-family:
-            "Britti Sans Trial",
-            Arial,
-            sans-serif;
-
-          font-size: 23px;
-          line-height: 1.5;
-
-          font-weight: 600;
-
-          letter-spacing: -0.025em;
-
-          color: #c7ccd8;
-
-          box-sizing: border-box;
+        .bo-chars :global(.bo-caret) {
+          display: inline-block;
+          width: 0;
+          height: 1em;
+          vertical-align: bottom;
+          border-right: 0.12em solid currentColor;
+          margin-right: -0.12em;
+          animation: bo-blink-caret 0.75s step-end infinite;
         }
 
-        /* =================================================
-           SECOND PARAGRAPH
-        ================================================= */
-
-        .business-outcomes-reveal {
-          width: 100%;
-          max-width: 1100px;
-
-          margin: 12px auto 0;
-
-          font-family:
-            "Britti Sans Trial",
-            Arial,
-            sans-serif;
-
-          font-size: 23px;
-          line-height: 1.55;
-
-          font-weight: 600;
-
-          letter-spacing: -0.025em;
-
-          color: #c7ccd8;
-
-          box-sizing: border-box;
-        }
-
-        /* =================================================
-           WORD ANIMATION
-        ================================================= */
-
-        .business-outcomes-word {
-          display: inline;
-
-          color: #c7ccd8;
-
-          transition:
-            color 0.7s cubic-bezier(0.22, 1, 0.36, 1)
-            var(--word-delay);
-        }
-
-        .business-outcomes-section.is-visible
-          .business-outcomes-word {
-          color: #0e0e0e;
-        }
-
-        /* =================================================
-           LARGE DESKTOP
-        ================================================= */
-
-        @media (min-width: 1440px) {
-          .business-outcomes-section {
-            padding: 40px 32px 145px;
+        @keyframes bo-blink-caret {
+          from,
+          to {
+            opacity: 1;
           }
-
-          .business-outcomes-title {
-            font-size: 30px;
-          }
-
-          .business-outcomes-main {
-            max-width: 1000px;
-
-            margin-top: 48px;
-
-            font-size: 22px;
-          }
-
-          .business-outcomes-reveal {
-            max-width: 1000px;
-
-            font-size: 22px;
+          50% {
+            opacity: 0;
           }
         }
 
-        /* =================================================
-           TABLET
-        ================================================= */
+        .bo-visually-hidden {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
 
-        @media (max-width: 1024px) {
-          .business-outcomes-section {
-            padding: 80px 32px 110px;
-          }
-
-          .business-outcomes-title {
-            font-size: 30px;
-          }
-
-          .business-outcomes-main {
-            max-width: 900px;
-
-            margin-top: 42px;
-
-            font-size: 20px;
-            line-height: 1.5;
-          }
-
-          .business-outcomes-reveal {
-            max-width: 920px;
-
-            font-size: 20px;
-            line-height: 1.5;
+        @media (max-width: 900px) {
+          .bo-section {
+            padding: 64px 20px;
           }
         }
 
-        /* =================================================
-           MOBILE
-        ================================================= */
-
-        @media (max-width: 640px) {
-          .business-outcomes-section {
-            padding: 72px 20px 88px;
+        @media (max-width: 600px) {
+          .bo-section {
+            padding: 48px 16px;
           }
-
-          .business-outcomes-inner {
-            width: 100%;
-            max-width: none;
-          }
-
-          .business-outcomes-title {
-            font-size: 28px;
-
-            line-height: 1.12;
-
-            letter-spacing: -0.04em;
-          }
-
-          .business-outcomes-main {
-            width: 100%;
+          .bo-inner {
             max-width: 100%;
-
-            margin-top: 32px;
-
-            font-size: 17px;
-
-            line-height: 1.45;
-
-            letter-spacing: -0.02em;
-          }
-
-          .business-outcomes-reveal {
-            width: 100%;
-            max-width: 100%;
-
-            margin-top: 12px;
-
-            font-size: 17px;
-
-            line-height: 1.5;
-
-            letter-spacing: -0.02em;
-          }
-
-          .business-outcomes-word {
-            transition-duration: 0.6s;
           }
         }
-
-        /* =================================================
-           SMALL MOBILE
-        ================================================= */
 
         @media (max-width: 380px) {
-          .business-outcomes-section {
-            padding: 60px 20px 72px;
+          .bo-heading {
+            margin-bottom: 20px;
           }
-
-          .business-outcomes-title {
-            font-size: 25px;
-
-            line-height: 1.15;
-          }
-
-          .business-outcomes-main {
-            margin-top: 28px;
-
-            font-size: 15px;
-
-            line-height: 1.5;
-          }
-
-          .business-outcomes-reveal {
-            font-size: 15px;
-
-            line-height: 1.5;
-          }
-        }
-
-        /* =================================================
-           REDUCED MOTION
-        ================================================= */
-
-        @media (prefers-reduced-motion: reduce) {
-          .business-outcomes-title {
-            opacity: 1;
-            transform: none;
-            transition: none;
-          }
-
-          .business-outcomes-word {
-            color: #0e0e0e !important;
-            transition: none;
+          .bo-paragraph-primary {
+            margin-bottom: 16px;
           }
         }
       `}</style>
