@@ -1,14 +1,13 @@
 "use client";
-
-import { useEffect, useState } from "react";
-
 const FAQS = [
   {
     id: 1,
-    question: "How do we get started?",
+    question:
+      "How do we get started?",
     answer:
       "Schedule a free 60-minute strategy call. We listen, ask hard questions, and give you an honest assessment of whether and how we can help. No pitch deck. No commercial pressure. If there's mutual fit, we propose a paid discovery engagement to scope your project properly.",
   },
+
   {
     id: 2,
     question:
@@ -16,6 +15,7 @@ const FAQS = [
     answer:
       "Every engagement has a dedicated Project Manager and Lead Engineer as your primary contacts. The people we sold you on us are the people who deliver for you. No bait-and-switch. No juniors making $200K product decisions.",
   },
+
   {
     id: 3,
     question:
@@ -23,6 +23,7 @@ const FAQS = [
     answer:
       "100% - from day one. Every line of code, design file, database schema, and deployment configuration is yours. We transfer all repository access and assets at project completion (or any time you request it). No lock-in. No grey areas.",
   },
+
   {
     id: 4,
     question:
@@ -33,47 +34,12 @@ const FAQS = [
 ];
 
 export default function FAQSection() {
-  const [fontReady, setFontReady] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const waitForFonts = async () => {
-      try {
-        if (document.fonts?.ready) {
-          await document.fonts.ready;
-        }
-      } catch {
-        // Ignore font API errors and render normally.
-      }
-
-      if (mounted) {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            if (mounted) {
-              setFontReady(true);
-            }
-          });
-        });
-      }
-    };
-
-    waitForFonts();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
   return (
     <section
-      className={`faq-section ${
-        fontReady ? "faq-font-ready" : ""
-      }`}
-      aria-busy={!fontReady}
+      className="faq-section"
+      aria-labelledby="faq-heading"
     >
       <div className="faq-container">
-
         {/* =====================================================
             LEFT SIDE
         ===================================================== */}
@@ -83,7 +49,10 @@ export default function FAQSection() {
             FAQ&apos;s
           </div>
 
-          <h2 className="faq-heading">
+          <h2
+            id="faq-heading"
+            className="faq-heading"
+          >
             The Questions Everyone
             <br />
             Asks Anyway
@@ -140,19 +109,23 @@ export default function FAQSection() {
         </div>
       </div>
 
-      <style>{`
-
+      <style jsx>{`
         /* =========================================================
            SECTION
         ========================================================= */
 
         .faq-section {
-          width: 100%;
-          max-width: 100%;
+          width:
+            100%;
 
-          background: #F3F8FF;
+          max-width:
+            100%;
 
-          color: #0E0E0E;
+          background:
+            #F3F8FF;
+
+          color:
+            #0E0E0E;
 
           font-family:
             "Britti Sans Trial",
@@ -161,44 +134,33 @@ export default function FAQSection() {
             sans-serif;
 
           padding:
-            22px 62px 82px;
+            22px
+            62px
+            82px;
 
-          margin: 0;
+          margin:
+            0;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
 
-          overflow-x: hidden;
+          overflow-x:
+            hidden;
 
-          isolation: isolate;
+          isolation:
+            isolate;
 
-          /*
-            IMPORTANT:
-            Keep the section in the document flow
-            while the custom font is loading.
-
-            This prevents any outside content from
-            jumping vertically on refresh.
-          */
-
-          opacity: 0;
-
-          transition:
-            opacity 0.01s linear;
-        }
-
-        /*
-          Only opacity changes.
-          No width / height / padding / position change.
-        */
-
-        .faq-section.faq-font-ready {
-          opacity: 1;
+          position:
+            relative;
         }
 
         .faq-section *,
-        .faq-section *::before,
-        .faq-section *::after {
-          box-sizing: border-box;
+        .faq-section
+          *::before,
+        .faq-section
+          *::after {
+          box-sizing:
+            border-box;
         }
 
         /* =========================================================
@@ -206,13 +168,17 @@ export default function FAQSection() {
         ========================================================= */
 
         .faq-container {
-          width: 100%;
+          width:
+            100%;
 
-          max-width: 1400px;
+          max-width:
+            1400px;
 
-          margin: 0 auto;
+          margin:
+            0 auto;
 
-          display: grid;
+          display:
+            grid;
 
           grid-template-columns:
             minmax(
@@ -224,11 +190,17 @@ export default function FAQSection() {
               1.22fr
             );
 
-          column-gap: 95px;
+          column-gap:
+            95px;
 
-          align-items: start;
+          align-items:
+            start;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
+
+          min-width:
+            0;
         }
 
         /* =========================================================
@@ -236,22 +208,28 @@ export default function FAQSection() {
         ========================================================= */
 
         .faq-left {
-          width: 100%;
+          width:
+            100%;
 
-          min-width: 0;
+          min-width:
+            0;
 
-          padding: 0;
+          padding:
+            0;
 
-          margin: 0;
+          margin:
+            0;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
         }
 
         .faq-eyebrow {
           margin:
             0 0 30px;
 
-          padding: 0;
+          padding:
+            0;
 
           font-size:
             15px;
@@ -267,9 +245,11 @@ export default function FAQSection() {
         }
 
         .faq-heading {
-          margin: 0;
+          margin:
+            0;
 
-          padding: 0;
+          padding:
+            0;
 
           font-size:
             26px;
@@ -292,15 +272,20 @@ export default function FAQSection() {
         ========================================================= */
 
         .faq-right {
-          width: 100%;
+          width:
+            100%;
 
-          min-width: 0;
+          min-width:
+            0;
 
-          display: flex;
+          display:
+            flex;
 
-          flex-direction: column;
+          flex-direction:
+            column;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
         }
 
         /* =========================================================
@@ -308,11 +293,14 @@ export default function FAQSection() {
         ========================================================= */
 
         .faq-item {
-          width: 100%;
+          width:
+            100%;
 
-          min-width: 0;
+          min-width:
+            0;
 
-          margin: 0;
+          margin:
+            0;
 
           padding:
             0 0 18px;
@@ -338,7 +326,8 @@ export default function FAQSection() {
           margin:
             0 0 20px;
 
-          padding: 0;
+          padding:
+            0;
 
           font-size:
             17px;
@@ -361,13 +350,17 @@ export default function FAQSection() {
         ========================================================= */
 
         .faq-answer {
-          width: 100%;
+          width:
+            100%;
 
-          max-width: 100%;
+          max-width:
+            100%;
 
-          margin: 0;
+          margin:
+            0;
 
-          padding: 0;
+          padding:
+            0;
 
           font-size:
             14px;
@@ -380,6 +373,9 @@ export default function FAQSection() {
 
           color:
             #0E0E0E;
+
+          overflow-wrap:
+            break-word;
         }
 
         /* =========================================================
@@ -387,18 +383,23 @@ export default function FAQSection() {
         ========================================================= */
 
         .faq-button-wrap {
-          width: 100%;
+          width:
+            100%;
 
-          display: flex;
+          display:
+            flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          justify-content: flex-start;
+          justify-content:
+            flex-start;
 
           margin-top:
             34px;
 
-          padding: 0;
+          padding:
+            0;
 
           box-sizing:
             border-box;
@@ -494,6 +495,9 @@ export default function FAQSection() {
               0.25s ease,
             box-shadow
               0.25s ease;
+
+          will-change:
+            transform;
         }
 
         .faq-button svg {
@@ -545,6 +549,10 @@ export default function FAQSection() {
             );
         }
 
+        /* =========================================================
+           KEYBOARD FOCUS
+        ========================================================= */
+
         .faq-button:focus-visible {
           outline:
             2px solid
@@ -561,7 +569,9 @@ export default function FAQSection() {
         @media (max-width: 1100px) {
           .faq-section {
             padding:
-              24px 32px 70px;
+              24px
+              32px
+              70px;
           }
 
           .faq-container {
@@ -605,7 +615,9 @@ export default function FAQSection() {
               100%;
 
             padding:
-              44px 20px 60px;
+              44px
+              20px
+              60px;
           }
 
           .faq-container {
@@ -710,7 +722,9 @@ export default function FAQSection() {
         @media (max-width: 420px) {
           .faq-section {
             padding:
-              40px 20px 52px;
+              40px
+              20px
+              52px;
           }
 
           .faq-container {
@@ -780,19 +794,14 @@ export default function FAQSection() {
         ========================================================= */
 
         @media (
-          prefers-reduced-motion: reduce
+          prefers-reduced-motion:
+            reduce
         ) {
-          .faq-section {
-            transition:
-              none;
-          }
-
           .faq-button {
             transition:
               none;
           }
         }
-
       `}</style>
     </section>
   );

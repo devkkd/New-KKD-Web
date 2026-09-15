@@ -3,8 +3,13 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
+
+/* =========================================================
+   INITIAL FORM
+========================================================= */
 
 const initialForm = {
   fullName: "",
@@ -15,6 +20,10 @@ const initialForm = {
   city: "",
   details: "",
 };
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 export default function ContactQuerySection() {
   const [open, setOpen] =
@@ -32,107 +41,295 @@ export default function ContactQuerySection() {
   const [error, setError] =
     useState("");
 
-  const openModal = useCallback(
-    () => {
+  /* =======================================================
+     TIMEOUT REF
+  ======================================================= */
+
+  const successTimerRef =
+    useRef(null);
+
+  /* =======================================================
+     MOUNT REF
+  ======================================================= */
+
+  const mountedRef =
+    useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+
+      if (
+        successTimerRef.current !==
+        null
+      ) {
+        window.clearTimeout(
+          successTimerRef.current
+        );
+
+        successTimerRef.current =
+          null;
+      }
+    };
+  }, []);
+
+  /* =========================================================
+     OPEN MODAL
+  ========================================================= */
+
+  const openModal =
+    useCallback(() => {
       setOpen(true);
       setError("");
       setMessage("");
-    },
-    []
-  );
+    }, []);
 
-  const closeModal = useCallback(() => {
-    if (loading) return;
+  /* =========================================================
+     CLOSE MODAL
+  ========================================================= */
 
-    setOpen(false);
-    setError("");
-    setMessage("");
-  }, [loading]);
-
-  const handleChange = (e) => {
-    const {
-      name,
-      value,
-    } = e.target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    setError("");
-    setMessage("");
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (loading) return;
-
-    setLoading(true);
-    setError("");
-    setMessage("");
-
-    try {
-      const response = await fetch(
-        "/api/contact",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            ...form,
-            source:
-              "contact-modal",
-          }),
-        }
-      );
-
-      const data =
-        await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Unable to send enquiry."
-        );
+  const closeModal =
+    useCallback(() => {
+      if (loading) {
+        return;
       }
 
-      setMessage(
-        "Thank you! Your enquiry has been sent successfully."
-      );
+      setOpen(false);
+      setError("");
+      setMessage("");
 
-      setForm(initialForm);
+      if (
+        successTimerRef.current !==
+        null
+      ) {
+        window.clearTimeout(
+          successTimerRef.current
+        );
 
-      setTimeout(() => {
-        setOpen(false);
-        setMessage("");
-      }, 1600);
-    } catch (error) {
-      console.error(
-        "CONTACT MODAL ERROR:",
-        error
-      );
+        successTimerRef.current =
+          null;
+      }
+    }, [loading]);
+
+  /* =========================================================
+     FORM CHANGE
+  ========================================================= */
+
+  const handleChange =
+    useCallback((e) => {
+      const {
+        name,
+        value,
+      } = e.target;
+
+      setForm((prev) => {
+        if (
+          prev[name] === value
+        ) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          [name]: value,
+        };
+      });
 
       setError(
-        error.message ||
-          "Something went wrong. Please try again."
+        (current) =>
+          current
+            ? ""
+            : current
       );
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      setMessage(
+        (current) =>
+          current
+            ? ""
+            : current
+      );
+    }, []);
+
+  /* =========================================================
+     HANDLE SUBMIT
+  ========================================================= */
+
+  const handleSubmit =
+    useCallback(
+      async (e) => {
+        e.preventDefault();
+
+        if (loading) {
+          return;
+        }
+
+        /*
+          Clear old success timer before
+          starting a new request.
+        */
+
+        if (
+          successTimerRef.current !==
+          null
+        ) {
+          window.clearTimeout(
+            successTimerRef.current
+          );
+
+          successTimerRef.current =
+            null;
+        }
+
+        setLoading(true);
+        setError("");
+        setMessage("");
+
+        try {
+          const response =
+            await fetch(
+              "/api/contact",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+
+                body: JSON.stringify({
+                  ...form,
+                  source:
+                    "contact-modal",
+                }),
+              }
+            );
+
+          /*
+            Don't blindly call response.json().
+            If Next/server/proxy returns an HTML
+            error page, JSON parsing itself should
+            not crash the form.
+          */
+
+          const contentType =
+            response.headers.get(
+              "content-type"
+            ) || "";
+
+          let data = null;
+
+          if (
+            contentType.includes(
+              "application/json"
+            )
+          ) {
+            data =
+              await response.json();
+          } else {
+            const text =
+              await response.text();
+
+            data = {
+              success: false,
+              message:
+                text ||
+                "Unable to send enquiry.",
+            };
+          }
+
+          if (!response.ok) {
+            throw new Error(
+              data?.message ||
+                "Unable to send enquiry."
+            );
+          }
+
+          if (
+            !mountedRef.current
+          ) {
+            return;
+          }
+
+          setMessage(
+            "Thank you! Your enquiry has been sent successfully."
+          );
+
+          setError("");
+
+          setForm(
+            initialForm
+          );
+
+          /*
+            Auto close after same delay.
+          */
+
+          successTimerRef.current =
+            window.setTimeout(
+              () => {
+                if (
+                  !mountedRef.current
+                ) {
+                  return;
+                }
+
+                setOpen(false);
+                setMessage("");
+
+                successTimerRef.current =
+                  null;
+              },
+              1600
+            );
+        } catch (error) {
+          console.error(
+            "CONTACT MODAL ERROR:",
+            error
+          );
+
+          if (
+            !mountedRef.current
+          ) {
+            return;
+          }
+
+          setError(
+            error?.message ||
+              "Something went wrong. Please try again."
+          );
+
+          setMessage("");
+        } finally {
+          if (
+            mountedRef.current
+          ) {
+            setLoading(false);
+          }
+        }
+      },
+      [form, loading]
+    );
+
+  /* =========================================================
+     MODAL KEYBOARD + BODY SCROLL
+  ========================================================= */
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      return undefined;
+    }
 
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-    };
+    const onKeyDown =
+      (e) => {
+        if (
+          e.key ===
+          "Escape"
+        ) {
+          closeModal();
+        }
+      };
 
     document.addEventListener(
       "keydown",
@@ -140,7 +337,8 @@ export default function ContactQuerySection() {
     );
 
     const previousOverflow =
-      document.body.style.overflow;
+      document.body.style
+        .overflow;
 
     document.body.style.overflow =
       "hidden";
@@ -154,7 +352,14 @@ export default function ContactQuerySection() {
       document.body.style.overflow =
         previousOverflow;
     };
-  }, [open, closeModal]);
+  }, [
+    open,
+    closeModal,
+  ]);
+
+  /* =========================================================
+     RENDER
+  ========================================================= */
 
   return (
     <>
@@ -164,7 +369,6 @@ export default function ContactQuerySection() {
 
       <section className="cq-banner">
         <div className="cq-banner-box">
-
           <h3 className="cq-banner-title">
             Still Have Questions?
             Let&apos;s Talk.
@@ -173,11 +377,12 @@ export default function ContactQuerySection() {
           <button
             type="button"
             className="cq-banner-btn"
-            onClick={openModal}
+            onClick={
+              openModal
+            }
           >
             Contact Us
           </button>
-
         </div>
       </section>
 
@@ -190,7 +395,8 @@ export default function ContactQuerySection() {
           className="cq-overlay"
           onMouseDown={(e) => {
             if (
-              e.target === e.currentTarget
+              e.target ===
+              e.currentTarget
             ) {
               closeModal();
             }
@@ -202,16 +408,25 @@ export default function ContactQuerySection() {
             aria-modal="true"
             aria-labelledby="contact-query-title"
           >
+            {/* =============================================
+                CLOSE
+            ============================================== */}
 
             <button
               type="button"
               className="cq-close"
-              onClick={closeModal}
+              onClick={
+                closeModal
+              }
               disabled={loading}
               aria-label="Close"
             >
               ✕
             </button>
+
+            {/* =============================================
+                TITLE
+            ============================================== */}
 
             <h3
               id="contact-query-title"
@@ -227,12 +442,20 @@ export default function ContactQuerySection() {
               will get back to you shortly.
             </p>
 
+            {/* =============================================
+                FORM
+            ============================================== */}
+
             <form
               className="cq-form"
-              onSubmit={handleSubmit}
+              onSubmit={
+                handleSubmit
+              }
             >
-
               <div className="cq-grid">
+                {/* =====================================
+                    FULL NAME
+                ====================================== */}
 
                 <div className="cq-field">
                   <label htmlFor="cq-fullName">
@@ -244,12 +467,23 @@ export default function ContactQuerySection() {
                     name="fullName"
                     type="text"
                     placeholder="Enter your full name"
-                    value={form.fullName}
-                    onChange={handleChange}
+                    value={
+                      form.fullName
+                    }
+                    onChange={
+                      handleChange
+                    }
                     required
-                    disabled={loading}
+                    disabled={
+                      loading
+                    }
+                    autoComplete="name"
                   />
                 </div>
+
+                {/* =====================================
+                    JOB TITLE
+                ====================================== */}
 
                 <div className="cq-field">
                   <label htmlFor="cq-jobTitle">
@@ -261,11 +495,22 @@ export default function ContactQuerySection() {
                     name="jobTitle"
                     type="text"
                     placeholder="Your role or designation"
-                    value={form.jobTitle}
-                    onChange={handleChange}
-                    disabled={loading}
+                    value={
+                      form.jobTitle
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    disabled={
+                      loading
+                    }
+                    autoComplete="organization-title"
                   />
                 </div>
+
+                {/* =====================================
+                    MOBILE
+                ====================================== */}
 
                 <div className="cq-field">
                   <label htmlFor="cq-mobile">
@@ -278,12 +523,23 @@ export default function ContactQuerySection() {
                     type="tel"
                     inputMode="tel"
                     placeholder="Enter your mobile/whatsapp Number"
-                    value={form.mobile}
-                    onChange={handleChange}
+                    value={
+                      form.mobile
+                    }
+                    onChange={
+                      handleChange
+                    }
                     required
-                    disabled={loading}
+                    disabled={
+                      loading
+                    }
+                    autoComplete="tel"
                   />
                 </div>
+
+                {/* =====================================
+                    EMAIL
+                ====================================== */}
 
                 <div className="cq-field">
                   <label htmlFor="cq-workEmail">
@@ -295,12 +551,23 @@ export default function ContactQuerySection() {
                     name="workEmail"
                     type="email"
                     placeholder="Enter your business email address"
-                    value={form.workEmail}
-                    onChange={handleChange}
+                    value={
+                      form.workEmail
+                    }
+                    onChange={
+                      handleChange
+                    }
                     required
-                    disabled={loading}
+                    disabled={
+                      loading
+                    }
+                    autoComplete="email"
                   />
                 </div>
+
+                {/* =====================================
+                    BUDGET
+                ====================================== */}
 
                 <div className="cq-field">
                   <label htmlFor="cq-budget">
@@ -312,11 +579,21 @@ export default function ContactQuerySection() {
                     name="budget"
                     type="text"
                     placeholder="Enter your budget range"
-                    value={form.budget}
-                    onChange={handleChange}
-                    disabled={loading}
+                    value={
+                      form.budget
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    disabled={
+                      loading
+                    }
                   />
                 </div>
+
+                {/* =====================================
+                    CITY
+                ====================================== */}
 
                 <div className="cq-field">
                   <label htmlFor="cq-city">
@@ -328,11 +605,22 @@ export default function ContactQuerySection() {
                     name="city"
                     type="text"
                     placeholder="Enter your city name"
-                    value={form.city}
-                    onChange={handleChange}
-                    disabled={loading}
+                    value={
+                      form.city
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    disabled={
+                      loading
+                    }
+                    autoComplete="address-level2"
                   />
                 </div>
+
+                {/* =====================================
+                    DETAILS
+                ====================================== */}
 
                 <div className="cq-field cq-field--full">
                   <label htmlFor="cq-details">
@@ -344,13 +632,22 @@ export default function ContactQuerySection() {
                     name="details"
                     type="text"
                     placeholder="Briefly describe your goals, timeline, and key requirements"
-                    value={form.details}
-                    onChange={handleChange}
-                    disabled={loading}
+                    value={
+                      form.details
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    disabled={
+                      loading
+                    }
                   />
                 </div>
-
               </div>
+
+              {/* =========================================
+                  ERROR
+              ========================================== */}
 
               {error && (
                 <p
@@ -361,6 +658,10 @@ export default function ContactQuerySection() {
                 </p>
               )}
 
+              {/* =========================================
+                  SUCCESS
+              ========================================== */}
+
               {message && (
                 <p
                   className="cq-message cq-success"
@@ -370,36 +671,51 @@ export default function ContactQuerySection() {
                 </p>
               )}
 
+              {/* =========================================
+                  NOTE
+              ========================================== */}
+
               <p className="cq-note">
                 <span className="cq-note-arrow">
                   ▲
                 </span>
+
                 Response within 30 minutes.
                 100% NDA-protected.
               </p>
+
+              {/* =========================================
+                  SUBMIT
+              ========================================== */}
 
               <div className="cq-submit-wrap">
                 <button
                   type="submit"
                   className="cq-submit"
-                  disabled={loading}
+                  disabled={
+                    loading
+                  }
                 >
                   {loading
                     ? "Sending..."
                     : "Request Consultation"}
 
                   {!loading && (
-                    <span>▲</span>
+                    <span>
+                      ▲
+                    </span>
                   )}
                 </button>
               </div>
-
             </form>
           </div>
         </div>
       )}
 
       <style>{`
+        /* =====================================================
+           GLOBAL FORM FONT
+        ===================================================== */
 
         .cq-banner,
         .cq-overlay,
@@ -412,21 +728,33 @@ export default function ContactQuerySection() {
             sans-serif;
         }
 
-        .cq-banner {
-          width: 100%;
+        /* =====================================================
+           BANNER
+        ===================================================== */
 
-          display: flex;
-          justify-content: center;
-          align-items: center;
+        .cq-banner {
+          width:
+            100%;
+
+          display:
+            flex;
+
+          justify-content:
+            center;
+
+          align-items:
+            center;
 
           padding:
             clamp(
               48px,
               7vw,
               78px
-            ) 20px;
+            )
+            20px;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
 
           background:
             linear-gradient(
@@ -435,20 +763,31 @@ export default function ContactQuerySection() {
               #0021AF 100%
             );
 
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
         }
 
         .cq-banner-box {
-          width: 100%;
-          max-width: 1000px;
+          width:
+            100%;
 
-          display: flex;
-          flex-direction: column;
+          max-width:
+            1000px;
 
-          align-items: center;
-          justify-content: center;
+          display:
+            flex;
 
-          text-align: center;
+          flex-direction:
+            column;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          text-align:
+            center;
         }
 
         .cq-banner-title {
@@ -462,37 +801,58 @@ export default function ContactQuerySection() {
               30px
             );
 
-          line-height: 1.15;
+          line-height:
+            1.15;
 
-          font-weight: 600;
+          font-weight:
+            600;
 
           letter-spacing:
             -0.03em;
 
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
         }
 
         .cq-banner-btn {
-          width: 186px;
-          height: 56px;
+          width:
+            186px;
 
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          height:
+            56px;
 
-          border: none;
-          border-radius: 999px;
+          display:
+            inline-flex;
 
-          background: #FFFFFF;
+          align-items:
+            center;
 
-          color: #0E0E0E;
+          justify-content:
+            center;
 
-          font-family: inherit;
+          border:
+            none;
 
-          font-size: 16px;
-          font-weight: 600;
+          border-radius:
+            999px;
 
-          cursor: pointer;
+          background:
+            #FFFFFF;
+
+          color:
+            #0E0E0E;
+
+          font-family:
+            inherit;
+
+          font-size:
+            16px;
+
+          font-weight:
+            600;
+
+          cursor:
+            pointer;
 
           transition:
             transform
@@ -503,7 +863,9 @@ export default function ContactQuerySection() {
 
         .cq-banner-btn:hover {
           transform:
-            translateY(-2px);
+            translateY(
+              -2px
+            );
 
           box-shadow:
             0 12px 26px
@@ -515,9 +877,16 @@ export default function ContactQuerySection() {
             );
         }
 
+        /* =====================================================
+           OVERLAY
+        ===================================================== */
+
         .cq-overlay {
-          position: fixed;
-          inset: 0;
+          position:
+            fixed;
+
+          inset:
+            0;
 
           background:
             rgba(
@@ -527,29 +896,49 @@ export default function ContactQuerySection() {
               0.55
             );
 
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          display:
+            flex;
 
-          padding: 20px;
+          align-items:
+            center;
 
-          z-index: 1000;
-        }
-
-        .cq-modal {
-          position: relative;
-
-          width: 100%;
-          max-width: 900px;
-
-          max-height: 92vh;
-
-          overflow-y: auto;
-
-          border-radius: 22px;
+          justify-content:
+            center;
 
           padding:
-            44px 48px 40px;
+            20px;
+
+          z-index:
+            1000;
+        }
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .cq-modal {
+          position:
+            relative;
+
+          width:
+            100%;
+
+          max-width:
+            900px;
+
+          max-height:
+            92vh;
+
+          overflow-y:
+            auto;
+
+          border-radius:
+            22px;
+
+          padding:
+            44px
+            48px
+            40px;
 
           background:
             linear-gradient(
@@ -560,19 +949,41 @@ export default function ContactQuerySection() {
               #0021AF 100%
             );
 
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
+
+          box-sizing:
+            border-box;
+
+          overscroll-behavior:
+            contain;
+
+          -webkit-overflow-scrolling:
+            touch;
         }
 
+        /* =====================================================
+           CLOSE
+        ===================================================== */
+
         .cq-close {
-          position: absolute;
+          position:
+            absolute;
 
-          top: 18px;
-          right: 20px;
+          top:
+            18px;
 
-          width: 34px;
-          height: 34px;
+          right:
+            20px;
 
-          border-radius: 50%;
+          width:
+            34px;
+
+          height:
+            34px;
+
+          border-radius:
+            50%;
 
           border:
             1px solid
@@ -591,27 +1002,43 @@ export default function ContactQuerySection() {
               0.08
             );
 
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
 
-          font-size: 14px;
+          font-size:
+            14px;
 
-          cursor: pointer;
+          cursor:
+            pointer;
 
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          display:
+            flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
         }
 
         .cq-close:disabled {
-          cursor: not-allowed;
-          opacity: 0.6;
+          cursor:
+            not-allowed;
+
+          opacity:
+            0.6;
         }
+
+        /* =====================================================
+           MODAL TITLE
+        ===================================================== */
 
         .cq-modal-title {
           margin:
             0 0 12px;
 
-          text-align: center;
+          text-align:
+            center;
 
           font-size:
             clamp(
@@ -620,22 +1047,31 @@ export default function ContactQuerySection() {
               28px
             );
 
-          line-height: 1.2;
-          font-weight: 800;
+          line-height:
+            1.2;
 
-          color: #FFFFFF;
+          font-weight:
+            800;
+
+          color:
+            #FFFFFF;
         }
 
         .cq-modal-desc {
           margin:
             0 auto 32px;
 
-          max-width: 560px;
+          max-width:
+            560px;
 
-          text-align: center;
+          text-align:
+            center;
 
-          font-size: 14.5px;
-          line-height: 1.6;
+          font-size:
+            14.5px;
+
+          line-height:
+            1.6;
 
           color:
             rgba(
@@ -646,43 +1082,66 @@ export default function ContactQuerySection() {
             );
         }
 
+        /* =====================================================
+           FORM GRID
+        ===================================================== */
+
         .cq-grid {
-          display: grid;
+          display:
+            grid;
 
           grid-template-columns:
             1fr 1fr;
 
-          column-gap: 48px;
-          row-gap: 26px;
+          column-gap:
+            48px;
+
+          row-gap:
+            26px;
         }
 
         .cq-field {
-          display: flex;
-          flex-direction: column;
+          display:
+            flex;
+
+          flex-direction:
+            column;
+
+          min-width:
+            0;
         }
 
         .cq-field--full {
-          grid-column: 1 / -1;
+          grid-column:
+            1 / -1;
         }
 
         .cq-field label {
-          font-size: 12.5px;
+          font-size:
+            12.5px;
 
-          font-weight: 700;
+          font-weight:
+            700;
 
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
 
-          margin-bottom: 10px;
+          margin-bottom:
+            10px;
         }
 
         .cq-field input {
-          width: 100%;
+          width:
+            100%;
 
-          font-family: inherit;
+          font-family:
+            inherit;
 
-          background: transparent;
+          background:
+            transparent;
 
-          border: none;
+          border:
+            none;
 
           border-bottom:
             1px solid
@@ -693,18 +1152,29 @@ export default function ContactQuerySection() {
               0.45
             );
 
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
 
-          font-size: 14.5px;
+          font-size:
+            14.5px;
 
           padding:
-            4px 2px 10px;
+            4px
+            2px
+            10px;
 
-          outline: none;
+          outline:
+            none;
 
           transition:
             border-color
             0.2s ease;
+
+          box-sizing:
+            border-box;
+
+          min-width:
+            0;
         }
 
         .cq-field input::placeholder {
@@ -723,32 +1193,51 @@ export default function ContactQuerySection() {
         }
 
         .cq-field input:disabled {
-          opacity: 0.65;
+          opacity:
+            0.65;
+
+          cursor:
+            not-allowed;
         }
+
+        /* =====================================================
+           MESSAGES
+        ===================================================== */
 
         .cq-message {
           margin:
             18px 0 0;
 
-          font-size: 13px;
-          line-height: 1.5;
+          font-size:
+            13px;
 
-          text-align: left;
+          line-height:
+            1.5;
+
+          text-align:
+            left;
         }
 
         .cq-error {
-          color: #FFE2E2;
+          color:
+            #FFE2E2;
         }
 
         .cq-success {
-          color: #FFFFFF;
+          color:
+            #FFFFFF;
         }
+
+        /* =====================================================
+           NOTE
+        ===================================================== */
 
         .cq-note {
           margin:
             28px 0 0;
 
-          font-size: 13px;
+          font-size:
+            13px;
 
           color:
             rgba(
@@ -758,46 +1247,76 @@ export default function ContactQuerySection() {
               0.85
             );
 
-          display: flex;
-          align-items: center;
+          display:
+            flex;
 
-          gap: 6px;
+          align-items:
+            center;
+
+          gap:
+            6px;
         }
 
         .cq-note-arrow {
-          font-size: 10px;
+          font-size:
+            10px;
         }
 
-        .cq-submit-wrap {
-          display: flex;
-          justify-content: center;
+        /* =====================================================
+           SUBMIT
+        ===================================================== */
 
-          margin-top: 28px;
+        .cq-submit-wrap {
+          display:
+            flex;
+
+          justify-content:
+            center;
+
+          margin-top:
+            28px;
         }
 
         .cq-submit {
-          display: inline-flex;
+          display:
+            inline-flex;
 
-          align-items: center;
-          justify-content: center;
+          align-items:
+            center;
 
-          gap: 8px;
+          justify-content:
+            center;
 
-          border: none;
-          border-radius: 999px;
+          gap:
+            8px;
+
+          border:
+            none;
+
+          border-radius:
+            999px;
 
           padding:
-            14px 30px;
+            14px
+            30px;
 
-          font-family: inherit;
+          font-family:
+            inherit;
 
-          font-size: 14.5px;
-          font-weight: 700;
+          font-size:
+            14.5px;
 
-          color: #0E0E0E;
-          background: #FFFFFF;
+          font-weight:
+            700;
 
-          cursor: pointer;
+          color:
+            #0E0E0E;
+
+          background:
+            #FFFFFF;
+
+          cursor:
+            pointer;
 
           transition:
             transform
@@ -808,7 +1327,9 @@ export default function ContactQuerySection() {
 
         .cq-submit:hover {
           transform:
-            translateY(-1px);
+            translateY(
+              -1px
+            );
 
           box-shadow:
             0 10px 24px
@@ -821,119 +1342,205 @@ export default function ContactQuerySection() {
         }
 
         .cq-submit:disabled {
-          opacity: 0.75;
-          cursor: not-allowed;
+          opacity:
+            0.75;
 
-          transform: none;
+          cursor:
+            not-allowed;
+
+          transform:
+            none;
         }
 
-        @media (max-width: 768px) {
+        /* =====================================================
+           TABLET / MOBILE
+        ===================================================== */
 
+        @media (max-width: 768px) {
           .cq-banner {
             padding:
-              44px 20px
+              44px
+              20px
               50px;
           }
 
           .cq-banner-title {
-            font-size: 23px;
+            font-size:
+              23px;
           }
 
           .cq-banner-btn {
-            width: 170px;
-            height: 52px;
+            width:
+              170px;
 
-            font-size: 14px;
+            height:
+              52px;
+
+            font-size:
+              14px;
           }
 
           .cq-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
 
-            row-gap: 22px;
+            row-gap:
+              22px;
           }
 
           .cq-field--full {
-            grid-column: auto;
+            grid-column:
+              auto;
           }
 
           .cq-modal {
-            border-radius: 18px;
+            border-radius:
+              18px;
 
             padding:
-              34px 20px
+              34px
+              20px
               30px;
           }
 
           .cq-modal-desc {
-            margin-bottom: 24px;
+            margin-bottom:
+              24px;
           }
         }
 
-        @media (max-width: 480px) {
+        /* =====================================================
+           SMALL MOBILE
+        ===================================================== */
 
+        @media (max-width: 480px) {
           .cq-banner {
             padding:
-              40px 20px
+              40px
+              20px
               46px;
           }
 
           .cq-banner-title {
-            font-size: 21px;
+            font-size:
+              21px;
           }
 
           .cq-banner-btn {
-            width: 160px;
-            height: 50px;
+            width:
+              160px;
 
-            font-size: 14px;
+            height:
+              50px;
+
+            font-size:
+              14px;
           }
 
           .cq-modal {
-            max-height: 94vh;
+            max-height:
+              94vh;
 
             padding:
-              32px 16px
+              32px
+              16px
               26px;
 
-            border-radius: 16px;
+            border-radius:
+              16px;
           }
 
           .cq-close {
-            top: 12px;
-            right: 12px;
+            top:
+              12px;
+
+            right:
+              12px;
           }
 
           .cq-modal-title {
             padding:
               0 35px;
 
-            font-size: 22px;
+            font-size:
+              22px;
           }
 
           .cq-modal-desc {
-            font-size: 13px;
-            line-height: 1.55;
+            font-size:
+              13px;
+
+            line-height:
+              1.55;
           }
 
           .cq-field label {
-            font-size: 13px;
+            font-size:
+              13px;
           }
 
           .cq-field input {
-            font-size: 14px;
+            font-size:
+              14px;
           }
 
           .cq-note {
-            font-size: 12px;
+            font-size:
+              12px;
           }
 
           .cq-submit {
-            width: 100%;
-            max-width: 240px;
+            width:
+              100%;
 
-            min-height: 46px;
+            max-width:
+              240px;
 
-            font-size: 13px;
+            min-height:
+              46px;
+
+            font-size:
+              13px;
+          }
+        }
+
+        /* =====================================================
+           TOUCH
+        ===================================================== */
+
+        @media (hover: none) {
+          .cq-banner-btn:hover,
+          .cq-submit:hover {
+            transform:
+              none;
+
+            box-shadow:
+              none;
+          }
+        }
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (
+          prefers-reduced-motion:
+            reduce
+        ) {
+          .cq-banner-btn,
+          .cq-submit,
+          .cq-field input {
+            transition:
+              none;
+          }
+
+          .cq-banner-btn:hover,
+          .cq-submit:hover {
+            transform:
+              none;
+
+            box-shadow:
+              none;
           }
         }
       `}</style>

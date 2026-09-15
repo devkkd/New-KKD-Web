@@ -1,7 +1,4 @@
 "use client";
-
-import { useState } from "react";
-
 const INSIGHTS = [
   {
     id: 1,
@@ -12,6 +9,7 @@ const INSIGHTS = [
     description:
       "After helping 30+ companies integrate AI into production workflows, we've identified the five patterns that reliably predict success and the three that guarantee expensive failure. The guide we wish we'd had three years ago.",
   },
+
   {
     id: 2,
     image: "/home/insights/2.png",
@@ -21,6 +19,7 @@ const INSIGHTS = [
     description:
       "The problem isn't usually the technology it's the decisions made before a single line of code was written. A definitive guide to product-market fit validation and user research for mobile products.",
   },
+
   {
     id: 3,
     image: "/home/insights/3.png",
@@ -32,14 +31,14 @@ const INSIGHTS = [
   },
 ];
 
-export default function InsightsSection() {
-  const [hoveredButton, setHoveredButton] =
-    useState(null);
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
 
+export default function InsightsSection() {
   return (
     <section className="insights-section">
       <div className="insights-container">
-
         {/* =====================================================
             HEADER
         ===================================================== */}
@@ -82,6 +81,10 @@ export default function InsightsSection() {
                   src={item.image}
                   alt={item.title}
                   className="insight-image"
+                  width="800"
+                  height="500"
+                  loading="lazy"
+                  decoding="async"
                   draggable="false"
                 />
               </div>
@@ -91,7 +94,6 @@ export default function InsightsSection() {
               ================================================= */}
 
               <div className="insight-content">
-
                 {/* TITLE */}
 
                 <div className="insight-title-wrap">
@@ -129,17 +131,8 @@ export default function InsightsSection() {
                 <div className="insight-button-wrap">
                   <button
                     type="button"
-                    className={`insight-read-more ${
-                      hoveredButton === item.id
-                        ? "insight-read-more-hovered"
-                        : ""
-                    }`}
-                    onMouseEnter={() =>
-                      setHoveredButton(item.id)
-                    }
-                    onMouseLeave={() =>
-                      setHoveredButton(null)
-                    }
+                    className="insight-read-more"
+                    aria-label={`Read more about ${item.title}`}
                   >
                     <span>
                       Read More
@@ -171,16 +164,25 @@ export default function InsightsSection() {
         ========================================================= */
 
         .insights-section {
-          width: 100%;
-          max-width: 100%;
+          width:
+            100%;
 
-          margin: 0;
+          max-width:
+            100%;
+
+          margin:
+            0;
+
           padding:
-            22px 62px 90px;
+            22px
+            62px
+            90px;
 
-          background: #F3F8FF;
+          background:
+            #F3F8FF;
 
-          color: #0E0E0E;
+          color:
+            #0E0E0E;
 
           font-family:
             "Britti Sans Trial",
@@ -188,16 +190,22 @@ export default function InsightsSection() {
             Helvetica,
             sans-serif;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
 
-          overflow-x: clip;
-          overflow-y: visible;
+          overflow-x:
+            clip;
 
-          position: relative;
+          overflow-y:
+            visible;
+
+          position:
+            relative;
         }
 
         .insights-section * {
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
         }
 
         /* =========================================================
@@ -205,14 +213,23 @@ export default function InsightsSection() {
         ========================================================= */
 
         .insights-container {
-          width: 100%;
-          max-width: 1400px;
+          width:
+            100%;
 
-          margin: 0 auto;
+          max-width:
+            1400px;
 
-          padding: 0;
+          margin:
+            0 auto;
 
-          box-sizing: border-box;
+          padding:
+            0;
+
+          box-sizing:
+            border-box;
+
+          min-width:
+            0;
         }
 
         /* =========================================================
@@ -220,18 +237,26 @@ export default function InsightsSection() {
         ========================================================= */
 
         .insights-header {
-          width: 100%;
+          width:
+            100%;
 
-          text-align: center;
+          text-align:
+            center;
 
-          margin: 0 0 46px;
+          margin:
+            0
+            0
+            46px;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
         }
 
         .insights-eyebrow {
           margin:
-            0 0 30px;
+            0
+            0
+            30px;
 
           font-size:
             14px;
@@ -247,13 +272,17 @@ export default function InsightsSection() {
         }
 
         .insights-heading {
-          width: 100%;
+          width:
+            100%;
 
-          max-width: 100%;
+          max-width:
+            100%;
 
-          margin: 0;
+          margin:
+            0;
 
-          padding: 0;
+          padding:
+            0;
 
           font-size:
             26px;
@@ -278,13 +307,16 @@ export default function InsightsSection() {
         }
 
         .insights-intro {
-          width: 100%;
+          width:
+            100%;
 
           max-width:
             1000px;
 
           margin:
-            34px auto 0;
+            34px
+            auto
+            0;
 
           padding:
             0;
@@ -375,6 +407,9 @@ export default function InsightsSection() {
 
           overflow:
             visible;
+
+          contain:
+            layout;
         }
 
         /* =========================================================
@@ -468,7 +503,6 @@ export default function InsightsSection() {
 
         /* =========================================================
            TITLE
-           FIXED SPACE - ENOUGH FOR 3 LINES
         ========================================================= */
 
         .insight-title-wrap {
@@ -530,6 +564,9 @@ export default function InsightsSection() {
 
           overflow:
             hidden;
+
+          overflow-wrap:
+            break-word;
         }
 
         /* =========================================================
@@ -585,7 +622,8 @@ export default function InsightsSection() {
 
         .insight-meta-separator {
           margin:
-            0 7px;
+            0
+            7px;
 
           flex-shrink:
             0;
@@ -593,7 +631,6 @@ export default function InsightsSection() {
 
         /* =========================================================
            DESCRIPTION
-           FIXED HEIGHT
         ========================================================= */
 
         .insight-description-wrap {
@@ -659,7 +696,6 @@ export default function InsightsSection() {
 
         /* =========================================================
            BUTTON WRAP
-           SAME Y POSITION FOR ALL CARDS
         ========================================================= */
 
         .insight-button-wrap {
@@ -706,7 +742,8 @@ export default function InsightsSection() {
             140px;
 
           padding:
-            0 20px;
+            0
+            20px;
 
           display:
             inline-flex;
@@ -762,15 +799,19 @@ export default function InsightsSection() {
 
           transition:
             background
-            0.25s ease,
+              0.25s ease,
+
             color
-            0.25s ease,
+              0.25s ease,
+
             border-color
-            0.25s ease,
+              0.25s ease,
+
             transform
-            0.25s ease,
+              0.25s ease,
+
             box-shadow
-            0.25s ease;
+              0.25s ease;
         }
 
         .insight-read-more svg {
@@ -783,10 +824,12 @@ export default function InsightsSection() {
 
         /* =========================================================
            HOVER
+
+           Same visual result as previous React state.
+           No React rerender required.
         ========================================================= */
 
-        .insight-read-more:hover,
-        .insight-read-more-hovered {
+        .insight-read-more:hover {
           background:
             linear-gradient(
               90deg,
@@ -801,10 +844,14 @@ export default function InsightsSection() {
             transparent;
 
           transform:
-            translateY(-2px);
+            translateY(
+              -2px
+            );
 
           box-shadow:
-            0 10px 22px
+            0
+            10px
+            22px
             rgba(
               0,
               33,
@@ -820,7 +867,9 @@ export default function InsightsSection() {
         @media (max-width: 1100px) {
           .insights-section {
             padding:
-              24px 32px 70px;
+              24px
+              32px
+              70px;
 
             overflow-x:
               clip;
@@ -890,7 +939,9 @@ export default function InsightsSection() {
               100%;
 
             padding:
-              45px 20px 60px;
+              45px
+              20px
+              60px;
 
             overflow-x:
               clip;
@@ -939,7 +990,9 @@ export default function InsightsSection() {
               none;
           }
 
-          /* ONE CARD PER ROW */
+          /* ==============================================
+             ONE CARD PER ROW
+          ============================================== */
 
           .insights-grid {
             width:
@@ -975,7 +1028,9 @@ export default function InsightsSection() {
               100%;
           }
 
-          /* IMAGE */
+          /* ==============================================
+             IMAGE
+          ============================================== */
 
           .insight-image-wrap {
             width:
@@ -997,7 +1052,9 @@ export default function InsightsSection() {
               14px;
           }
 
-          /* CONTENT */
+          /* ==============================================
+             CONTENT
+          ============================================== */
 
           .insight-content {
             width:
@@ -1007,7 +1064,9 @@ export default function InsightsSection() {
               18px;
           }
 
-          /* TITLE */
+          /* ==============================================
+             TITLE
+          ============================================== */
 
           .insight-title-wrap {
             width:
@@ -1037,7 +1096,9 @@ export default function InsightsSection() {
               3;
           }
 
-          /* META */
+          /* ==============================================
+             META
+          ============================================== */
 
           .insight-meta {
             width:
@@ -1056,14 +1117,18 @@ export default function InsightsSection() {
               9px;
           }
 
-          /* DESCRIPTION HIDDEN */
+          /* ==============================================
+             DESCRIPTION HIDDEN
+          ============================================== */
 
           .insight-description-wrap {
             display:
               none;
           }
 
-          /* BUTTON */
+          /* ==============================================
+             BUTTON
+          ============================================== */
 
           .insight-button-wrap {
             width:
@@ -1104,7 +1169,9 @@ export default function InsightsSection() {
         @media (max-width: 420px) {
           .insights-section {
             padding:
-              40px 20px 52px;
+              40px
+              20px
+              52px;
           }
 
           .insights-heading {
@@ -1186,23 +1253,6 @@ export default function InsightsSection() {
             border-color:
               #0E0E0E;
           }
-
-          .insight-read-more-hovered {
-            transform:
-              none;
-
-            box-shadow:
-              none;
-
-            background:
-              transparent;
-
-            color:
-              #0E0E0E;
-
-            border-color:
-              #0E0E0E;
-          }
         }
 
         /* =========================================================
@@ -1210,10 +1260,19 @@ export default function InsightsSection() {
         ========================================================= */
 
         @media (
-          prefers-reduced-motion: reduce
+          prefers-reduced-motion:
+            reduce
         ) {
           .insight-read-more {
             transition:
+              none;
+          }
+
+          .insight-read-more:hover {
+            transform:
+              none;
+
+            box-shadow:
               none;
           }
         }

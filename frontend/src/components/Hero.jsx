@@ -1,39 +1,56 @@
 "use client";
 
+import Image from "next/image";
+
+const marqueeText =
+  "▲ PROVEN IMPACT ACROSS 200+ DIGITAL DELIVERIES SPANNING 20+ INDUSTRIES.";
+
+const marqueeItems = Array.from(
+  { length: 10 },
+  (_, index) => index
+);
+
 export default function Hero() {
-  const marqueeText =
-    "▲ PROVEN IMPACT ACROSS 200+ DIGITAL DELIVERIES SPANNING 20+ INDUSTRIES.";
-
-  const marqueeItems = Array.from({
-    length: 10,
-  });
-
   return (
     <section className="kk-hero">
-      {/* =========================================
+      {/* =====================================================
           HERO IMAGE
-      ========================================== */}
+          fill — the CSS below (top/left/width/height !important)
+          already fully controls this image's size, which
+          conflicted with fixed width/height props (that mismatch
+          is what Lighthouse was flagging as "Unsized image
+          element"). fill removes the conflict; the rendered
+          size/position is unchanged.
+      ===================================================== */}
 
       <div className="kk-hero-image-wrap">
-        <img
-          src="/home/hero.png"
+       <Image
+  src="/home/hero.webp"
           alt="Kontent Kraft Digital"
+          fill
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+          quality={80}
           className="kk-hero-image"
           draggable="false"
-          fetchPriority="high"
         />
 
-        {/* Bottom dark blur only */}
-        <div className="kk-hero-overlay" />
+        <div
+          className="kk-hero-overlay"
+          aria-hidden="true"
+        />
       </div>
 
-      {/* =========================================
+      {/* =====================================================
           HERO CONTENT
-      ========================================== */}
+      ===================================================== */}
 
       <div className="kk-hero-content">
         <div className="kk-hero-content-inner">
-          {/* LEFT */}
+          {/* =================================================
+              LEFT COPY
+          ================================================= */}
 
           <div className="kk-hero-copy">
             <h1 className="kk-hero-title">
@@ -41,8 +58,7 @@ export default function Hero() {
             </h1>
 
             <p className="kk-hero-description">
-              Built For Scale, Performance, And Lasting
-              Business Impact.
+              Built For Scale, Performance, And Lasting Business Impact.
             </p>
 
             <div className="kk-hero-actions">
@@ -54,7 +70,10 @@ export default function Hero() {
                   Start Your Project
                 </span>
 
-                <span className="kk-hero-arrow">
+                <span
+                  className="kk-hero-arrow"
+                  aria-hidden="true"
+                >
                   ⬆
                 </span>
               </a>
@@ -67,28 +86,45 @@ export default function Hero() {
                   See Our Work
                 </span>
 
-                <span className="kk-hero-secondary-arrow">
+                <span
+                  className="kk-hero-secondary-arrow"
+                  aria-hidden="true"
+                >
                   ⬆
                 </span>
               </a>
             </div>
           </div>
 
-          {/* CERTIFICATES */}
+          {/* =================================================
+              CERTIFICATES
+          ================================================= */}
 
           <div className="kk-hero-certificates">
             <div className="kk-certificate">
-              <img
+              <Image
                 src="/home/hl.png"
                 alt="Recognition certificate"
+                width={145}
+                height={154}
+                sizes="145px"
+                quality={65}
+                loading="lazy"
+                decoding="async"
                 draggable="false"
               />
             </div>
 
             <div className="kk-certificate">
-              <img
+              <Image
                 src="/home/hl2.png"
                 alt="Recognition certificate"
+                width={145}
+                height={154}
+                sizes="145px"
+                quality={65}
+                loading="lazy"
+                decoding="async"
                 draggable="false"
               />
             </div>
@@ -96,17 +132,16 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* =========================================
+      {/* =====================================================
           MARQUEE
-          UNCHANGED
-      ========================================== */}
+      ===================================================== */}
 
       <div className="kk-marquee">
         <div className="kk-marquee-track">
-          {marqueeItems.map((_, index) => (
+          {marqueeItems.map((item) => (
             <div
               className="kk-marquee-item"
-              key={index}
+              key={item}
             >
               <span className="kk-marquee-copy">
                 {marqueeText}
@@ -123,10 +158,10 @@ export default function Hero() {
         </div>
       </div>
 
-      <style jsx>{`
-        /* =========================================
+      <style>{`
+        /* =====================================================
            HERO
-        ========================================= */
+        ===================================================== */
 
         .kk-hero {
           position: relative;
@@ -153,14 +188,20 @@ export default function Hero() {
             sans-serif;
 
           isolation: isolate;
+
+          box-sizing: border-box;
+
+          /*
+            Prevent the hero itself from contributing
+            unexpected layout calculations.
+          */
+
+          contain: layout;
         }
 
-        /* =========================================
+        /* =====================================================
            IMAGE WRAPPER
-
-           Padding defines the final target
-           rectangle used by the loader.
-        ========================================= */
+        ===================================================== */
 
         .kk-hero-image-wrap {
           position: absolute;
@@ -175,44 +216,52 @@ export default function Hero() {
           z-index: 1;
 
           padding:
-            24px 32px 0;
+            24px
+            32px
+            0;
 
           box-sizing: border-box;
+
+          contain: paint;
         }
 
-        /* =========================================
+        /* =====================================================
            HERO IMAGE
+        ===================================================== */
 
-           This is the loader's final target.
-        ========================================= */
+       .kk-hero-image {
+  position: absolute !important;
 
-        .kk-hero-image {
-          position: relative;
+  top: 24px !important;
+  left: 32px !important;
 
-          width: 100%;
-          height: 100%;
+  width: calc(100% - 64px) !important;
+  height: calc(100% - 24px) !important;
 
-          max-width: none;
+  max-width: none !important;
 
-          display: block;
+  display: block;
 
-          object-fit: contain;
+  object-fit: contain;
+  object-position: center center;
 
-          object-position:
-            center center;
+  margin: 0;
+  padding: 0;
 
-          user-select: none;
+  user-select: none;
+  pointer-events: none;
 
-          pointer-events: none;
+  -webkit-user-drag: none;
 
-          transform: none;
+  box-sizing: border-box;
+}
+  .kk-hero-image-wrap {
+  aspect-ratio: 16 / 9;
+}
 
-          will-change: auto;
-        }
-
-        /* =========================================
+        /* =====================================================
            BOTTOM DARK BLUR
-        ========================================= */
+        ===================================================== */
 
         .kk-hero-overlay {
           position: absolute;
@@ -221,7 +270,7 @@ export default function Hero() {
           right: 0;
           bottom: 0;
 
-          top: 38%;
+          top: 65%;
 
           width: 100%;
 
@@ -276,11 +325,13 @@ export default function Hero() {
           pointer-events: none;
 
           overflow: hidden;
+
+          box-sizing: border-box;
         }
 
-        /* =========================================
+        /* =====================================================
            CONTENT
-        ========================================= */
+        ===================================================== */
 
         .kk-hero-content {
           position: absolute;
@@ -295,6 +346,8 @@ export default function Hero() {
           display: flex;
 
           align-items: flex-end;
+
+          box-sizing: border-box;
         }
 
         .kk-hero-content-inner {
@@ -318,7 +371,10 @@ export default function Hero() {
           display: grid;
 
           grid-template-columns:
-            minmax(0, 1fr)
+            minmax(
+              0,
+              1fr
+            )
             auto;
 
           align-items: flex-end;
@@ -329,11 +385,13 @@ export default function Hero() {
               4vw,
               70px
             );
+
+          box-sizing: border-box;
         }
 
-        /* =========================================
+        /* =====================================================
            COPY
-        ========================================= */
+        ===================================================== */
 
         .kk-hero-copy {
           width: 100%;
@@ -343,18 +401,6 @@ export default function Hero() {
           min-width: 0;
         }
 
-        /*
-          TITLE
-          Fluid clamp() sizing replaces the old fixed 28px + nowrap.
-          Nowrap on a 51-character headline only actually fits on
-          very wide viewports — below roughly 1400px it was
-          overflowing/clipping past the visible hero area (worst on
-          tablet, where it was still forced to a single 28px line).
-          Letting it wrap keeps the design intact at every width and
-          removes the overflow entirely; the min-width:1400px rule
-          below restores the single-line look once there's genuinely
-          room for it.
-        */
         .kk-hero-title {
           margin: 0;
 
@@ -362,7 +408,12 @@ export default function Hero() {
 
           color: #ffffff;
 
-          font-size: clamp(22px, 2.6vw, 28px);
+          font-size:
+            clamp(
+              22px,
+              2.6vw,
+              28px
+            );
 
           line-height: 1.04;
 
@@ -408,9 +459,9 @@ export default function Hero() {
           font-style: italic;
         }
 
-        /* =========================================
+        /* =====================================================
            ACTIONS
-        ========================================= */
+        ===================================================== */
 
         .kk-hero-actions {
           display: flex;
@@ -466,34 +517,43 @@ export default function Hero() {
 
           box-shadow:
             0 9px 24px
-              rgba(
-                0,
-                33,
-                175,
-                0.28
-              );
+            rgba(
+              0,
+              33,
+              175,
+              0.28
+            );
 
           transition:
-            transform 0.25s ease,
-            box-shadow 0.25s ease;
+            transform
+              0.25s ease,
+            box-shadow
+              0.25s ease;
+
+          -webkit-tap-highlight-color:
+            transparent;
         }
 
         .kk-hero-primary:hover {
           transform:
-            translateY(-2px);
+            translateY(
+              -2px
+            );
 
           box-shadow:
             0 13px 30px
-              rgba(
-                0,
-                33,
-                175,
-                0.38
-              );
+            rgba(
+              0,
+              33,
+              175,
+              0.38
+            );
         }
 
         .kk-hero-arrow {
           font-size: 14px;
+
+          line-height: 1;
         }
 
         .kk-hero-secondary {
@@ -521,11 +581,13 @@ export default function Hero() {
 
         .kk-hero-secondary-arrow {
           font-size: 12px;
+
+          line-height: 1;
         }
 
-        /* =========================================
+        /* =====================================================
            CERTIFICATES
-        ========================================= */
+        ===================================================== */
 
         .kk-hero-certificates {
           display: flex;
@@ -545,6 +607,8 @@ export default function Hero() {
         }
 
         .kk-certificate {
+          position: relative;
+
           width:
             clamp(
               105px,
@@ -578,12 +642,12 @@ export default function Hero() {
 
           box-shadow:
             0 8px 22px
-              rgba(
-                0,
-                0,
-                0,
-                0.24
-              );
+            rgba(
+              0,
+              0,
+              0,
+              0.24
+            );
 
           display: flex;
 
@@ -592,11 +656,17 @@ export default function Hero() {
           justify-content: center;
 
           flex-shrink: 0;
+
+          box-sizing: border-box;
         }
 
         .kk-certificate img {
-          width: 100%;
-          height: 100%;
+          position: absolute;
+
+          inset: 0;
+
+          width: 100% !important;
+          height: 100% !important;
 
           max-width: none;
 
@@ -604,15 +674,18 @@ export default function Hero() {
 
           object-fit: contain;
 
+          object-position: center;
+
           user-select: none;
 
           pointer-events: none;
+
+          -webkit-user-drag: none;
         }
 
-        /* =========================================
+        /* =====================================================
            MARQUEE
-           SAME
-        ========================================= */
+        ===================================================== */
 
         .kk-marquee {
           position: absolute;
@@ -640,6 +713,8 @@ export default function Hero() {
           align-items: center;
 
           white-space: nowrap;
+
+          contain: paint;
         }
 
         .kk-marquee-track {
@@ -659,6 +734,19 @@ export default function Hero() {
 
           will-change:
             transform;
+
+          transform:
+            translate3d(
+              0,
+              0,
+              0
+            );
+
+          backface-visibility:
+            hidden;
+
+          -webkit-backface-visibility:
+            hidden;
         }
 
         .kk-marquee-item {
@@ -718,53 +806,81 @@ export default function Hero() {
           }
         }
 
-        /* =========================================
+        /* =====================================================
            LARGE DESKTOP
-           Only here is there reliably enough room for
-           the full headline to sit on a single line, so
-           this is the one place nowrap is restored.
-        ========================================= */
+        ===================================================== */
 
         @media (min-width: 1400px) {
           .kk-hero {
-            min-height: 700px;
+            min-height:
+              700px;
           }
 
           .kk-hero-content-inner {
-            padding-left: 80px;
+            padding-left:
+              80px;
 
-            padding-right: 80px;
+            padding-right:
+              80px;
 
-            padding-bottom: 80px;
+            padding-bottom:
+              80px;
           }
 
           .kk-hero-title {
-            font-size: 28px;
+            font-size:
+              28px;
 
-            line-height: 0.98;
+            line-height:
+              0.98;
 
-            letter-spacing: -0.055em;
+            letter-spacing:
+              -0.055em;
 
-            white-space: nowrap;
+            white-space:
+              nowrap;
           }
 
           .kk-hero-image-wrap {
             padding:
-              28px 48px 0;
+              28px
+              48px
+              0;
+          }
+
+          .kk-hero-image {
+            top:
+              28px !important;
+
+            right:
+              48px !important;
+
+            bottom:
+              0 !important;
+
+            left:
+              48px !important;
+
+            width:
+              calc(
+                100% - 96px
+              ) !important;
+
+            height:
+              calc(
+                100% - 28px
+              ) !important;
           }
         }
 
-        /* =========================================
+        /* =====================================================
            TABLET
-           Same two-column, bottom-aligned layout as
-           desktop — just scaled down and with the
-           title allowed to wrap to a second line so it
-           never spills past the edge of the copy column.
-        ========================================= */
+        ===================================================== */
 
         @media (max-width: 1100px) {
           .kk-hero {
-            min-height: 660px;
+            min-height:
+              660px;
           }
 
           .kk-hero-content-inner {
@@ -774,34 +890,78 @@ export default function Hero() {
               70px;
 
             gap:
-              clamp(20px, 4vw, 40px);
+              clamp(
+                20px,
+                4vw,
+                40px
+              );
           }
 
           .kk-hero-title {
-            font-size: clamp(24px, 3.6vw, 28px);
+            font-size:
+              clamp(
+                24px,
+                3.6vw,
+                28px
+              );
           }
 
           .kk-hero-description {
-            font-size: 14px;
+            font-size:
+              14px;
 
-            max-width: 480px;
+            max-width:
+              480px;
           }
 
           .kk-hero-certificates {
-            gap: 10px;
+            gap:
+              10px;
           }
 
           .kk-certificate {
-            width: clamp(80px, 10vw, 100px);
+            width:
+              clamp(
+                80px,
+                10vw,
+                100px
+              );
           }
 
           .kk-hero-image-wrap {
             padding:
-              20px 24px 0;
+              20px
+              24px
+              0;
+          }
+
+          .kk-hero-image {
+            top:
+              20px !important;
+
+            right:
+              24px !important;
+
+            bottom:
+              0 !important;
+
+            left:
+              24px !important;
+
+            width:
+              calc(
+                100% - 48px
+              ) !important;
+
+            height:
+              calc(
+                100% - 20px
+              ) !important;
           }
 
           .kk-hero-overlay {
-            top: 36%;
+            top:
+              65%;
 
             backdrop-filter:
               blur(8px);
@@ -811,58 +971,102 @@ export default function Hero() {
           }
         }
 
-        /* =========================================
-           SMALL TABLET / LARGE PHONE LANDSCAPE
-           Between the tablet layout and the fully
-           stacked mobile layout, the two-column grid
-           gets tight — shrink certificates further and
-           tighten the title so nothing crowds the edge.
-        ========================================= */
+        /* =====================================================
+           SMALL TABLET / LANDSCAPE
+        ===================================================== */
 
         @media (max-width: 860px) {
           .kk-hero-content-inner {
-            gap: clamp(16px, 3vw, 28px);
+            gap:
+              clamp(
+                16px,
+                3vw,
+                28px
+              );
           }
 
           .kk-hero-title {
-            font-size: clamp(21px, 4.2vw, 25px);
+            font-size:
+              clamp(
+                21px,
+                4.2vw,
+                25px
+              );
           }
 
           .kk-hero-description {
-            max-width: 380px;
+            max-width:
+              380px;
           }
 
           .kk-certificate {
-            width: clamp(70px, 11vw, 90px);
+            width:
+              clamp(
+                70px,
+                11vw,
+                90px
+              );
           }
         }
 
-        /* =========================================
+        /* =====================================================
            MOBILE
-        ========================================= */
+        ===================================================== */
 
         @media (max-width: 767px) {
           .kk-hero {
-            min-height: 720px;
+            min-height:
+              720px;
 
-            display: flex;
+            display:
+              flex;
 
-            flex-direction: column;
+            flex-direction:
+              column;
           }
 
           .kk-hero-image-wrap {
-            height: 58%;
+            height:
+              58%;
 
             padding:
-              14px 14px 0;
+              14px
+              14px
+              0;
+          }
+
+          .kk-hero-image {
+            top:
+              14px !important;
+
+            right:
+              14px !important;
+
+            bottom:
+              0 !important;
+
+            left:
+              14px !important;
+
+            width:
+              calc(
+                100% - 28px
+              ) !important;
+
+            height:
+              calc(
+                100% - 14px
+              ) !important;
           }
 
           .kk-hero-overlay {
-            top: 34%;
+            top:
+              75%;
 
             background:
               linear-gradient(
                 to bottom,
+
                 rgba(
                   5,
                   5,
@@ -907,9 +1111,11 @@ export default function Hero() {
           }
 
           .kk-hero-content {
-            align-items: flex-end;
+            align-items:
+              flex-end;
 
-            padding-bottom: 45px;
+            padding-bottom:
+              45px;
           }
 
           .kk-hero-content-inner {
@@ -918,25 +1124,33 @@ export default function Hero() {
               20px
               0;
 
-            display: flex;
+            display:
+              flex;
 
-            flex-direction: column;
+            flex-direction:
+              column;
 
-            align-items: flex-start;
+            align-items:
+              flex-start;
 
-            justify-content: flex-end;
+            justify-content:
+              flex-end;
 
-            gap: 26px;
+            gap:
+              26px;
           }
 
           .kk-hero-copy {
-            width: 100%;
+            width:
+              100%;
 
-            max-width: none;
+            max-width:
+              none;
           }
 
           .kk-hero-title {
-            width: 100%;
+            width:
+              100%;
 
             font-size:
               clamp(
@@ -945,49 +1159,64 @@ export default function Hero() {
                 30px
               );
 
-            line-height: 0.96;
+            line-height:
+              0.96;
 
             letter-spacing:
               -0.05em;
 
-            white-space: normal;
+            white-space:
+              normal;
           }
 
           .kk-hero-description {
-            margin-top: 17px;
+            margin-top:
+              17px;
 
-            max-width: 320px;
+            max-width:
+              320px;
 
-            font-size: 13px;
+            font-size:
+              13px;
           }
 
           .kk-hero-actions {
-            margin-top: 22px;
+            margin-top:
+              22px;
 
-            gap: 18px;
+            gap:
+              18px;
 
-            flex-wrap: wrap;
+            flex-wrap:
+              wrap;
           }
 
           .kk-hero-primary {
-            min-height: 43px;
+            min-height:
+              43px;
 
             padding:
-              0 18px;
+              0
+              18px;
 
-            font-size: 11px;
+            font-size:
+              11px;
           }
 
           .kk-hero-secondary {
-            font-size: 11px;
+            font-size:
+              11px;
           }
 
           .kk-hero-certificates {
-            width: 100%;
+            width:
+              100%;
 
-            justify-content: flex-start;
+            justify-content:
+              flex-start;
 
-            gap: 12px;
+            gap:
+              12px;
           }
 
           .kk-certificate {
@@ -1000,29 +1229,61 @@ export default function Hero() {
           }
         }
 
-        /* =========================================
+        /* =====================================================
            SMALL MOBILE
-        ========================================= */
+        ===================================================== */
 
         @media (max-width: 480px) {
           .kk-hero {
-            min-height: 690px;
+            min-height:
+              690px;
           }
 
           .kk-hero-image-wrap {
-            height: 52%;
+            height:
+              52%;
 
             padding:
-              12px 12px 0;
+              12px
+              12px
+              0;
+          }
+
+          .kk-hero-image {
+            top:
+              12px !important;
+
+            right:
+              12px !important;
+
+            bottom:
+              0 !important;
+
+            left:
+              12px !important;
+
+            width:
+              calc(
+                100% - 24px
+              ) !important;
+
+            height:
+              calc(
+                100% - 12px
+              ) !important;
           }
 
           .kk-hero-content {
-            padding-bottom: 42px;
+            padding-bottom:
+              42px;
           }
 
           .kk-hero-content-inner {
-            padding-left: 16px;
-            padding-right: 16px;
+            padding-left:
+              16px;
+
+            padding-right:
+              16px;
           }
 
           .kk-hero-title {
@@ -1035,33 +1296,63 @@ export default function Hero() {
           }
 
           .kk-hero-description {
-            font-size: 12px;
+            font-size:
+              12px;
           }
 
           .kk-certificate {
-            width: 92px;
+            width:
+              92px;
           }
         }
 
-        /* =========================================
+        /* =====================================================
            VERY SMALL MOBILE
-        ========================================= */
+        ===================================================== */
 
         @media (max-width: 360px) {
           .kk-hero-title {
-            font-size: 20px;
+            font-size:
+              20px;
           }
         }
 
-        /* =========================================
+        /* =====================================================
+           TOUCH DEVICES
+        ===================================================== */
+
+        @media (hover: none) {
+          .kk-hero-primary:hover {
+            transform:
+              none;
+
+            box-shadow:
+              0 9px 24px
+              rgba(
+                0,
+                33,
+                175,
+                0.28
+              );
+          }
+        }
+
+        /* =====================================================
            REDUCED MOTION
-        ========================================= */
+        ===================================================== */
 
         @media (
-          prefers-reduced-motion: reduce
+          prefers-reduced-motion:
+            reduce
         ) {
           .kk-marquee-track {
-            animation: none;
+            animation:
+              none;
+          }
+
+          .kk-hero-primary {
+            transition:
+              none;
           }
         }
       `}</style>

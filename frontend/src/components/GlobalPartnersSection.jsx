@@ -1,138 +1,42 @@
 "use client";
-
 const logos = Array.from(
   { length: 15 },
-  (_, index) => `/home/global/${index + 1}.png`
+  (_, index) =>
+    `/home/global/${index + 1}.png`
 );
 
 export default function GlobalPartnersSection({
   heading = "Partners in Global Excellence",
 }) {
   return (
-    <section
-      style={{
-        width: "100%",
-        background: "#F3F8FF",
-        padding: "10px 32px 90px",
-        boxSizing: "border-box",
-        fontFamily:
-          "'Britti Sans Trial', Arial, Helvetica, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1400px",
-          margin: "0 auto",
-        }}
-      >
+    <section className="global-partners-section">
+      <div className="global-partners-container">
         {/* =========================================
             HEADING
         ========================================== */}
 
-        <h2
-          style={{
-            margin: 0,
-            textAlign: "center",
-
-            fontFamily:
-              "'Britti Sans Trial', Arial, sans-serif",
-
-            fontSize: "32px",
-            lineHeight: 1.15,
-
-            fontWeight: 600,
-
-            letterSpacing: "-0.045em",
-
-            color: "#0E0E0E",
-          }}
-        >
-{heading}
+        <h2 className="global-partners-heading">
+          {heading}
         </h2>
 
         {/* =========================================
             LOGO GRID
         ========================================== */}
 
-        <div
-          className="global-partners-grid"
-          style={{
-            width: "100%",
-
-            marginTop: "70px",
-
-            display: "grid",
-
-            gridTemplateColumns:
-              "repeat(5, minmax(0, 1fr))",
-
-            columnGap: "55px",
-
-            rowGap: "45px",
-
-            alignItems: "center",
-
-            justifyItems: "center",
-          }}
-        >
+        <div className="global-partners-grid">
           {logos.map((logo, index) => (
             <div
               key={logo}
               className="global-partner-item"
-              style={{
-                width: "100%",
-                height: "66px",
-
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-
-                boxSizing: "border-box",
-              }}
             >
-              {/* =========================================
-                  MASK LOGO
-              ========================================== */}
-
               <div
                 className="global-partner-logo"
                 role="img"
-                aria-label={`Global Partner ${index + 1}`}
+                aria-label={`Global Partner ${
+                  index + 1
+                }`}
                 style={{
-                  width: "180px",
-                  height: "88px",
-
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-
-                  backgroundColor: "#0E0E0E",
-
-                  WebkitMaskImage: `url("${logo}")`,
-                  maskImage: `url("${logo}")`,
-
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-
-                  WebkitMaskPosition: "center",
-                  maskPosition: "center",
-
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-
-                  WebkitMaskComposite: "source-over",
-                  maskComposite: "add",
-
-                  display: "block",
-
-                  transition:
-                    "background-color 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
-
-                  transform: "scale(1)",
-
-                  cursor: "pointer",
-
-                  flexShrink: 0,
+                  "--partner-logo": `url("${logo}")`,
                 }}
               />
             </div>
@@ -142,13 +46,216 @@ export default function GlobalPartnersSection({
 
       <style jsx>{`
         /* =========================================
+           SECTION
+        ========================================== */
+
+        .global-partners-section {
+          width: 100%;
+
+          background: #f3f8ff;
+
+          padding:
+            10px 32px 90px;
+
+          box-sizing: border-box;
+
+          font-family:
+            "Britti Sans Trial",
+            Arial,
+            Helvetica,
+            sans-serif;
+
+          overflow: hidden;
+        }
+
+        /* =========================================
+           CONTAINER
+        ========================================== */
+
+        .global-partners-container {
+          width: 100%;
+
+          max-width: 1400px;
+
+          margin: 0 auto;
+
+          min-width: 0;
+        }
+
+        /* =========================================
+           HEADING
+        ========================================== */
+
+        .global-partners-heading {
+          margin: 0;
+
+          text-align: center;
+
+          font-family:
+            "Britti Sans Trial",
+            Arial,
+            sans-serif;
+
+          font-size: 32px;
+
+          line-height: 1.15;
+
+          font-weight: 600;
+
+          letter-spacing:
+            -0.045em;
+
+          color: #0e0e0e;
+
+          max-width: 100%;
+
+          overflow-wrap:
+            break-word;
+        }
+
+        /* =========================================
+           GRID
+        ========================================== */
+
+        .global-partners-grid {
+          width: 100%;
+
+          margin-top: 70px;
+
+          display: grid;
+
+          grid-template-columns:
+            repeat(
+              5,
+              minmax(
+                0,
+                1fr
+              )
+            );
+
+          column-gap: 55px;
+
+          row-gap: 45px;
+
+          align-items: center;
+
+          justify-items: center;
+        }
+
+        /* =========================================
+           ITEM
+        ========================================== */
+
+        .global-partner-item {
+          width: 100%;
+
+          height: 66px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          box-sizing: border-box;
+
+          min-width: 0;
+        }
+
+        /* =========================================
+           LOGO MASK
+        ========================================== */
+
+        .global-partner-logo {
+          width: 180px;
+
+          height: 88px;
+
+          max-width: 100%;
+
+          max-height: 100%;
+
+          flex-shrink: 0;
+
+          display: block;
+
+          background-color: #0e0e0e;
+
+          -webkit-mask-image:
+            var(--partner-logo);
+
+          mask-image:
+            var(--partner-logo);
+
+          -webkit-mask-repeat:
+            no-repeat;
+
+          mask-repeat:
+            no-repeat;
+
+          -webkit-mask-position:
+            center;
+
+          mask-position:
+            center;
+
+          -webkit-mask-size:
+            contain;
+
+          mask-size:
+            contain;
+
+          -webkit-mask-composite:
+            source-over;
+
+          mask-composite:
+            add;
+
+          transform:
+            translate3d(
+              0,
+              0,
+              0
+            )
+            scale(1);
+
+          transition:
+            background-color
+              0.45s ease,
+
+            transform
+              0.45s
+              cubic-bezier(
+                0.22,
+                1,
+                0.36,
+                1
+              );
+
+          cursor:
+            pointer;
+
+          will-change:
+            transform;
+        }
+
+        /* =========================================
            DESKTOP HOVER
         ========================================== */
 
         .global-partner-logo:hover {
-          background-color: #0180fd !important;
+          background-color:
+            #0180fd;
 
-          transform: scale(1.06);
+          transform:
+            translate3d(
+              0,
+              0,
+              0
+            )
+            scale(
+              1.06
+            );
         }
 
         /* =========================================
@@ -157,37 +264,48 @@ export default function GlobalPartnersSection({
         ========================================== */
 
         @media (max-width: 1024px) {
-          section {
+          .global-partners-section {
             padding:
               40px 32px
-              75px !important;
+              75px;
           }
 
-          h2 {
-            font-size: 30px !important;
+          .global-partners-heading {
+            font-size:
+              30px;
           }
 
           .global-partners-grid {
             grid-template-columns:
               repeat(
                 4,
-                minmax(0, 1fr)
-              ) !important;
+                minmax(
+                  0,
+                  1fr
+                )
+              );
 
-            column-gap: 30px !important;
+            column-gap:
+              30px;
 
-            row-gap: 38px !important;
+            row-gap:
+              38px;
 
-            margin-top: 58px !important;
+            margin-top:
+              58px;
           }
 
           .global-partner-item {
-            height: 70px !important;
+            height:
+              70px;
           }
 
           .global-partner-logo {
-            width: 140px !important;
-            height: 54px !important;
+            width:
+              140px;
+
+            height:
+              54px;
           }
         }
 
@@ -197,97 +315,127 @@ export default function GlobalPartnersSection({
         ========================================== */
 
         @media (max-width: 640px) {
-          section {
+          .global-partners-section {
             padding:
               48px 20px
-              65px !important;
+              65px;
           }
 
-          h2 {
-            font-size: 27px !important;
+          .global-partners-heading {
+            font-size:
+              27px;
 
-            line-height: 1.12 !important;
+            line-height:
+              1.12;
           }
 
           .global-partners-grid {
             grid-template-columns:
               repeat(
                 3,
-                minmax(0, 1fr)
-              ) !important;
+                minmax(
+                  0,
+                  1fr
+                )
+              );
 
-            column-gap: 14px !important;
+            column-gap:
+              14px;
 
-            row-gap: 28px !important;
+            row-gap:
+              28px;
 
-            margin-top: 48px !important;
+            margin-top:
+              48px;
           }
 
           .global-partner-item {
-            width: 100% !important;
+            width:
+              100%;
 
-            height: 60px !important;
+            height:
+              60px;
           }
 
           .global-partner-logo {
-            width: 100px !important;
+            width:
+              100px;
 
-            height: 42px !important;
+            height:
+              42px;
 
-            max-width: 100% !important;
+            max-width:
+              100%;
 
-            max-height: 100% !important;
-          }
-
-          /*
-            Touch devices mein hover
-            fake na ho isliye scale
-            remove rakha hai.
-          */
-
-          .global-partner-logo:hover {
-            transform: none;
+            max-height:
+              100%;
           }
         }
 
         /* =========================================
            SMALL MOBILE
-           STILL 3 PER ROW
+           3 LOGOS PER ROW
         ========================================== */
 
         @media (max-width: 380px) {
-          section {
+          .global-partners-section {
             padding:
               42px 18px
-              58px !important;
+              58px;
           }
 
-          h2 {
-            font-size: 24px !important;
+          .global-partners-heading {
+            font-size:
+              24px;
           }
 
           .global-partners-grid {
             grid-template-columns:
               repeat(
                 3,
-                minmax(0, 1fr)
-              ) !important;
+                minmax(
+                  0,
+                  1fr
+                )
+              );
 
-            column-gap: 10px !important;
+            column-gap:
+              10px;
 
-            row-gap: 24px !important;
+            row-gap:
+              24px;
 
-            margin-top: 42px !important;
+            margin-top:
+              42px;
           }
 
           .global-partner-item {
-            height: 54px !important;
+            height:
+              54px;
           }
 
           .global-partner-logo {
-            width: 90px !important;
+            width:
+              90px;
 
-            height: 38px !important;
+            height:
+              38px;
+          }
+        }
+
+        /* =========================================
+           TOUCH DEVICES
+        ========================================== */
+
+        @media (hover: none) {
+          .global-partner-logo:hover {
+            transform:
+              translate3d(
+                0,
+                0,
+                0
+              )
+              scale(1);
           }
         }
 
@@ -296,14 +444,24 @@ export default function GlobalPartnersSection({
         ========================================== */
 
         @media (
-          prefers-reduced-motion: reduce
+          prefers-reduced-motion:
+            reduce
         ) {
           .global-partner-logo {
-            transition: none !important;
+            transition:
+              none;
+            will-change:
+              auto;
           }
 
           .global-partner-logo:hover {
-            transform: none;
+            transform:
+              translate3d(
+                0,
+                0,
+                0
+              )
+              scale(1);
           }
         }
       `}</style>

@@ -3,7 +3,6 @@
 import {
   useEffect,
   useRef,
-  useState,
 } from "react";
 
 const items = [
@@ -34,112 +33,134 @@ const items = [
 ];
 
 export default function TruthSection() {
-  const sectionRef = useRef(null);
-
-  const [animationStarted, setAnimationStarted] =
-    useState(false);
+  const sectionRef =
+    useRef(null);
 
   useEffect(() => {
-    const section = sectionRef.current;
+    const section =
+      sectionRef.current;
 
-    if (!section) return;
+    if (!section) {
+      return undefined;
+    }
 
-    const reducedMotion =
-      window.matchMedia &&
-      window.matchMedia(
+    const reduceMotion =
+      window.matchMedia?.(
         "(prefers-reduced-motion: reduce)"
       ).matches;
 
-    /*
-      Reduced motion:
-      animation disabled.
-    */
-    if (reducedMotion) {
-      setAnimationStarted(true);
-      return;
+    /* =========================================
+       REDUCED MOTION
+    ========================================== */
+
+    if (reduceMotion) {
+      section.classList.add(
+        "is-visible"
+      );
+
+      return undefined;
     }
 
     let restartTimer = null;
     let intervalId = null;
 
-    /*
-      ---------------------------------------------------------
-      FORCE ANIMATION RESTART
-      ---------------------------------------------------------
+    /* =========================================
+       RUN ANIMATION
 
-      1. is-visible = false
-         -> cards go to their starting position
+       IMPORTANT:
+       Direct DOM class toggle is used instead
+       of React state so the whole section does
+       not rerender every 10 seconds.
 
-      2. force browser reflow
-         -> ensures transition restart
+       Only opacity + transform are animated.
+       No width/height/margin/padding changes.
+    ========================================== */
 
-      3. requestAnimationFrame
-         -> next paint
-
-      4. is-visible = true
-         -> cards animate back
-    */
     const runAnimation = () => {
-      setAnimationStarted(false);
+      if (!section.isConnected) {
+        return;
+      }
+
+      /* Reset */
+      section.classList.remove(
+        "is-visible"
+      );
 
       /*
-        Read layout immediately after removing class.
-        This forces the browser to acknowledge
-        the hidden state before the next state.
+        Force browser to commit the reset
+        before starting the next transition.
       */
       void section.offsetHeight;
 
+      /*
+        Next paint -> animate in.
+      */
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          setAnimationStarted(true);
+          if (
+            section.isConnected
+          ) {
+            section.classList.add(
+              "is-visible"
+            );
+          }
         });
       });
     };
 
-    /*
-      ---------------------------------------------------------
-      INITIAL LOAD
-      ---------------------------------------------------------
+    /* =========================================
+       INITIAL STATE
 
-      First let the complete UI appear normally.
-      Then start the first animation.
-    */
+       Keep first render visually stable.
+       We do NOT hide the section first.
 
-    setAnimationStarted(true);
+       Animation starts after initial paint.
+    ========================================== */
 
-    restartTimer = window.setTimeout(() => {
-      runAnimation();
-    }, 400);
+    section.classList.add(
+      "is-visible"
+    );
 
-    /*
-      ---------------------------------------------------------
-      REPEAT EVERY 10 SECONDS
-      ---------------------------------------------------------
+    restartTimer =
+      window.setTimeout(() => {
+        runAnimation();
+      }, 500);
 
-      This keeps running even while the user
-      remains on this section.
-    */
+    /* =========================================
+       REPEAT EVERY 10 SECONDS
+    ========================================== */
 
-    intervalId = window.setInterval(() => {
-      runAnimation();
-    }, 10000);
+    intervalId =
+      window.setInterval(() => {
+        runAnimation();
+      }, 10000);
 
-    /*
-      ---------------------------------------------------------
-      CLEANUP
-      ---------------------------------------------------------
-    */
+    /* =========================================
+       CLEANUP
+    ========================================== */
 
     return () => {
-      if (restartTimer) {
+      if (
+        restartTimer !== null
+      ) {
         window.clearTimeout(
           restartTimer
         );
       }
 
-      if (intervalId) {
+      if (
+        intervalId !== null
+      ) {
         window.clearInterval(
           intervalId
+        );
+      }
+
+      if (
+        section.isConnected
+      ) {
+        section.classList.add(
+          "is-visible"
         );
       }
     };
@@ -148,11 +169,7 @@ export default function TruthSection() {
   return (
     <section
       ref={sectionRef}
-      className={`truth-section ${
-        animationStarted
-          ? "is-visible"
-          : ""
-      }`}
+      className="truth-section is-visible"
     >
       {/* =========================================
           HEADER
@@ -164,9 +181,12 @@ export default function TruthSection() {
         </h2>
 
         <p className="truth-subtext">
-          Most digital agencies are in the business of looking busy.
-          Impressive proposals. Elaborate kick-off decks. Weekly status
-          reports that say nothing.
+          Most digital agencies are in
+          the business of looking busy.
+          Impressive proposals.
+          Elaborate kick-off decks.
+          Weekly status reports that say
+          nothing.
         </p>
       </div>
 
@@ -176,41 +196,36 @@ export default function TruthSection() {
 
       <div className="truth-grid">
         {items.map(
-          (item, index) => (
+          (
+            item,
+            index
+          ) => (
             <article
               key={item.id}
               className={`truth-card truth-card-${
                 index + 1
               }`}
               style={{
-                /*
-                  Unequal starting distance
-                */
                 "--from-y": `${
                   150 +
                   index * 60
                 }px`,
 
-                /*
-                  Slightly different rotation
-                */
                 "--from-rotate":
                   index % 2 === 0
                     ? "-2.5deg"
                     : "2.5deg",
 
-                /*
-                  Stagger delay
-                */
                 "--delay": `${
                   index * 180
                 }ms`,
               }}
             >
-              {/* ICON */}
+              {/* =====================================
+                  ICON
+              ===================================== */}
 
               <div className="truth-icon">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.logo}
                   alt={item.title}
@@ -218,13 +233,17 @@ export default function TruthSection() {
                 />
               </div>
 
-              {/* TITLE */}
+              {/* =====================================
+                  TITLE
+              ===================================== */}
 
               <h3 className="truth-card-title">
                 {item.title}
               </h3>
 
-              {/* TEXT */}
+              {/* =====================================
+                  TEXT
+              ===================================== */}
 
               <p className="truth-card-text">
                 {item.text}
@@ -250,12 +269,7 @@ export default function TruthSection() {
         </a>
       </div>
 
-      {/* =========================================
-          CSS
-      ========================================== */}
-
       <style jsx>{`
-
         /* =====================================================
            SECTION
         ===================================================== */
@@ -281,6 +295,13 @@ export default function TruthSection() {
             sans-serif;
 
           box-sizing: border-box;
+
+          /*
+            Keep the section isolated so transforms,
+            opacity and painting don't affect nearby
+            layout.
+          */
+          contain: layout paint;
         }
 
         /* =====================================================
@@ -458,9 +479,19 @@ export default function TruthSection() {
           transform-origin:
             center bottom;
 
+          /*
+            Only composited properties
+            are animated.
+          */
           will-change:
             transform,
             opacity;
+
+          backface-visibility:
+            hidden;
+
+          -webkit-backface-visibility:
+            hidden;
 
           transition:
             opacity
@@ -509,7 +540,6 @@ export default function TruthSection() {
 
         /* =====================================================
            STAIRCASE HEIGHTS
-           SAME AS BEFORE
         ===================================================== */
 
         .truth-card-1 {
@@ -605,6 +635,12 @@ export default function TruthSection() {
           will-change:
             transform,
             opacity;
+
+          backface-visibility:
+            hidden;
+
+          -webkit-backface-visibility:
+            hidden;
         }
 
         .truth-section.is-visible
@@ -755,6 +791,9 @@ export default function TruthSection() {
           will-change:
             transform,
             opacity;
+
+          backface-visibility:
+            hidden;
         }
 
         .truth-section.is-visible
@@ -1045,7 +1084,7 @@ export default function TruthSection() {
           }
 
           /* =====================================
-             MOBILE CARD RESET
+             MOBILE CARD
           ====================================== */
 
           .truth-card,
@@ -1080,11 +1119,6 @@ export default function TruthSection() {
             border-top:
               1px solid
               #d5dfed;
-
-            /*
-              Every mobile card gets
-              same downward animation.
-            */
 
             transform:
               translate3d(
@@ -1335,10 +1369,9 @@ export default function TruthSection() {
         ===================================================== */
 
         @media (
-          prefers-reduced-motion: reduce
+          prefers-reduced-motion:
+            reduce
         ) {
-          .truth-header,
-          .truth-subtext,
           .truth-card,
           .truth-icon,
           .truth-cta-wrap {
@@ -1350,9 +1383,11 @@ export default function TruthSection() {
 
             transition:
               none;
+
+            will-change:
+              auto;
           }
         }
-
       `}</style>
     </section>
   );

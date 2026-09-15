@@ -444,7 +444,7 @@ export default function Footer() {
                 </strong>
 
                 <p>
-                  First Floor, Plot-22, Mahana Mandi Rd,
+                  First Floor, Plot-22, Muhana Mandi Rd,
                   Near Ke sar Chauraha, Mansarovar
                   Extension, Kalyanpura, Jaipur, Jaipur,
                   Baranhorpura, Rajasthan 302020 (INDIA)
@@ -456,7 +456,7 @@ export default function Footer() {
                   Call :
                 </strong>{" "}
                 <a href="tel:07873413302">
-                  07878 41302
+                  078783 41302
                 </a>
 
                 <span className="kk-divider">

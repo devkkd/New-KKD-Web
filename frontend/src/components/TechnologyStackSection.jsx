@@ -1,203 +1,395 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 /* =========================================================
    DATA
 ========================================================= */
 
 const frontendLogos = [
-  { name: "React.js", image: "/home/stack/frontend/1.png" },
-  { name: "Vue.js 3", image: "/home/stack/frontend/2.png" },
-  { name: "Angular", image: "/home/stack/frontend/3.png" },
-  { name: "TypeScript", image: "/home/stack/frontend/4.png" },
-  { name: "Tailwind CSS", image: "/home/stack/frontend/5.png" },
+  {
+    name: "React.js",
+    image: "/home/stack/frontend/1.png",
+  },
+  {
+    name: "Vue.js 3",
+    image: "/home/stack/frontend/2.png",
+  },
+  {
+    name: "Angular",
+    image: "/home/stack/frontend/3.png",
+  },
+  {
+    name: "TypeScript",
+    image: "/home/stack/frontend/4.png",
+  },
+  {
+    name: "Tailwind CSS",
+    image: "/home/stack/frontend/5.png",
+  },
 ];
 
 const mobileLogos = [
-  { name: "Swift", image: "/home/stack/mobile/1.png" },
-  { name: "Kotlin", image: "/home/stack/mobile/2.png" },
-  { name: "React Native", image: "/home/stack/mobile/3.png" },
-  { name: "Flutter", image: "/home/stack/mobile/4.png" },
+  {
+    name: "Swift",
+    image: "/home/stack/mobile/1.png",
+  },
+  {
+    name: "Kotlin",
+    image: "/home/stack/mobile/2.png",
+  },
+  {
+    name: "React Native",
+    image: "/home/stack/mobile/3.png",
+  },
+  {
+    name: "Flutter",
+    image: "/home/stack/mobile/4.png",
+  },
 ];
 
 const backendLogos = [
-  { name: "Node.js", image: "/home/stack/backend/1.png" },
-  { name: "Django", image: "/home/stack/backend/2.png" },
-  { name: "Go", image: "/home/stack/backend/3.png" },
-  { name: "Ruby on Rails", image: "/home/stack/backend/4.png" },
-  { name: "Laravel", image: "/home/stack/backend/5.png" },
+  {
+    name: "Node.js",
+    image: "/home/stack/backend/1.png",
+  },
+  {
+    name: "Django",
+    image: "/home/stack/backend/2.png",
+  },
+  {
+    name: "Go",
+    image: "/home/stack/backend/3.png",
+  },
+  {
+    name: "Ruby on Rails",
+    image: "/home/stack/backend/4.png",
+  },
+  {
+    name: "Laravel",
+    image: "/home/stack/backend/5.png",
+  },
 ];
 
 const aiLogos = [
-  { name: "PyTorch", image: "/home/stack/data/1.png" },
-  { name: "LangChain", image: "/home/stack/data/2.png" },
-  { name: "OpenAI", image: "/home/stack/data/3.png" },
-  { name: "Pinecone", image: "/home/stack/data/4.png" },
-  { name: "Apache Spark", image: "/home/stack/data/5.png" },
+  {
+    name: "PyTorch",
+    image: "/home/stack/data/1.png",
+  },
+  {
+    name: "LangChain",
+    image: "/home/stack/data/2.png",
+  },
+  {
+    name: "OpenAI",
+    image: "/home/stack/data/3.png",
+  },
+  {
+    name: "Pinecone",
+    image: "/home/stack/data/4.png",
+  },
+  {
+    name: "Apache Spark",
+    image: "/home/stack/data/5.png",
+  },
 ];
 
 const cloudLogos = [
-  { name: "AWS", image: "/home/stack/cloud/1.png" },
-  { name: "Google Cloud", image: "/home/stack/cloud/2.png" },
-  { name: "Microsoft Azure", image: "/home/stack/cloud/3.png" },
-  { name: "Docker", image: "/home/stack/cloud/4.png" },
-  { name: "Terraform", image: "/home/stack/cloud/5.png" },
-  { name: "GitHub", image: "/home/stack/cloud/6.png" },
+  {
+    name: "AWS",
+    image: "/home/stack/cloud/1.png",
+  },
+  {
+    name: "Google Cloud",
+    image: "/home/stack/cloud/2.png",
+  },
+  {
+    name: "Microsoft Azure",
+    image: "/home/stack/cloud/3.png",
+  },
+  {
+    name: "Docker",
+    image: "/home/stack/cloud/4.png",
+  },
+  {
+    name: "Terraform",
+    image: "/home/stack/cloud/5.png",
+  },
+  {
+    name: "GitHub",
+    image: "/home/stack/cloud/6.png",
+  },
 ];
 
 /* =========================================================
-   RESPONSIVE HOOK
+   RESPONSIVE BREAKPOINTS
 
-   Inline styles can't use @media, so breakpoints are tracked
-   in JS and every style object below reads from these flags.
-   Same breakpoints as the original CSS: 1100 / 767 / 420.
+   IMPORTANT:
+   We don't listen to every resize pixel.
+   MatchMedia updates only when a breakpoint is crossed.
 ========================================================= */
 
 function useBreakpoints() {
-  // IMPORTANT:
-  // Server and first client render must use the SAME value.
-  const [width, setWidth] = useState(1400);
+  const [breakpoints, setBreakpoints] =
+    useState({
+      isTablet: false,
+      isMobile: false,
+      isSmall: false,
+    });
 
   useEffect(() => {
-    const updateWidth = () => {
-      setWidth(window.innerWidth);
-    };
+    const tabletQuery =
+      window.matchMedia(
+        "(max-width: 1100px)"
+      );
 
-    updateWidth();
+    const mobileQuery =
+      window.matchMedia(
+        "(max-width: 767px)"
+      );
 
-    window.addEventListener(
-      "resize",
-      updateWidth
+    const smallQuery =
+      window.matchMedia(
+        "(max-width: 420px)"
+      );
+
+    const updateBreakpoints =
+      () => {
+        setBreakpoints((current) => {
+          const next = {
+            isTablet:
+              tabletQuery.matches,
+
+            isMobile:
+              mobileQuery.matches,
+
+            isSmall:
+              smallQuery.matches,
+          };
+
+          /*
+            Prevent unnecessary rerender
+            if breakpoint values did not change.
+          */
+
+          if (
+            current.isTablet ===
+              next.isTablet &&
+            current.isMobile ===
+              next.isMobile &&
+            current.isSmall ===
+              next.isSmall
+          ) {
+            return current;
+          }
+
+          return next;
+        });
+      };
+
+    updateBreakpoints();
+
+    tabletQuery.addEventListener(
+      "change",
+      updateBreakpoints
+    );
+
+    mobileQuery.addEventListener(
+      "change",
+      updateBreakpoints
+    );
+
+    smallQuery.addEventListener(
+      "change",
+      updateBreakpoints
     );
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        updateWidth
+      tabletQuery.removeEventListener(
+        "change",
+        updateBreakpoints
+      );
+
+      mobileQuery.removeEventListener(
+        "change",
+        updateBreakpoints
+      );
+
+      smallQuery.removeEventListener(
+        "change",
+        updateBreakpoints
       );
     };
   }, []);
 
-  return {
-    isTablet: width <= 1100,
-    isMobile: width <= 767,
-    isSmall: width <= 420,
-  };
+  return breakpoints;
 }
 
 /* =========================================================
    LOGO ITEM
 ========================================================= */
 
-function LogoItem({ name, image, bp }) {
-  const { isTablet, isMobile, isSmall } = bp;
+function LogoItem({
+  name,
+  image,
+  bp,
+}) {
+  const {
+    isTablet,
+    isMobile,
+    isSmall,
+  } = bp;
 
   const itemStyle = {
     flex: "1 1 0",
     minWidth: 0,
-    width: isMobile ? "auto" : "100%",
-    height: isSmall ? "72px" : isMobile ? "76px" : "84px",
+
+    width: isMobile
+      ? "auto"
+      : "100%",
+
+    height: isSmall
+      ? "72px"
+      : isMobile
+      ? "76px"
+      : "84px",
+
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent:
+      "flex-start",
+
     textAlign: "center",
+
     boxSizing: "border-box",
   };
 
   const boxStyle = {
     width: "100%",
-    height: isSmall ? "42px" : isMobile ? "46px" : "52px",
-    minHeight: isSmall ? "42px" : isMobile ? "46px" : "52px",
+
+    height: isSmall
+      ? "42px"
+      : isMobile
+      ? "46px"
+      : "52px",
+
+    minHeight: isSmall
+      ? "42px"
+      : isMobile
+      ? "46px"
+      : "52px",
+
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxSizing: "border-box",
+
+    alignItems:
+      "center",
+
+    justifyContent:
+      "center",
+
+    boxSizing:
+      "border-box",
   };
 
   const imageStyle = {
-  width: isSmall
-    ? "52px"
-    : isMobile
-    ? "60px"
-    : isTablet
-    ? "70px"
-    : "82px",
+    width: isSmall
+      ? "52px"
+      : isMobile
+      ? "60px"
+      : isTablet
+      ? "70px"
+      : "82px",
 
-  height: isSmall
-    ? "42px"
-    : isMobile
-    ? "48px"
-    : isTablet
-    ? "56px"
-    : "64px",
+    height: isSmall
+      ? "42px"
+      : isMobile
+      ? "48px"
+      : isTablet
+      ? "56px"
+      : "64px",
 
-  maxWidth: "none",
-  maxHeight: "none",
+    maxWidth: "none",
+    maxHeight: "none",
 
-  display: "block",
+    display: "block",
 
-  objectFit: "contain",
-  objectPosition: "center",
+    objectFit:
+      "contain",
 
-  userSelect: "none",
-  pointerEvents: "none",
+    objectPosition:
+      "center",
 
-  WebkitUserDrag: "none",
+    userSelect:
+      "none",
 
-  flexShrink: 0,
-};
+    pointerEvents:
+      "none",
+
+    WebkitUserDrag:
+      "none",
+
+    flexShrink: 0,
+  };
 
   const nameStyle = {
-  width: "100%",
+    width: "100%",
 
-  height: isSmall
-    ? "24px"
-    : isMobile
-    ? "26px"
-    : isTablet
-    ? "28px"
-    : "30px",
+    height: isSmall
+      ? "24px"
+      : isMobile
+      ? "26px"
+      : isTablet
+      ? "28px"
+      : "30px",
 
-  minHeight: isSmall
-    ? "24px"
-    : isMobile
-    ? "26px"
-    : isTablet
-    ? "28px"
-    : "30px",
+    minHeight: isSmall
+      ? "24px"
+      : isMobile
+      ? "26px"
+      : isTablet
+      ? "28px"
+      : "30px",
 
-  marginTop: isMobile
-    ? "8px"
-    : "10px",
+    marginTop:
+      isMobile
+        ? "8px"
+        : "10px",
 
-  display: "flex",
+    display: "flex",
 
-  alignItems: "flex-start",
+    alignItems:
+      "flex-start",
 
-  justifyContent: "center",
+    justifyContent:
+      "center",
 
-  fontSize: isSmall
-    ? "8px"
-    : isMobile
-    ? "9px"
-    : isTablet
-    ? "10px"
-    : "12px",
+    fontSize: isSmall
+      ? "8px"
+      : isMobile
+      ? "9px"
+      : isTablet
+      ? "10px"
+      : "12px",
 
-  lineHeight: 1.2,
+    lineHeight: 1.2,
 
-  fontWeight: 400,
+    fontWeight: 400,
 
-  color: "#0e0e0e",
+    color: "#0e0e0e",
 
-  whiteSpace: "nowrap",
+    whiteSpace:
+      "nowrap",
 
-  textAlign: "center",
+    textAlign:
+      "center",
 
-  boxSizing: "border-box",
-};
+    boxSizing:
+      "border-box",
+  };
 
   return (
     <div style={itemStyle}>
@@ -205,12 +397,34 @@ function LogoItem({ name, image, bp }) {
         <img
           src={image}
           alt={name}
+          width={
+            isSmall
+              ? 52
+              : isMobile
+              ? 60
+              : isTablet
+              ? 70
+              : 82
+          }
+          height={
+            isSmall
+              ? 42
+              : isMobile
+              ? 48
+              : isTablet
+              ? 56
+              : 64
+          }
+          loading="lazy"
+          decoding="async"
           style={imageStyle}
           draggable="false"
         />
       </div>
 
-      <div style={nameStyle}>{name}</div>
+      <div style={nameStyle}>
+        {name}
+      </div>
     </div>
   );
 }
@@ -219,60 +433,134 @@ function LogoItem({ name, image, bp }) {
    TECHNOLOGY GROUP
 ========================================================= */
 
-function TechnologyGroup({ title, logos, side, bp }) {
-  const { isTablet, isMobile, isSmall } = bp;
+function TechnologyGroup({
+  title,
+  logos,
+  side,
+  bp,
+}) {
+  const {
+    isTablet,
+    isMobile,
+    isSmall,
+  } = bp;
 
-  const groupStyle = isMobile
-    ? {
-        width: "100%",
-        minWidth: 0,
-        padding: isSmall ? "22px 0 24px" : "24px 0 26px",
-        borderBottom: "1px solid #d7dfeb",
-        boxSizing: "border-box",
-      }
-    : {
-        width: "100%",
-        minWidth: 0,
-        padding: "2px 0 31px",
-        boxSizing: "border-box",
-        ...(side === "left"
-  ? {
-      paddingRight: isTablet ? "20px" : "29px",
-    }
-  : {
-      paddingLeft: isTablet ? "20px" : "29px",
-    }),
-      };
+  const groupStyle =
+    isMobile
+      ? {
+          width: "100%",
+
+          minWidth: 0,
+
+          padding: isSmall
+            ? "22px 0 24px"
+            : "24px 0 26px",
+
+          borderBottom:
+            "1px solid #d7dfeb",
+
+          boxSizing:
+            "border-box",
+        }
+      : {
+          width: "100%",
+
+          minWidth: 0,
+
+          padding:
+            "2px 0 31px",
+
+          boxSizing:
+            "border-box",
+
+          ...(side ===
+          "left"
+            ? {
+                paddingRight:
+                  isTablet
+                    ? "20px"
+                    : "29px",
+              }
+            : {
+                paddingLeft:
+                  isTablet
+                    ? "20px"
+                    : "29px",
+              }),
+        };
 
   const titleStyle = {
-    margin: isMobile ? "0 0 23px" : "0 0 28px",
-    fontSize: isSmall ? "17px" : "18px",
+    margin: isMobile
+      ? "0 0 23px"
+      : "0 0 28px",
+
+    fontSize: isSmall
+      ? "17px"
+      : "18px",
+
     lineHeight: 1.2,
+
     fontWeight: 700,
-    letterSpacing: "-0.035em",
+
+    letterSpacing:
+      "-0.035em",
+
     color: "#0e0e0e",
   };
 
   const gridStyle = {
     width: "100%",
+
     display: "flex",
-    flexDirection: "row",
+
+    flexDirection:
+      "row",
+
     flexWrap: "nowrap",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: isSmall ? "3px" : isMobile ? "5px" : isTablet ? "8px" : "12px",
+
+    alignItems:
+      "flex-start",
+
+    justifyContent:
+      "space-between",
+
+    gap: isSmall
+      ? "3px"
+      : isMobile
+      ? "5px"
+      : isTablet
+      ? "8px"
+      : "12px",
+
     overflow: "visible",
-    boxSizing: "border-box",
+
+    boxSizing:
+      "border-box",
   };
 
   return (
-    <div style={groupStyle}>
-      <h3 style={titleStyle}>{title}</h3>
+    <div
+      style={groupStyle}
+    >
+      <h3
+        style={titleStyle}
+      >
+        {title}
+      </h3>
 
-      <div style={gridStyle}>
-        {logos.map((logo) => (
-          <LogoItem key={logo.name} name={logo.name} image={logo.image} bp={bp} />
-        ))}
+      <div
+        style={gridStyle}
+      >
+        {logos.map(
+          (logo) => (
+            <LogoItem
+              key={logo.name}
+              name={logo.name}
+              image={logo.image}
+              bp={bp}
+            />
+          )
+        )}
       </div>
     </div>
   );
@@ -283,25 +571,74 @@ function TechnologyGroup({ title, logos, side, bp }) {
 ========================================================= */
 
 export default function TechnologyStackSection() {
-  const bp = useBreakpoints();
-  const { isTablet, isMobile, isSmall } = bp;
+  const bp =
+    useBreakpoints();
 
-  const [buttonHovered, setButtonHovered] = useState(false);
-  const [supportsHover, setSupportsHover] = useState(true);
+  const {
+    isTablet,
+    isMobile,
+    isSmall,
+  } = bp;
+
+  const [
+    buttonHovered,
+    setButtonHovered,
+  ] = useState(false);
+
+  /*
+    Detect hover capability once.
+    This prevents hover-related state work on touch devices.
+  */
+
+  const [
+    supportsHover,
+    setSupportsHover,
+  ] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia) {
-      setSupportsHover(window.matchMedia("(hover: hover)").matches);
-    }
+    const query =
+      window.matchMedia(
+        "(hover: hover)"
+      );
+
+    const updateHover =
+      () => {
+        setSupportsHover(
+          query.matches
+        );
+      };
+
+    updateHover();
+
+    query.addEventListener(
+      "change",
+      updateHover
+    );
+
+    return () => {
+      query.removeEventListener(
+        "change",
+        updateHover
+      );
+    };
   }, []);
 
-  /* ---------------- SECTION / CONTAINER ---------------- */
+  /* =========================================================
+     SECTION
+  ========================================================= */
 
   const sectionStyle = {
     width: "100%",
-    background: "#f3f8ff",
-    color: "#0e0e0e",
-    fontFamily: '"Britti Sans Trial", Arial, Helvetica, sans-serif',
+
+    background:
+      "#f3f8ff",
+
+    color:
+      "#0e0e0e",
+
+    fontFamily:
+      '"Britti Sans Trial", Arial, Helvetica, sans-serif',
+
     padding: isSmall
       ? "40px 20px 54px"
       : isMobile
@@ -309,316 +646,646 @@ export default function TechnologyStackSection() {
       : isTablet
       ? "42px 32px 72px"
       : "44px 62px 82px",
-    boxSizing: "border-box",
+
+    boxSizing:
+      "border-box",
   };
+
+  /* =========================================================
+     CONTAINER
+  ========================================================= */
 
   const containerStyle = {
     width: "100%",
-    maxWidth: "1400px",
-    margin: "0 auto",
-    boxSizing: "border-box",
+
+    maxWidth:
+      "1400px",
+
+    margin:
+      "0 auto",
+
+    boxSizing:
+      "border-box",
+
+    minWidth:
+      0,
   };
 
-  /* ---------------- HEADER ---------------- */
+  /* =========================================================
+     HEADER
+  ========================================================= */
 
-  const headerStyle = isMobile
-    ? {
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-        paddingBottom: "30px",
-        boxSizing: "border-box",
-      }
-    : {
-        width: "100%",
-        display: "grid",
-        gridTemplateColumns: "minmax(0, 1.2fr) minmax(0, 0.8fr)",
-        columnGap: isTablet ? "50px" : "90px",
-        alignItems: "start",
-        paddingBottom: "40px",
-        boxSizing: "border-box",
-      };
+  const headerStyle =
+    isMobile
+      ? {
+          width: "100%",
+
+          display: "flex",
+
+          flexDirection:
+            "column",
+
+          gap: "24px",
+
+          paddingBottom:
+            "30px",
+
+          boxSizing:
+            "border-box",
+        }
+      : {
+          width: "100%",
+
+          display: "grid",
+
+          gridTemplateColumns:
+            "minmax(0, 1.2fr) minmax(0, 0.8fr)",
+
+          columnGap:
+            isTablet
+              ? "50px"
+              : "90px",
+
+          alignItems:
+            "start",
+
+          paddingBottom:
+            "40px",
+
+          boxSizing:
+            "border-box",
+        };
 
   const eyebrowStyle = {
-    marginBottom: isMobile ? "18px" : "23px",
-    fontSize: isMobile ? "11px" : "12px",
+    marginBottom:
+      isMobile
+        ? "18px"
+        : "23px",
+
+    fontSize:
+      isMobile
+        ? "11px"
+        : "12px",
+
     lineHeight: 1,
+
     fontWeight: 400,
-    color: "#0e0e0e",
+
+    color:
+      "#0e0e0e",
   };
 
   const headingStyle = {
     margin: 0,
-    fontSize: isSmall ? "19px" : isMobile ? "20px" : "22px",
-    lineHeight: isMobile ? 1.3 : 1.35,
+
+    fontSize: isSmall
+      ? "19px"
+      : isMobile
+      ? "20px"
+      : "22px",
+
+    lineHeight:
+      isMobile
+        ? 1.3
+        : 1.35,
+
     fontWeight: 700,
-    letterSpacing: "-0.03em",
-    color: "#0e0e0e",
+
+    letterSpacing:
+      "-0.03em",
+
+    color:
+      "#0e0e0e",
   };
 
   const headerCopyStyle = {
-  maxWidth: isMobile ? "100%" : "520px",
+    maxWidth:
+      isMobile
+        ? "100%"
+        : "520px",
 
-  margin: isMobile
-    ? 0
-    : "39px 0 0 -75px",
+    margin:
+      isMobile
+        ? 0
+        : "39px 0 0 -75px",
 
-  fontSize: "13px",
-  lineHeight: isMobile ? 1.6 : 1.55,
-  fontWeight: 400,
-  color: "#0e0e0e",
-};
+    fontSize:
+      "13px",
 
-  /* ---------------- TWO COLUMN ROWS ---------------- */
+    lineHeight:
+      isMobile
+        ? 1.6
+        : 1.55,
 
- const twoColumnRowStyle = isMobile
-  ? {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      borderBottom: 0,
-      boxSizing: "border-box",
-    }
-  : {
-      width: "100%",
-      display: "grid",
-      gridTemplateColumns:
-        "minmax(0, 1fr) minmax(0, 1fr)",
-      borderBottom:
-        "1px solid #d7dfeb",
-      boxSizing: "border-box",
-      position: "relative",
-    };
+    fontWeight:
+      400,
 
-  /* ---------------- CLOUD SECTION ---------------- */
+    color:
+      "#0e0e0e",
+  };
 
-  const cloudSectionStyle = isMobile
-    ? {
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        gap: "30px",
-        paddingTop: "27px",
-        boxSizing: "border-box",
-      }
-    : {
-        width: "100%",
-        display: "grid",
-        gridTemplateColumns: "minmax(0, 1fr) 270px",
-        columnGap: "60px",
-        alignItems: "center",
-        padding: "32px 0 0",
-        boxSizing: "border-box",
-      };
+  /* =========================================================
+     TWO COLUMN ROWS
+  ========================================================= */
+
+  const twoColumnRowStyle =
+    isMobile
+      ? {
+          width:
+            "100%",
+
+          display:
+            "flex",
+
+          flexDirection:
+            "column",
+
+          borderBottom:
+            0,
+
+          boxSizing:
+            "border-box",
+
+          minWidth:
+            0,
+        }
+      : {
+          width:
+            "100%",
+
+          display:
+            "grid",
+
+          gridTemplateColumns:
+            "minmax(0, 1fr) minmax(0, 1fr)",
+
+          borderBottom:
+            "1px solid #d7dfeb",
+
+          boxSizing:
+            "border-box",
+
+          position:
+            "relative",
+
+          minWidth:
+            0,
+        };
+
+  /* =========================================================
+     CLOUD
+  ========================================================= */
+
+  const cloudSectionStyle =
+    isMobile
+      ? {
+          width:
+            "100%",
+
+          display:
+            "flex",
+
+          flexDirection:
+            "column",
+
+          alignItems:
+            "stretch",
+
+          gap:
+            "30px",
+
+          paddingTop:
+            "27px",
+
+          boxSizing:
+            "border-box",
+
+          minWidth:
+            0,
+        }
+      : {
+          width:
+            "100%",
+
+          display:
+            "grid",
+
+          gridTemplateColumns:
+            "minmax(0, 1fr) 270px",
+
+          columnGap:
+            "60px",
+
+          alignItems:
+            "center",
+
+          padding:
+            "32px 0 0",
+
+          boxSizing:
+            "border-box",
+
+          minWidth:
+            0,
+        };
 
   const cloudTitleStyle = {
-    margin: isMobile ? "0 0 23px" : "0 0 28px",
-    fontSize: isSmall ? "17px" : "18px",
-    lineHeight: 1.2,
-    fontWeight: 700,
-    letterSpacing: "-0.035em",
-    color: "#0e0e0e",
+    margin:
+      isMobile
+        ? "0 0 23px"
+        : "0 0 28px",
+
+    fontSize:
+      isSmall
+        ? "17px"
+        : "18px",
+
+    lineHeight:
+      1.2,
+
+    fontWeight:
+      700,
+
+    letterSpacing:
+      "-0.035em",
+
+    color:
+      "#0e0e0e",
   };
 
   const cloudLogosGridStyle = {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: isSmall ? "3px" : isMobile ? "5px" : isTablet ? "8px" : "12px",
-    overflow: "visible",
-    boxSizing: "border-box",
+    width:
+      "100%",
+
+    display:
+      "flex",
+
+    flexDirection:
+      "row",
+
+    flexWrap:
+      "nowrap",
+
+    alignItems:
+      "flex-start",
+
+    justifyContent:
+      "space-between",
+
+    gap: isSmall
+      ? "3px"
+      : isMobile
+      ? "5px"
+      : isTablet
+      ? "8px"
+      : "12px",
+
+    overflow:
+      "visible",
+
+    boxSizing:
+      "border-box",
   };
 
-  /* ---------------- BUTTON ---------------- */
+  /* =========================================================
+     BUTTON
+  ========================================================= */
 
   const buttonWrapStyle = {
-    display: "flex",
-    justifyContent: isMobile ? "flex-start" : "flex-end",
-    alignItems: "center",
-    width: isMobile ? "100%" : undefined,
+    display:
+      "flex",
+
+    justifyContent:
+      isMobile
+        ? "flex-start"
+        : "flex-end",
+
+    alignItems:
+      "center",
+
+    width:
+      isMobile
+        ? "100%"
+        : undefined,
   };
 
-  const hoverActive = supportsHover && buttonHovered;
+  /*
+    Only use hover visual state when the device actually
+    supports hover.
+  */
+
+  const hoverActive =
+    supportsHover &&
+    buttonHovered;
 
   const buttonStyle = {
-  width: isMobile ? "280px" : "320px",
-  height: isMobile ? "56px" : "62px",
+    width:
+      isMobile
+        ? "280px"
+        : "320px",
 
-  padding: "0 24px",
+    height:
+      isMobile
+        ? "56px"
+        : "62px",
 
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
+    padding:
+      "0 24px",
 
-  gap: "8px",
+    display:
+      "inline-flex",
 
-  border: "none",
-  borderRadius: "999px",
+    alignItems:
+      "center",
 
-  background:
-    "linear-gradient(90deg, #0180FD 0%, #0021AF 100%)",
+    justifyContent:
+      "center",
 
-  color: "#ffffff",
+    gap:
+      "8px",
 
-  fontFamily:
-    '"Britti Sans Trial", Arial, Helvetica, sans-serif',
+    border:
+      "none",
 
-  fontSize: isMobile ? "12px" : "14px",
+    borderRadius:
+      "999px",
 
-  lineHeight: 1,
-  fontWeight: 600,
+    background:
+      "linear-gradient(90deg, #0180FD 0%, #0021AF 100%)",
 
-  textDecoration: "none",
-  whiteSpace: "nowrap",
+    color:
+      "#ffffff",
 
-  boxSizing: "border-box",
+    fontFamily:
+      '"Britti Sans Trial", Arial, Helvetica, sans-serif',
 
-  cursor: "pointer",
+    fontSize:
+      isMobile
+        ? "12px"
+        : "14px",
 
-  transition:
-    "transform 0.25s ease, box-shadow 0.25s ease",
+    lineHeight:
+      1,
 
-  transform:
-    hoverActive
-      ? "translateY(-2px)"
-      : "translateY(0)",
+    fontWeight:
+      600,
 
-  boxShadow:
-    hoverActive
-      ? "0 12px 26px rgba(0, 33, 175, 0.24)"
-      : "0 8px 18px rgba(0, 33, 175, 0.16)",
-};
+    textDecoration:
+      "none",
+
+    whiteSpace:
+      "nowrap",
+
+    boxSizing:
+      "border-box",
+
+    cursor:
+      "pointer",
+
+    transition:
+      "transform 0.25s ease, box-shadow 0.25s ease",
+
+    transform:
+      hoverActive
+        ? "translateY(-2px)"
+        : "translateY(0)",
+
+    boxShadow:
+      hoverActive
+        ? "0 12px 26px rgba(0, 33, 175, 0.24)"
+        : "0 8px 18px rgba(0, 33, 175, 0.16)",
+  };
 
   return (
-    <section style={sectionStyle}>
-      <div style={containerStyle}>
+    <section
+      style={sectionStyle}
+    >
+      <div
+        style={containerStyle}
+      >
+        {/* =========================================
+            HEADER
+        ========================================== */}
 
-        {/* HEADER */}
-
-        <div style={headerStyle}>
+        <div
+          style={headerStyle}
+        >
           <div>
-            <div style={eyebrowStyle}>TECHNOLOGY STACK</div>
+            <div
+              style={
+                eyebrowStyle
+              }
+            >
+              TECHNOLOGY STACK
+            </div>
 
-            <h2 style={headingStyle}>
+            <h2
+              style={
+                headingStyle
+              }
+            >
               We&apos;re technology agnostic,
               <br />
               We&apos;re outcome obsessed
             </h2>
           </div>
 
-          <p style={headerCopyStyle}>
-            We recommend the right tools for your problem not the ones we
-            find easiest to sell. That said, here&apos;s the refined toolkit
-            representing our 4 years and 100+ production deployments.
+          <p
+            style={
+              headerCopyStyle
+            }
+          >
+            We recommend the right tools for your
+            problem not the ones we find easiest
+            to sell. That said, here&apos;s the
+            refined toolkit representing our 4 years
+            and 100+ production deployments.
           </p>
         </div>
 
-        {/* FRONTEND + MOBILE */}
+        {/* =========================================
+            FRONTEND + MOBILE
+        ========================================== */}
 
-       <div style={twoColumnRowStyle}>
-  <TechnologyGroup
-    title="Frontend & Web"
-    logos={frontendLogos}
-    side="left"
-    bp={bp}
-  />
+        <div
+          style={
+            twoColumnRowStyle
+          }
+        >
+          <TechnologyGroup
+            title="Frontend & Web"
+            logos={
+              frontendLogos
+            }
+            side="left"
+            bp={bp}
+          />
 
-  <TechnologyGroup
-    title="Mobile"
-    logos={mobileLogos}
-    side="right"
-    bp={bp}
-  />
+          <TechnologyGroup
+            title="Mobile"
+            logos={
+              mobileLogos
+            }
+            side="right"
+            bp={bp}
+          />
 
-  {!isMobile && (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: "50%",
-        width: "1px",
-        background: "#d7dfeb",
-        transform: "translateX(-0.5px)",
-        pointerEvents: "none",
-      }}
-    />
-  )}
-</div>
+          {!isMobile && (
+            <div
+              style={{
+                position:
+                  "absolute",
 
-        {/* BACKEND + AI */}
+                top: 0,
+                bottom: 0,
 
-  <div
-  style={{
-    ...twoColumnRowStyle,
-    paddingTop: isMobile
-      ? "18px"
-      : "35px",
-  }}
->
-  <TechnologyGroup
-    title="Backend & APIs"
-    logos={backendLogos}
-    side="left"
-    bp={bp}
-  />
+                left: "50%",
 
-  <TechnologyGroup
-    title="AI, ML & Data"
-    logos={aiLogos}
-    side="right"
-    bp={bp}
-  />
+                width: "1px",
 
-  {!isMobile && (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: "50%",
-        width: "1px",
-        background: "#d7dfeb",
-        transform: "translateX(-0.5px)",
-        pointerEvents: "none",
-      }}
-    />
-  )}
-</div>
+                background:
+                  "#d7dfeb",
 
-        {/* CLOUD */}
+                transform:
+                  "translateX(-0.5px)",
 
-        <div style={cloudSectionStyle}>
-          <div style={{ minWidth: 0 }}>
-            <h3 style={cloudTitleStyle}>
+                pointerEvents:
+                  "none",
+              }}
+              aria-hidden="true"
+            />
+          )}
+        </div>
+
+        {/* =========================================
+            BACKEND + AI
+        ========================================== */}
+
+        <div
+          style={{
+            ...twoColumnRowStyle,
+
+            paddingTop:
+              isMobile
+                ? "18px"
+                : "35px",
+          }}
+        >
+          <TechnologyGroup
+            title="Backend & APIs"
+            logos={
+              backendLogos
+            }
+            side="left"
+            bp={bp}
+          />
+
+          <TechnologyGroup
+            title="AI, ML & Data"
+            logos={
+              aiLogos
+            }
+            side="right"
+            bp={bp}
+          />
+
+          {!isMobile && (
+            <div
+              style={{
+                position:
+                  "absolute",
+
+                top: 0,
+                bottom: 0,
+
+                left: "50%",
+
+                width: "1px",
+
+                background:
+                  "#d7dfeb",
+
+                transform:
+                  "translateX(-0.5px)",
+
+                pointerEvents:
+                  "none",
+              }}
+              aria-hidden="true"
+            />
+          )}
+        </div>
+
+        {/* =========================================
+            CLOUD
+        ========================================== */}
+
+        <div
+          style={
+            cloudSectionStyle
+          }
+        >
+          <div
+            style={{
+              minWidth: 0,
+            }}
+          >
+            <h3
+              style={
+                cloudTitleStyle
+              }
+            >
               Cloud, Infrastructure & DevOps
             </h3>
 
-            <div style={cloudLogosGridStyle}>
-              {cloudLogos.map((logo) => (
-                <LogoItem
-                  key={logo.name}
-                  name={logo.name}
-                  image={logo.image}
-                  bp={bp}
-                />
-              ))}
+            <div
+              style={
+                cloudLogosGridStyle
+              }
+            >
+              {cloudLogos.map(
+                (logo) => (
+                  <LogoItem
+                    key={
+                      logo.name
+                    }
+                    name={
+                      logo.name
+                    }
+                    image={
+                      logo.image
+                    }
+                    bp={bp}
+                  />
+                )
+              )}
             </div>
           </div>
 
-          <div style={buttonWrapStyle}>
+          <div
+            style={
+              buttonWrapStyle
+            }
+          >
             <a
               href="#contact"
-              style={buttonStyle}
-              onMouseEnter={() => setButtonHovered(true)}
-              onMouseLeave={() => setButtonHovered(false)}
+              style={
+                buttonStyle
+              }
+              onMouseEnter={() =>
+                setButtonHovered(
+                  true
+                )
+              }
+              onMouseLeave={() =>
+                setButtonHovered(
+                  false
+                )
+              }
             >
-              <span>Explore More Technology Stack</span>
+              <span>
+                Explore More Technology Stack
+              </span>
 
               <svg
                 width="11"
@@ -627,7 +1294,10 @@ export default function TechnologyStackSection() {
                 fill="none"
                 aria-hidden="true"
               >
-                <path d="M5.5 1.6L9.2 8.8H1.8L5.5 1.6Z" fill="currentColor" />
+                <path
+                  d="M5.5 1.6L9.2 8.8H1.8L5.5 1.6Z"
+                  fill="currentColor"
+                />
               </svg>
             </a>
           </div>

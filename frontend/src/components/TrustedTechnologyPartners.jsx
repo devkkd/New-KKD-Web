@@ -1,21 +1,21 @@
 "use client";
-
 const trustedPartners = Array.from(
   { length: 6 },
   (_, index) => ({
     id: index + 1,
-    image: `/home/trusted/${index + 1}.png`,
-    alt: `Trusted Technology Partner ${index + 1}`,
+    image: `/home/trusted/${
+      index + 1
+    }.png`,
+    alt: `Trusted Technology Partner ${
+      index + 1
+    }`,
   })
 );
 
 export default function TrustedTechnologyPartners() {
   return (
-    <section
-      className="trusted-section"
-    >
+    <section className="trusted-section">
       <div className="trusted-container">
-
         {/* =========================================
             HEADING
         ========================================== */}
@@ -29,19 +29,25 @@ export default function TrustedTechnologyPartners() {
         ========================================== */}
 
         <div className="trusted-grid">
-          {trustedPartners.map((partner) => (
-            <div
-              key={partner.id}
-              className="trusted-card"
-            >
-              <img
-                src={partner.image}
-                alt={partner.alt}
-                draggable="false"
-                className="trusted-logo"
-              />
-            </div>
-          ))}
+          {trustedPartners.map(
+            (partner) => (
+              <div
+                key={partner.id}
+                className="trusted-card"
+              >
+                <img
+                  src={partner.image}
+                  alt={partner.alt}
+                  width="190"
+                  height="62"
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                  className="trusted-logo"
+                />
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -52,18 +58,23 @@ export default function TrustedTechnologyPartners() {
 
         .trusted-section {
           width: 100%;
+
           background: #f3f8ff;
 
           padding:
             72px 62px 82px;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
 
           font-family:
             "Britti Sans Trial",
             Arial,
             Helvetica,
             sans-serif;
+
+          overflow:
+            hidden;
         }
 
         /* =========================================
@@ -72,9 +83,14 @@ export default function TrustedTechnologyPartners() {
 
         .trusted-container {
           width: 100%;
+
           max-width: 1400px;
+
           margin: 0 auto;
+
           box-sizing: border-box;
+
+          min-width: 0;
         }
 
         /* =========================================
@@ -97,9 +113,13 @@ export default function TrustedTechnologyPartners() {
 
           font-weight: 700;
 
-          letter-spacing: -0.04em;
+          letter-spacing:
+            -0.04em;
 
           color: #0e0e0e;
+
+          overflow-wrap:
+            break-word;
         }
 
         /* =========================================
@@ -114,13 +134,22 @@ export default function TrustedTechnologyPartners() {
           display: grid;
 
           grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+            repeat(
+              3,
+              minmax(
+                0,
+                1fr
+              )
+            );
 
           column-gap: 20px;
 
           row-gap: 18px;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
+
+          min-width: 0;
         }
 
         /* =========================================
@@ -140,14 +169,17 @@ export default function TrustedTechnologyPartners() {
 
           display: flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          justify-content: center;
+          justify-content:
+            center;
 
           padding:
             20px 28px;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
 
           background:
             rgba(
@@ -159,15 +191,31 @@ export default function TrustedTechnologyPartners() {
 
           overflow: hidden;
 
+          min-width: 0;
+
           transition:
-            transform 0.25s ease,
-            border-color 0.25s ease,
-            box-shadow 0.25s ease;
+            transform
+              0.25s ease,
+            border-color
+              0.25s ease,
+            box-shadow
+              0.25s ease;
+
+          /*
+            Keep cards isolated from neighboring
+            painting as much as possible.
+          */
+          contain:
+            layout paint;
         }
 
         .trusted-card:hover {
           transform:
-            translateY(-2px);
+            translate3d(
+              0,
+              -2px,
+              0
+            );
 
           border-color:
             #c5cedd;
@@ -197,11 +245,14 @@ export default function TrustedTechnologyPartners() {
 
           max-height: 62px;
 
-          object-fit: contain;
+          object-fit:
+            contain;
 
           user-select: none;
 
           pointer-events: none;
+
+          -webkit-user-drag: none;
         }
 
         /* =========================================
@@ -271,7 +322,13 @@ export default function TrustedTechnologyPartners() {
               38px;
 
             grid-template-columns:
-              repeat(3, minmax(0, 1fr));
+              repeat(
+                3,
+                minmax(
+                  0,
+                  1fr
+                )
+              );
 
             column-gap:
               10px;
@@ -298,6 +355,10 @@ export default function TrustedTechnologyPartners() {
             max-height:
               42px;
           }
+
+          /*
+            Same mobile hover behavior.
+          */
 
           .trusted-card:hover {
             transform:
@@ -355,14 +416,38 @@ export default function TrustedTechnologyPartners() {
         }
 
         /* =========================================
+           TOUCH DEVICES
+        ========================================== */
+
+        @media (hover: none) {
+          .trusted-card:hover {
+            transform:
+              none;
+
+            box-shadow:
+              none;
+          }
+        }
+
+        /* =========================================
            REDUCED MOTION
         ========================================== */
 
         @media (
-          prefers-reduced-motion: reduce
+          prefers-reduced-motion:
+            reduce
         ) {
           .trusted-card {
-            transition: none;
+            transition:
+              none;
+          }
+
+          .trusted-card:hover {
+            transform:
+              none;
+
+            box-shadow:
+              none;
           }
         }
       `}</style>

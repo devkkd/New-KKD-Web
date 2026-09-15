@@ -1,32 +1,62 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import {
+  useLayoutEffect,
+  useRef,
+} from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+import gsap from "gsap";
+import {
+  ScrollTrigger,
+} from "gsap/ScrollTrigger";
+
+if (
+  typeof window !== "undefined"
+) {
+  gsap.registerPlugin(
+    ScrollTrigger
+  );
+}
+
+/* =========================================================
+   PROJECTS
+========================================================= */
 
 const projects = [
   {
     id: 1,
     title: "Malani Impex INC",
-    subtitle: "Heritage Textile & Home Décor Brand",
+    subtitle:
+      "Heritage Textile & Home Décor Brand",
+
     description:
       "Rooted in Jaipur, India, Malani Impex blends traditional craftsmanship with ethical production. The redesigned website translates this legacy into a sophisticated digital presence that communicates authenticity, scale, and international trust.",
+
     deliverables: [
       "Web Development",
       "B2B Commerce",
       "E-commerce",
     ],
+
     industry:
       "Home Décor & Handcrafted Textiles",
+
     liveSite:
       "https://www.malaniimpex.com",
+
     published: "©2026",
-    timelines: "2-3 Months",
-    image: "/home/p.png",
+
+    timelines:
+      "2-3 Months",
+
+    image:
+      "/home/p.png",
+
     frame: true,
-    frameColor: "#F8F4C9",
+
+    frameColor:
+      "#F8F4C9",
   },
 
   {
@@ -34,21 +64,31 @@ const projects = [
     title: "Furrmaa",
     subtitle:
       "Pet Care Digital Platform (App & Web)",
+
     description:
       "Designed for both emerging startups and established enterprises, Furrmaa delivers an integrated pet care ecosystem powered by AI-driven strategy and creative innovation, enabling scalable mobile and web experiences that drive engagement, commerce, and operational efficiency.",
+
     deliverables: [
       "Mobile Apps",
       "Web Development",
       "E-commerce",
       "Pet Care Enterprise",
     ],
+
     industry:
       "Pet Care Digital Platform",
+
     liveSite:
       "https://www.furrmaa.com",
+
     published: "©2026",
-    timelines: "2-3 Months",
-    image: "/home/p1.png",
+
+    timelines:
+      "2-3 Months",
+
+    image:
+      "/home/p1.png",
+
     frame: false,
   },
 
@@ -57,419 +97,512 @@ const projects = [
     title: "Ratoomals",
     subtitle:
       "Handcrafted Decor & Sculpture Manufacturer",
+
     description:
       "Ratoomals is a Jaipur-based heritage manufacturer specializing in handcrafted statues, sculptures, and decorative pieces for global B2B markets. Blending traditional artistry with large-scale production, the brand serves retailers, wholesalers, and interior buyers worldwide.",
+
     deliverables: [
       "Web Development",
       "B2B Commerce",
       "E-commerce",
       "Manufacturing",
     ],
+
     industry:
       "Handcrafted Decor",
+
     liveSite:
       "https://www.ratoomals.com",
+
     published: "©2026",
-    timelines: "2-3 Months",
-    image: "/home/p2.png",
+
+    timelines:
+      "2-3 Months",
+
+    image:
+      "/home/p2.png",
+
     frame: false,
   },
 ];
 
+/* =========================================================
+   PORTFOLIO SECTION
+========================================================= */
+
 export default function PortfolioSection() {
-  const sectionRef = useRef(null);
-  const rowsRef = useRef([]);
+  const sectionRef =
+    useRef(null);
+
+  const rowsRef =
+    useRef([]);
+
+  const refreshFrameRef =
+    useRef(null);
 
   useLayoutEffect(() => {
-    const section = sectionRef.current;
+    const section =
+      sectionRef.current;
 
-    if (!section) return;
+    if (!section) {
+      return undefined;
+    }
 
-    const ctx = gsap.context(() => {
-      const isMobile =
-        window.matchMedia(
-          "(max-width: 768px)"
-        ).matches;
+    /*
+      Prevent stale row references if React
+      remounts/reconciles the section.
+    */
+    rowsRef.current =
+      rowsRef.current.filter(
+        Boolean
+      );
 
-      const rows =
-        rowsRef.current.filter(Boolean);
+    const ctx =
+      gsap.context(() => {
+        const isMobile =
+          window.matchMedia(
+            "(max-width: 768px)"
+          ).matches;
 
-      if (!rows.length) return;
-
-      /*
-       * ============================================
-       * DESKTOP / TABLET
-       * ============================================
-       */
-
-      if (!isMobile) {
-        rows.forEach((row, index) => {
-          const line =
-            row.querySelector(
-              ".portfolio-connect-line"
-            );
-
-          const dot =
-            row.querySelector(
-              ".portfolio-dot"
-            );
-
-          const details =
-            row.querySelector(
-              ".portfolio-details"
-            );
-
-          const image =
-            row.querySelector(
-              ".portfolio-image-area"
-            );
-
-          if (
-            !line ||
-            !dot ||
-            !details ||
-            !image
-          ) {
-            return;
-          }
-
-          /*
-           * --------------------------------------------
-           * INITIAL
-           * --------------------------------------------
-           */
-
-          const reverse =
-            index % 2 === 1;
-
-          const detailX =
-            reverse ? 70 : -70;
-
-          const imageX =
-            reverse ? -70 : 70;
-
-          gsap.set(line, {
-            transformOrigin:
-              "top center",
-            scaleY: 0,
-          });
-
-          gsap.set(dot, {
-            scale: 0,
-            opacity: 0,
-          });
-
-          gsap.set(details, {
-            x: detailX,
-            opacity: 0,
-          });
-
-          gsap.set(image, {
-            x: imageX,
-            opacity: 0,
-            scale: 0.92,
-          });
-
-          /*
-           * --------------------------------------------
-           * TIMELINE
-           * --------------------------------------------
-           */
-
-          const tl =
-            gsap.timeline({
-              scrollTrigger: {
-                trigger: row,
-
-                start: "top 82%",
-
-                end: "center 48%",
-
-                scrub: 0.8,
-
-                invalidateOnRefresh:
-                  true,
-              },
-            });
-
-          /*
-           * Line draw
-           */
-
-          tl.to(
-            line,
-            {
-              scaleY: 1,
-
-              duration: 0.65,
-
-              ease:
-                "power2.out",
-            },
-            0
+        const rows =
+          Array.from(
+            section.querySelectorAll(
+              ".portfolio-row"
+            )
           );
 
-          /*
-           * Dot pop
-           */
-
-          tl.to(
-            dot,
-            {
-              scale: 1,
-              opacity: 1,
-
-              duration: 0.45,
-
-              ease:
-                "back.out(1.7)",
-            },
-            0.2
-          );
-
-          /*
-           * Details
-           */
-
-          tl.to(
-            details,
-            {
-              x: 0,
-              opacity: 1,
-
-              duration: 0.75,
-
-              ease:
-                "elastic.out(1, 0.72)",
-            },
-            0.18
-          );
-
-          /*
-           * Image
-           */
-
-          tl.to(
-            image,
-            {
-              x: 0,
-              opacity: 1,
-              scale: 1,
-
-              duration: 0.8,
-
-              ease:
-                "elastic.out(1, 0.68)",
-            },
-            0.28
-          );
-
-          /*
-           * Small image scale finish
-           */
-
-          tl.to(
-            image,
-            {
-              scale: 1.025,
-
-              duration: 0.18,
-
-              ease: "power1.out",
-            },
-            0.8
-          );
-
-          tl.to(
-            image,
-            {
-              scale: 1,
-
-              duration: 0.18,
-
-              ease: "power1.out",
-            },
-            0.98
-          );
-        });
-
-        return;
-      }
-
-      /*
-       * ============================================
-       * MOBILE
-       * ============================================
-       */
-
-      rows.forEach((row) => {
-        const line =
-          row.querySelector(
-            ".portfolio-connect-line"
-          );
-
-        const dot =
-          row.querySelector(
-            ".portfolio-dot"
-          );
-
-        const details =
-          row.querySelector(
-            ".portfolio-details"
-          );
-
-        const image =
-          row.querySelector(
-            ".portfolio-image-area"
-          );
-
-        if (
-          !line ||
-          !dot ||
-          !details ||
-          !image
-        ) {
+        if (!rows.length) {
           return;
         }
 
-        /*
-         * Initial states
-         */
+        /* =====================================================
+           DESKTOP / TABLET
+        ===================================================== */
 
-        gsap.set(line, {
-          transformOrigin:
-            "top center",
-          scaleY: 0,
-        });
+        if (!isMobile) {
+          rows.forEach(
+            (row, index) => {
+              const line =
+                row.querySelector(
+                  ".portfolio-connect-line"
+                );
 
-        gsap.set(dot, {
-          scale: 0,
-          opacity: 0,
-        });
+              const dot =
+                row.querySelector(
+                  ".portfolio-dot"
+                );
 
-        gsap.set(image, {
-          y: 45,
-          opacity: 0,
-          scale: 0.94,
-        });
+              const details =
+                row.querySelector(
+                  ".portfolio-details"
+                );
 
-        gsap.set(details, {
-          y: 40,
-          opacity: 0,
-        });
+              const image =
+                row.querySelector(
+                  ".portfolio-image-area"
+                );
 
-        /*
-         * Mobile animation
-         */
+              if (
+                !line ||
+                !dot ||
+                !details ||
+                !image
+              ) {
+                return;
+              }
 
-        const tl =
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: row,
+              /*
+                Same original animation values.
+              */
 
-              start: "top 86%",
+              const reverse =
+                index % 2 === 1;
 
-              end: "center 50%",
+              const detailX =
+                reverse
+                  ? 70
+                  : -70;
 
-              scrub: 0.8,
+              const imageX =
+                reverse
+                  ? -70
+                  : 70;
 
-              invalidateOnRefresh:
-                true,
-            },
-          });
+              /* =================================
+                 INITIAL STATES
+              ================================== */
 
-        /*
-         * Line
-         */
+              gsap.set(line, {
+                transformOrigin:
+                  "top center",
 
-        tl.to(
-          line,
-          {
-            scaleY: 1,
+                scaleY: 0,
+              });
 
-            duration: 0.6,
+              gsap.set(dot, {
+                scale: 0,
 
-            ease: "power2.out",
-          },
-          0
+                opacity: 0,
+              });
+
+              gsap.set(
+                details,
+                {
+                  x: detailX,
+
+                  opacity: 0,
+                }
+              );
+
+              gsap.set(
+                image,
+                {
+                  x: imageX,
+
+                  opacity: 0,
+
+                  scale: 0.92,
+                }
+              );
+
+              /* =================================
+                 TIMELINE
+              ================================== */
+
+              const tl =
+                gsap.timeline({
+                  defaults: {
+                    overwrite:
+                      "auto",
+                  },
+
+                  scrollTrigger: {
+                    trigger: row,
+
+                    start:
+                      "top 82%",
+
+                    end:
+                      "center 48%",
+
+                    scrub: 0.8,
+
+                    invalidateOnRefresh:
+                      true,
+                  },
+                });
+
+              /* =================================
+                 LINE
+              ================================== */
+
+              tl.to(
+                line,
+                {
+                  scaleY: 1,
+
+                  duration: 0.65,
+
+                  ease:
+                    "power2.out",
+                },
+                0
+              );
+
+              /* =================================
+                 DOT
+              ================================== */
+
+              tl.to(
+                dot,
+                {
+                  scale: 1,
+
+                  opacity: 1,
+
+                  duration: 0.45,
+
+                  ease:
+                    "back.out(1.7)",
+                },
+                0.2
+              );
+
+              /* =================================
+                 DETAILS
+              ================================== */
+
+              tl.to(
+                details,
+                {
+                  x: 0,
+
+                  opacity: 1,
+
+                  duration: 0.75,
+
+                  ease:
+                    "elastic.out(1, 0.72)",
+                },
+                0.18
+              );
+
+              /* =================================
+                 IMAGE
+              ================================== */
+
+              tl.to(
+                image,
+                {
+                  x: 0,
+
+                  opacity: 1,
+
+                  scale: 1,
+
+                  duration: 0.8,
+
+                  ease:
+                    "elastic.out(1, 0.68)",
+                },
+                0.28
+              );
+
+              /* =================================
+                 IMAGE FINISH
+              ================================== */
+
+              tl.to(
+                image,
+                {
+                  scale: 1.025,
+
+                  duration: 0.18,
+
+                  ease:
+                    "power1.out",
+                },
+                0.8
+              );
+
+              tl.to(
+                image,
+                {
+                  scale: 1,
+
+                  duration: 0.18,
+
+                  ease:
+                    "power1.out",
+                },
+                0.98
+              );
+            }
+          );
+
+          return;
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        rows.forEach(
+          (row) => {
+            const line =
+              row.querySelector(
+                ".portfolio-connect-line"
+              );
+
+            const dot =
+              row.querySelector(
+                ".portfolio-dot"
+              );
+
+            const details =
+              row.querySelector(
+                ".portfolio-details"
+              );
+
+            const image =
+              row.querySelector(
+                ".portfolio-image-area"
+              );
+
+            if (
+              !line ||
+              !dot ||
+              !details ||
+              !image
+            ) {
+              return;
+            }
+
+            /* =================================
+               INITIAL
+            ================================== */
+
+            gsap.set(line, {
+              transformOrigin:
+                "top center",
+
+              scaleY: 0,
+            });
+
+            gsap.set(dot, {
+              scale: 0,
+
+              opacity: 0,
+            });
+
+            gsap.set(image, {
+              y: 45,
+
+              opacity: 0,
+
+              scale: 0.94,
+            });
+
+            gsap.set(details, {
+              y: 40,
+
+              opacity: 0,
+            });
+
+            /* =================================
+               MOBILE TIMELINE
+               SAME AS ORIGINAL
+            ================================== */
+
+            const tl =
+              gsap.timeline({
+                defaults: {
+                  overwrite:
+                    "auto",
+                },
+
+                scrollTrigger: {
+                  trigger: row,
+
+                  start:
+                    "top 86%",
+
+                  end:
+                    "center 50%",
+
+                  scrub: 0.8,
+
+                  invalidateOnRefresh:
+                    true,
+                },
+              });
+
+            /* =================================
+               LINE
+            ================================== */
+
+            tl.to(
+              line,
+              {
+                scaleY: 1,
+
+                duration: 0.6,
+
+                ease:
+                  "power2.out",
+              },
+              0
+            );
+
+            /* =================================
+               DOT
+            ================================== */
+
+            tl.to(
+              dot,
+              {
+                scale: 1,
+
+                opacity: 1,
+
+                duration: 0.4,
+
+                ease:
+                  "back.out(1.8)",
+              },
+              0.15
+            );
+
+            /* =================================
+               IMAGE
+            ================================== */
+
+            tl.to(
+              image,
+              {
+                y: 0,
+
+                opacity: 1,
+
+                scale: 1,
+
+                duration: 0.8,
+
+                ease:
+                  "elastic.out(1, 0.68)",
+              },
+              0.18
+            );
+
+            /* =================================
+               DETAILS
+            ================================== */
+
+            tl.to(
+              details,
+              {
+                y: 0,
+
+                opacity: 1,
+
+                duration: 0.75,
+
+                ease:
+                  "elastic.out(1, 0.72)",
+              },
+              0.28
+            );
+          }
         );
 
-        /*
-         * Dot
-         */
+        /* =====================================================
+           SAFE REFRESH
 
-        tl.to(
-          dot,
-          {
-            scale: 1,
-            opacity: 1,
+           Images / fonts may affect measurements.
+           Refresh only after browser has painted.
+        ===================================================== */
 
-            duration: 0.4,
-
-            ease:
-              "back.out(1.8)",
-          },
-          0.15
-        );
-
-        /*
-         * Image
-         */
-
-        tl.to(
-          image,
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-
-            duration: 0.8,
-
-            ease:
-              "elastic.out(1, 0.68)",
-          },
-          0.18
-        );
-
-        /*
-         * Details
-         */
-
-        tl.to(
-          details,
-          {
-            y: 0,
-            opacity: 1,
-
-            duration: 0.75,
-
-            ease:
-              "elastic.out(1, 0.72)",
-          },
-          0.28
-        );
-      });
-
-      /*
-       * --------------------------------------------
-       * SAFE REFRESH
-       * --------------------------------------------
-       */
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
-    }, section);
+        refreshFrameRef.current =
+          requestAnimationFrame(
+            () => {
+              ScrollTrigger.refresh();
+            }
+          );
+      }, section);
 
     return () => {
-      /*
-       * VERY IMPORTANT:
-       *
-       * No manual removeChild.
-       * No manual removeEventListener.
-       *
-       * GSAP context cleans everything.
-       */
+      if (
+        refreshFrameRef.current !==
+        null
+      ) {
+        cancelAnimationFrame(
+          refreshFrameRef.current
+        );
+
+        refreshFrameRef.current =
+          null;
+      }
+
       ctx.revert();
     };
   }, []);
@@ -480,10 +613,9 @@ export default function PortfolioSection() {
       className="portfolio-section"
     >
       <div className="portfolio-container">
-
-        {/* ==========================================
+        {/* =====================================================
             HEADER
-        =========================================== */}
+        ===================================================== */}
 
         <div className="portfolio-header">
           <span className="portfolio-kicker">
@@ -509,9 +641,9 @@ export default function PortfolioSection() {
           </div>
         </div>
 
-        {/* ==========================================
+        {/* =====================================================
             FLOW
-        =========================================== */}
+        ===================================================== */}
 
         <div className="portfolio-flow">
           {projects.map(
@@ -522,10 +654,10 @@ export default function PortfolioSection() {
               return (
                 <article
                   key={project.id}
-                  ref={(el) => {
+                  ref={(element) => {
                     rowsRef.current[
                       index
-                    ] = el;
+                    ] = element;
                   }}
                   className={`portfolio-row ${
                     reverse
@@ -533,7 +665,6 @@ export default function PortfolioSection() {
                       : ""
                   }`}
                 >
-
                   {/* ===================================
                       LINE
                   ==================================== */}
@@ -557,13 +688,19 @@ export default function PortfolioSection() {
                     <div className="project-index">
                       {String(
                         index + 1
-                      ).padStart(2, "0")}
+                      ).padStart(
+                        2,
+                        "0"
+                      )}
 
                       <span>
                         /
                         {String(
                           projects.length
-                        ).padStart(2, "0")}
+                        ).padStart(
+                          2,
+                          "0"
+                        )}
                       </span>
                     </div>
 
@@ -584,7 +721,6 @@ export default function PortfolioSection() {
                     </p>
 
                     <div className="project-meta">
-
                       <div className="meta-group">
                         <span className="meta-title">
                           Deliverables
@@ -592,11 +728,17 @@ export default function PortfolioSection() {
 
                         <div className="meta-list">
                           {project.deliverables.map(
-                            (item) => (
+                            (
+                              item
+                            ) => (
                               <span
-                                key={item}
+                                key={
+                                  item
+                                }
                               >
-                                {item}
+                                {
+                                  item
+                                }
                               </span>
                             )
                           )}
@@ -638,7 +780,6 @@ export default function PortfolioSection() {
                           }
                         </span>
                       </div>
-
                     </div>
 
                     <div className="project-actions">
@@ -651,6 +792,7 @@ export default function PortfolioSection() {
                         className="live-site"
                       >
                         Live Site
+
                         <span>
                           ↗
                         </span>
@@ -685,6 +827,7 @@ export default function PortfolioSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="portfolio-image-link"
+                      aria-label={`View ${project.title} project`}
                     >
                       <div
                         className={`portfolio-image-box ${
@@ -699,25 +842,39 @@ export default function PortfolioSection() {
                               : "#EDEFF5",
                         }}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        <Image
                           src={
                             project.image
                           }
-                          alt={
-                            project.title
+                          alt={`${project.title} project`}
+                          fill
+                          sizes="
+                            (max-width: 480px) 100vw,
+                            (max-width: 768px) 100vw,
+                            (max-width: 1100px) 50vw,
+                            50vw
+                          "
+                          quality={
+                            project.frame
+                              ? 82
+                              : 78
                           }
-                          draggable="false"
                           className={`project-image ${
                             project.frame
                               ? "contain"
                               : ""
                           }`}
+                          draggable="false"
                         />
+
+                        {/* =================================
+                            OVERLAY
+                        ================================== */}
 
                         <div className="image-overlay">
                           <span>
                             View Project
+
                             <b>
                               ➢
                             </b>
@@ -778,16 +935,20 @@ export default function PortfolioSection() {
         .portfolio-kicker {
           display: block;
 
-          margin-bottom: 12px;
+          margin-bottom:
+            12px;
 
-          font-size: 13px;
+          font-size:
+            13px;
 
           letter-spacing:
             0.08em;
 
-          font-weight: 500;
+          font-weight:
+            500;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         .portfolio-heading-grid {
@@ -797,38 +958,51 @@ export default function PortfolioSection() {
             minmax(0, 1fr)
             minmax(0, 1fr);
 
-          gap: 48px;
+          gap:
+            48px;
 
-          align-items: start;
+          align-items:
+            start;
         }
 
         .portfolio-heading-grid h2 {
-          margin: 0;
+          margin:
+            0;
 
-          font-size: 34px;
+          font-size:
+            34px;
 
-          line-height: 1.2;
+          line-height:
+            1.2;
 
           letter-spacing:
             -0.035em;
 
-          font-weight: 700;
+          font-weight:
+            700;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         .portfolio-heading-grid p {
-          margin: 0;
+          margin:
+            0;
 
-          max-width: 720px;
+          max-width:
+            720px;
 
-          font-size: 13px;
+          font-size:
+            13px;
 
-          line-height: 1.6;
+          line-height:
+            1.6;
 
-          font-weight: 400;
+          font-weight:
+            400;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         /* =================================================
@@ -836,11 +1010,14 @@ export default function PortfolioSection() {
         ================================================= */
 
         .portfolio-flow {
-          position: relative;
+          position:
+            relative;
 
-          width: 100%;
+          width:
+            100%;
 
-          margin-top: 46px;
+          margin-top:
+            46px;
         }
 
         /* =================================================
@@ -848,29 +1025,36 @@ export default function PortfolioSection() {
         ================================================= */
 
         .portfolio-row {
-          position: relative;
+          position:
+            relative;
 
-          display: grid;
+          display:
+            grid;
 
           grid-template-columns:
             minmax(0, 1fr)
             70px
             minmax(0, 1fr);
 
-          align-items: center;
+          align-items:
+            center;
 
-          width: 100%;
+          width:
+            100%;
 
-          min-height: 570px;
+          min-height:
+            570px;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
         }
 
         .portfolio-row:not(
-            :last-child
-          ) {
+          :last-child
+        ) {
           border-bottom:
-            1px solid #dbe6f5;
+            1px solid
+            #dbe6f5;
         }
 
         /* =================================================
@@ -878,7 +1062,8 @@ export default function PortfolioSection() {
         ================================================= */
 
         .portfolio-line-column {
-          position: absolute;
+          position:
+            absolute;
 
           top: 0;
 
@@ -886,24 +1071,33 @@ export default function PortfolioSection() {
 
           left: 50%;
 
-          width: 20px;
+          width:
+            20px;
 
           transform:
-            translateX(-50%);
+            translateX(
+              -50%
+            );
 
-          display: flex;
+          display:
+            flex;
 
-          justify-content: center;
+          justify-content:
+            center;
 
-          z-index: 5;
+          z-index:
+            5;
 
-          pointer-events: none;
+          pointer-events:
+            none;
         }
 
         .portfolio-connect-line {
-          width: 2px;
+          width:
+            2px;
 
-          height: 100%;
+          height:
+            100%;
 
           background:
             linear-gradient(
@@ -917,18 +1111,24 @@ export default function PortfolioSection() {
 
           transform:
             scaleY(0);
+
+          will-change:
+            transform;
         }
 
         .portfolio-dot {
-          position: absolute;
+          position:
+            absolute;
 
           top: 50%;
 
           left: 50%;
 
-          width: 20px;
+          width:
+            20px;
 
-          height: 20px;
+          height:
+            20px;
 
           transform:
             translate(
@@ -936,9 +1136,11 @@ export default function PortfolioSection() {
               -50%
             );
 
-          border-radius: 50%;
+          border-radius:
+            50%;
 
-          background: #f3f8ff;
+          background:
+            #f3f8ff;
 
           border:
             3px solid
@@ -946,23 +1148,34 @@ export default function PortfolioSection() {
 
           box-shadow:
             0 0 0 7px
-              #f3f8ff;
+            #f3f8ff;
 
-          display: flex;
+          display:
+            flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          justify-content: center;
+          justify-content:
+            center;
 
-          z-index: 5;
+          z-index:
+            5;
+
+          will-change:
+            transform,
+            opacity;
         }
 
         .portfolio-dot span {
-          width: 6px;
+          width:
+            6px;
 
-          height: 6px;
+          height:
+            6px;
 
-          border-radius: 50%;
+          border-radius:
+            50%;
 
           background:
             #0180fd;
@@ -973,11 +1186,14 @@ export default function PortfolioSection() {
         ================================================= */
 
         .portfolio-details {
-          grid-column: 1;
+          grid-column:
+            1;
 
-          width: 100%;
+          width:
+            100%;
 
-          min-width: 0;
+          min-width:
+            0;
 
           padding:
             60px
@@ -986,16 +1202,24 @@ export default function PortfolioSection() {
             0;
 
           border-right:
-            1px solid #dbe6f5;
+            1px solid
+            #dbe6f5;
 
-          box-sizing: border-box;
+          box-sizing:
+            border-box;
+
+          will-change:
+            transform,
+            opacity;
         }
 
         .portfolio-row.is-reverse
           .portfolio-details {
-          grid-column: 3;
+          grid-column:
+            3;
 
-          grid-row: 1;
+          grid-row:
+            1;
 
           padding:
             60px
@@ -1003,10 +1227,12 @@ export default function PortfolioSection() {
             60px
             50px;
 
-          border-right: 0;
+          border-right:
+            0;
 
           border-left:
-            1px solid #dbe6f5;
+            1px solid
+            #dbe6f5;
         }
 
         /* =================================================
@@ -1014,26 +1240,34 @@ export default function PortfolioSection() {
         ================================================= */
 
         .project-index {
-          display: inline-flex;
+          display:
+            inline-flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          gap: 7px;
+          gap:
+            7px;
 
-          margin-bottom: 16px;
+          margin-bottom:
+            16px;
 
-          font-size: 12px;
+          font-size:
+            12px;
 
           letter-spacing:
             0.12em;
 
-          font-weight: 600;
+          font-weight:
+            600;
 
-          color: #0180fd;
+          color:
+            #0180fd;
         }
 
         .project-index span {
-          color: #8d98a9;
+          color:
+            #8d98a9;
         }
 
         /* =================================================
@@ -1042,49 +1276,59 @@ export default function PortfolioSection() {
 
         .portfolio-details h3 {
           margin:
-            0
-            0
-            10px;
+            0 0 10px;
 
-          font-size: 34px;
+          font-size:
+            34px;
 
-          line-height: 1.08;
+          line-height:
+            1.08;
 
           letter-spacing:
             -0.04em;
 
-          font-weight: 700;
+          font-weight:
+            700;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         .project-subtitle {
           margin:
-            0
-            0
-            18px;
+            0 0 18px;
 
-          font-size: 16px;
+          font-size:
+            16px;
 
-          line-height: 1.35;
+          line-height:
+            1.35;
 
-          font-weight: 500;
+          font-weight:
+            500;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         .project-description {
-          max-width: 520px;
+          max-width:
+            520px;
 
-          margin: 0;
+          margin:
+            0;
 
-          font-size: 13px;
+          font-size:
+            13px;
 
-          line-height: 1.75;
+          line-height:
+            1.75;
 
-          font-weight: 400;
+          font-weight:
+            400;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         /* =================================================
@@ -1092,60 +1336,81 @@ export default function PortfolioSection() {
         ================================================= */
 
         .project-meta {
-          display: grid;
+          display:
+            grid;
 
           grid-template-columns:
             repeat(
               2,
-              minmax(0, 1fr)
+              minmax(
+                0,
+                1fr
+              )
             );
 
           gap:
             22px
             18px;
 
-          margin-top: 30px;
+          margin-top:
+            30px;
 
-          max-width: 550px;
+          max-width:
+            550px;
         }
 
         .meta-group {
-          display: flex;
+          display:
+            flex;
 
-          flex-direction: column;
+          flex-direction:
+            column;
 
-          gap: 5px;
+          gap:
+            5px;
 
-          min-width: 0;
+          min-width:
+            0;
         }
 
         .meta-title {
-          font-size: 12px;
+          font-size:
+            12px;
 
-          line-height: 1.2;
+          line-height:
+            1.2;
 
-          font-weight: 600;
+          font-weight:
+            600;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
         }
 
         .meta-list {
-          display: flex;
+          display:
+            flex;
 
-          flex-direction: column;
+          flex-direction:
+            column;
 
-          gap: 1px;
+          gap:
+            1px;
         }
 
         .meta-list span,
         .meta-value {
-          font-size: 12px;
+          font-size:
+            12px;
 
-          line-height: 1.55;
+          line-height:
+            1.55;
 
-          font-weight: 400;
+          font-weight:
+            400;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
 
           overflow-wrap:
             anywhere;
@@ -1156,31 +1421,43 @@ export default function PortfolioSection() {
         ================================================= */
 
         .project-actions {
-          display: flex;
+          display:
+            flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          flex-wrap: wrap;
+          flex-wrap:
+            wrap;
 
-          gap: 26px;
+          gap:
+            26px;
 
-          margin-top: 34px;
+          margin-top:
+            34px;
         }
 
         .live-site {
-          display: inline-flex;
+          display:
+            inline-flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          gap: 7px;
+          gap:
+            7px;
 
-          color: #0180fd;
+          color:
+            #0180fd;
 
-          text-decoration: none;
+          text-decoration:
+            none;
 
-          font-size: 13px;
+          font-size:
+            13px;
 
-          font-weight: 600;
+          font-weight:
+            600;
 
           transition:
             opacity
@@ -1190,40 +1467,54 @@ export default function PortfolioSection() {
         }
 
         .live-site:hover {
-          opacity: 0.7;
+          opacity:
+            0.7;
 
           transform:
-            translateY(-1px);
+            translateY(
+              -1px
+            );
         }
 
         .view-project {
-          display: inline-flex;
+          display:
+            inline-flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          justify-content: center;
+          justify-content:
+            center;
 
-          gap: 8px;
+          gap:
+            8px;
 
-          min-width: 150px;
+          min-width:
+            150px;
 
-          height: 42px;
+          height:
+            42px;
 
           padding:
-            0
-            20px;
+            0 20px;
 
-          background: #0180fd;
+          background:
+            #0180fd;
 
-          color: #ffffff;
+          color:
+            #ffffff;
 
-          border-radius: 999px;
+          border-radius:
+            999px;
 
-          text-decoration: none;
+          text-decoration:
+            none;
 
-          font-size: 12px;
+          font-size:
+            12px;
 
-          font-weight: 600;
+          font-weight:
+            600;
 
           transition:
             transform
@@ -1234,7 +1525,9 @@ export default function PortfolioSection() {
 
         .view-project:hover {
           transform:
-            translateY(-2px);
+            translateY(
+              -2px
+            );
 
           box-shadow:
             0
@@ -1249,7 +1542,8 @@ export default function PortfolioSection() {
         }
 
         .view-project span {
-          font-size: 14px;
+          font-size:
+            14px;
         }
 
         /* =================================================
@@ -1257,73 +1551,96 @@ export default function PortfolioSection() {
         ================================================= */
 
         .portfolio-image-area {
-          grid-column: 3;
+          grid-column:
+            3;
 
-          grid-row: 1;
+          grid-row:
+            1;
 
-          width: 100%;
+          width:
+            100%;
 
           padding:
-            60px
+            60px 0;
+
+          min-width:
             0;
 
-          min-width: 0;
+          box-sizing:
+            border-box;
 
-          box-sizing: border-box;
+          will-change:
+            transform,
+            opacity;
         }
 
         .portfolio-row.is-reverse
           .portfolio-image-area {
-          grid-column: 1;
+          grid-column:
+            1;
 
-          grid-row: 1;
+          grid-row:
+            1;
         }
 
         .portfolio-image-link {
-          display: block;
+          display:
+            block;
 
-          width: 100%;
+          width:
+            100%;
 
-          text-decoration: none;
+          text-decoration:
+            none;
 
-          color: inherit;
+          color:
+            inherit;
         }
 
         .portfolio-image-box {
-          position: relative;
+          position:
+            relative;
 
-          width: 100%;
+          width:
+            100%;
 
-          height: 390px;
+          height:
+            390px;
 
-          min-height: 390px;
+          min-height:
+            390px;
 
-          border-radius: 20px;
+          border-radius:
+            20px;
 
-          overflow: hidden;
+          overflow:
+            hidden;
 
-          display: flex;
+          display:
+            flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          justify-content: center;
+          justify-content:
+            center;
         }
 
         .project-image {
-          width: 100%;
+          object-fit:
+            cover;
 
-          height: 100%;
+          user-select:
+            none;
 
-          display: block;
-
-          object-fit: cover;
-
-          user-select: none;
-
-          -webkit-user-drag: none;
+          -webkit-user-drag:
+            none;
 
           transform-origin:
             center center;
+
+          will-change:
+            transform;
         }
 
         .project-image.contain {
@@ -1336,15 +1653,20 @@ export default function PortfolioSection() {
         ================================================= */
 
         .image-overlay {
-          position: absolute;
+          position:
+            absolute;
 
-          inset: 0;
+          inset:
+            0;
 
-          display: flex;
+          display:
+            flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          justify-content: center;
+          justify-content:
+            center;
 
           background:
             rgba(
@@ -1354,36 +1676,53 @@ export default function PortfolioSection() {
               0.28
             );
 
-          opacity: 0;
+          opacity:
+            0;
 
           transition:
-            opacity 0.3s ease;
+            opacity
+              0.3s ease;
+
+          pointer-events:
+            none;
         }
 
         .image-overlay span {
-          display: inline-flex;
+          display:
+            inline-flex;
 
-          align-items: center;
+          align-items:
+            center;
 
-          gap: 8px;
+          gap:
+            8px;
 
           padding:
             13px
             22px;
 
-          border-radius: 999px;
+          border-radius:
+            999px;
 
-          background: #ffffff;
+          background:
+            #ffffff;
 
-          color: #0e0e0e;
+          color:
+            #0e0e0e;
 
-          font-size: 13px;
+          font-size:
+            13px;
 
-          font-weight: 600;
+          font-weight:
+            600;
 
           transform:
-            translateY(8px)
-            scale(0.96);
+            translateY(
+              8px
+            )
+            scale(
+              0.96
+            );
 
           transition:
             transform
@@ -1391,19 +1730,25 @@ export default function PortfolioSection() {
         }
 
         .image-overlay span b {
-          font-size: 15px;
+          font-size:
+            15px;
         }
 
         .portfolio-image-link:hover
           .image-overlay {
-          opacity: 1;
+          opacity:
+            1;
         }
 
         .portfolio-image-link:hover
           .image-overlay span {
           transform:
-            translateY(0)
-            scale(1);
+            translateY(
+              0
+            )
+            scale(
+              1
+            );
         }
 
         /* =================================================
@@ -1419,11 +1764,13 @@ export default function PortfolioSection() {
           }
 
           .portfolio-heading-grid {
-            gap: 30px;
+            gap:
+              30px;
           }
 
           .portfolio-heading-grid h2 {
-            font-size: 30px;
+            font-size:
+              30px;
           }
 
           .portfolio-row {
@@ -1432,7 +1779,8 @@ export default function PortfolioSection() {
               54px
               minmax(0, 1fr);
 
-            min-height: 520px;
+            min-height:
+              520px;
           }
 
           .portfolio-details {
@@ -1456,18 +1804,20 @@ export default function PortfolioSection() {
           .portfolio-row.is-reverse
             .portfolio-image-area {
             padding:
-              48px
-              0;
+              48px 0;
           }
 
           .portfolio-image-box {
-            height: 340px;
+            height:
+              340px;
 
-            min-height: 340px;
+            min-height:
+              340px;
           }
 
           .portfolio-details h3 {
-            font-size: 30px;
+            font-size:
+              30px;
           }
         }
 
@@ -1484,27 +1834,35 @@ export default function PortfolioSection() {
           }
 
           .portfolio-kicker {
-            font-size: 12px;
+            font-size:
+              12px;
           }
 
           .portfolio-heading-grid {
-            display: flex;
+            display:
+              flex;
 
-            flex-direction: column;
+            flex-direction:
+              column;
 
-            gap: 20px;
+            gap:
+              20px;
           }
 
           .portfolio-heading-grid h2 {
-            font-size: 22px;
+            font-size:
+              22px;
 
-            line-height: 1.2;
+            line-height:
+              1.2;
           }
 
           .portfolio-heading-grid p {
-            font-size: 12px;
+            font-size:
+              12px;
 
-            line-height: 1.6;
+            line-height:
+              1.6;
           }
 
           /* =========================================
@@ -1512,82 +1870,107 @@ export default function PortfolioSection() {
           ========================================== */
 
           .portfolio-flow {
-            margin-top: 38px;
+            margin-top:
+              38px;
 
-            padding-left: 24px;
+            padding-left:
+              24px;
           }
 
-          /*
-           * Each project is one vertical flow item.
-           */
+          /* =========================================
+             PROJECT
+          ========================================== */
 
           .portfolio-row,
           .portfolio-row.is-reverse {
-            display: grid;
+            display:
+              grid;
 
             grid-template-columns:
               18px
-              minmax(0, 1fr);
+              minmax(
+                0,
+                1fr
+              );
 
             grid-template-rows:
               auto auto;
 
-            column-gap: 18px;
+            column-gap:
+              18px;
 
-            min-height: 0;
-
-            padding:
-              36px
+            min-height:
               0;
 
+            padding:
+              36px 0;
+
             border-bottom:
-              1px solid #dbe6f5;
+              1px solid
+              #dbe6f5;
           }
 
           /* =========================================
-             LINE COLUMN
+             LINE
           ========================================== */
 
           .portfolio-line-column {
-            left: 9px;
+            left:
+              9px;
 
-            top: 0;
+            top:
+              0;
 
-            bottom: 0;
+            bottom:
+              0;
 
-            width: 18px;
+            width:
+              18px;
 
             transform:
-              translateX(-50%);
+              translateX(
+                -50%
+              );
           }
 
           .portfolio-connect-line {
-            width: 2px;
+            width:
+              2px;
 
-            height: 100%;
+            height:
+              100%;
+
+            will-change:
+              transform;
           }
 
           .portfolio-dot {
-            top: 34px;
+            top:
+              34px;
 
-            left: 50%;
+            left:
+              50%;
 
-            width: 15px;
+            width:
+              15px;
 
-            height: 15px;
+            height:
+              15px;
 
             border-width:
               2px;
 
             box-shadow:
               0 0 0 5px
-                #f3f8ff;
+              #f3f8ff;
           }
 
           .portfolio-dot span {
-            width: 4px;
+            width:
+              4px;
 
-            height: 4px;
+            height:
+              4px;
           }
 
           /* =========================================
@@ -1597,28 +1980,38 @@ export default function PortfolioSection() {
           .portfolio-image-area,
           .portfolio-row.is-reverse
             .portfolio-image-area {
-            grid-column: 2;
+            grid-column:
+              2;
 
-            grid-row: 1;
+            grid-row:
+              1;
 
-            order: 1;
+            order:
+              1;
 
-            width: 100%;
+            width:
+              100%;
 
             padding:
-              0
-              0
-              22px;
+              0 0 22px;
+
+            will-change:
+              transform,
+              opacity;
           }
 
           .portfolio-image-box {
-            width: 100%;
+            width:
+              100%;
 
-            height: 230px;
+            height:
+              230px;
 
-            min-height: 230px;
+            min-height:
+              230px;
 
-            border-radius: 16px;
+            border-radius:
+              16px;
           }
 
           /* =========================================
@@ -1628,22 +2021,30 @@ export default function PortfolioSection() {
           .portfolio-details,
           .portfolio-row.is-reverse
             .portfolio-details {
-            grid-column: 2;
+            grid-column:
+              2;
 
-            grid-row: 2;
+            grid-row:
+              2;
 
-            order: 2;
+            order:
+              2;
 
-            width: 100%;
+            width:
+              100%;
 
-            height: auto;
+            height:
+              auto;
 
             padding:
-              0
-              0
-              6px;
+              0 0 6px;
 
-            border: 0;
+            border:
+              0;
+
+            will-change:
+              transform,
+              opacity;
           }
 
           .project-index {
@@ -1674,7 +2075,8 @@ export default function PortfolioSection() {
           }
 
           .project-description {
-            max-width: none;
+            max-width:
+              none;
 
             font-size:
               13px;
@@ -1691,7 +2093,10 @@ export default function PortfolioSection() {
             grid-template-columns:
               repeat(
                 2,
-                minmax(0, 1fr)
+                minmax(
+                  0,
+                  1fr
+                )
               );
 
             gap:
@@ -1701,7 +2106,8 @@ export default function PortfolioSection() {
             margin-top:
               25px;
 
-            max-width: none;
+            max-width:
+              none;
           }
 
           .meta-title {
@@ -1786,14 +2192,16 @@ export default function PortfolioSection() {
           .portfolio-row.is-reverse {
             grid-template-columns:
               16px
-              minmax(0, 1fr);
+              minmax(
+                0,
+                1fr
+              );
 
             column-gap:
               16px;
 
             padding:
-              30px
-              0;
+              30px 0;
           }
 
           .portfolio-line-column {
@@ -1890,20 +2298,25 @@ export default function PortfolioSection() {
 
         @media (hover: none) {
           .live-site:hover {
-            opacity: 1;
+            opacity:
+              1;
 
-            transform: none;
+            transform:
+              none;
           }
 
           .view-project:hover {
-            transform: none;
+            transform:
+              none;
 
-            box-shadow: none;
+            box-shadow:
+              none;
           }
 
           .portfolio-image-link:hover
             .image-overlay {
-            opacity: 0;
+            opacity:
+              0;
           }
         }
 
@@ -1911,7 +2324,10 @@ export default function PortfolioSection() {
            REDUCED MOTION
         ================================================= */
 
-        @media (prefers-reduced-motion: reduce) {
+        @media (
+          prefers-reduced-motion:
+            reduce
+        ) {
           .portfolio-connect-line {
             transform:
               scaleY(1) !important;
@@ -1920,9 +2336,19 @@ export default function PortfolioSection() {
           .portfolio-dot,
           .portfolio-details,
           .portfolio-image-area {
-            opacity: 1 !important;
+            opacity:
+              1 !important;
 
-            transform: none !important;
+            transform:
+              none !important;
+
+            will-change:
+              auto;
+          }
+
+          .project-image {
+            will-change:
+              auto;
           }
         }
       `}</style>

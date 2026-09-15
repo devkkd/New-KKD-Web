@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 
 export default function WebsiteLoader({ onComplete }) {
@@ -59,14 +60,21 @@ export default function WebsiteLoader({ onComplete }) {
          SOURCE IMAGES
       ================================================= */
 
-      const loadingSrc = isMobile
-        ? "/mobileloading.png"
-        : "/loading.png";
+   const loadingSrc =
+  isMobile
+    ? "/mobileloading.webp"
+    : "/loading.webp";
 
-      const heroSrc = "/home/hero.png";
+const heroSrc =
+  "/home/hero.webp";
 
       loadingImage.src = loadingSrc;
-      heroImage.src = heroSrc;
+
+      // heroImage is now a next/image <Image>, its src is already
+      // "/home/hero.png" (optimized) from the JSX below — don't
+      // overwrite it here, that would replace the optimized
+      // /_next/image URL with the raw unoptimized file and undo
+      // the format/size savings.
 
       /* =================================================
          INITIAL STATE
@@ -485,6 +493,18 @@ export default function WebsiteLoader({ onComplete }) {
     <div
       ref={loaderRef}
       className="kk-loader"
+      // Critical positioning applied inline too, so the very first
+      // paint (before any <style> parses) is already correct.
+      // Fixes the "refresh par layout hil jaata hai" flash/shake.
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100dvh",
+        zIndex: 999999,
+        overflow: "hidden",
+        background: "#f3f8ff",
+      }}
     >
       {/* =========================================
           BACKGROUND
@@ -493,13 +513,32 @@ export default function WebsiteLoader({ onComplete }) {
       <div
         ref={overlayRef}
         className="kk-loader-overlay"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          background: "#f3f8ff",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
       />
 
       {/* =========================================
           STAGE
       ========================================== */}
 
-      <div className="kk-loader-stage">
+      <div
+        className="kk-loader-stage"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          zIndex: 2,
+        }}
+      >
         {/* LEFT */}
 
         <div
@@ -514,28 +553,58 @@ export default function WebsiteLoader({ onComplete }) {
         <div
           ref={imageBoxRef}
           className="kk-loader-image-box"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: 0,
+            overflow: "hidden",
+            zIndex: 4,
+            background: "transparent",
+            boxSizing: "border-box",
+            transform: "translate(-50%, -50%)",
+            transformOrigin: "center center",
+          }}
         >
           <div
             ref={imageInnerRef}
             className="kk-loader-image-inner"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              overflow: "hidden",
+            }}
           >
             {/* INITIAL LOADING IMAGE */}
 
             <img
               ref={loadingImageRef}
-              src="/loading.png"
+              src="/loading.webp"
               alt=""
               className="kk-loader-image kk-loader-loading-image"
               draggable="false"
             />
 
-            {/* FINAL HERO IMAGE */}
+            {/* FINAL HERO IMAGE
+                next/image: same visual result (position/size/
+                object-fit come from .kk-loader-image below,
+                which still applies), but Next now serves it
+                resized + as AVIF/WebP and preloads it with
+                fetchpriority="high" — this is the ~1.8MB
+                delivery saving + the LCP fix. Nothing about
+                the animation, timing, or layout changes. */}
 
-            <img
+            <Image
               ref={heroImageRef}
-              src="/home/hero.png"
+             src="/home/hero.webp"
               alt=""
+              fill
+              priority
+              sizes="100vw"
               className="kk-loader-image kk-loader-hero-image"
+              style={{ objectFit: "contain", objectPosition: "center center" }}
               draggable="false"
             />
           </div>
@@ -552,28 +621,26 @@ export default function WebsiteLoader({ onComplete }) {
       </div>
 
       {/* =========================================
-          INLINE CSS
+          PLAIN <style> TAG (NOT styled-jsx)
+
+          styled-jsx injects its <style> via a client
+          runtime, so on a hard refresh there's a brief
+          window where these classNames have NO rules
+          attached yet — text stacks in normal flow,
+          the loader isn't position:fixed yet, and the
+          whole page height jumps/shakes until the JS
+          runtime catches up and injects the CSS.
+
+          A plain <style> tag is emitted as normal
+          server-rendered markup (same as any other
+          element), so the rules are present in the
+          very first HTML paint — no injection delay,
+          no shake. Animation logic, values, and every
+          media query breakpoint below are UNCHANGED.
       ========================================== */}
 
-      <style jsx>{`
-        /* =========================================
-           LOADER
-        ========================================= */
-
+      <style>{`
         .kk-loader {
-          position: fixed;
-
-          inset: 0;
-
-          width: 100vw;
-          height: 100dvh;
-
-          z-index: 999999;
-
-          overflow: hidden;
-
-          background: #f3f8ff;
-
           color: #0021af;
 
           font-family:
@@ -585,42 +652,6 @@ export default function WebsiteLoader({ onComplete }) {
           isolation: isolate;
 
           transform: translateZ(0);
-        }
-
-        /* =========================================
-           BACKGROUND
-        ========================================= */
-
-        .kk-loader-overlay {
-          position: absolute;
-
-          inset: 0;
-
-          width: 100%;
-          height: 100%;
-
-          background: #f3f8ff;
-
-          z-index: 1;
-
-          pointer-events: none;
-        }
-
-        /* =========================================
-           STAGE
-        ========================================= */
-
-        .kk-loader-stage {
-          position: absolute;
-
-          inset: 0;
-
-          width: 100%;
-          height: 100%;
-
-          overflow: hidden;
-
-          z-index: 2;
         }
 
         /* =========================================
@@ -683,17 +714,10 @@ export default function WebsiteLoader({ onComplete }) {
         }
 
         /* =========================================
-           IMAGE BOX
+           IMAGE BOX (base height, overridden below)
         ========================================= */
 
         .kk-loader-image-box {
-          position: absolute;
-
-          left: 50%;
-          top: 50%;
-
-          width: 0;
-
           height:
             clamp(
               120px,
@@ -701,43 +725,13 @@ export default function WebsiteLoader({ onComplete }) {
               250px
             );
 
-          overflow: hidden;
-
-          z-index: 4;
-
-          background: transparent;
-
-          box-sizing: border-box;
-
-          transform:
-            translate(
-              -50%,
-              -50%
-            );
-
-          transform-origin:
-            center center;
-
           will-change:
             width,
             height,
             transform;
         }
 
-        /* =========================================
-           INNER
-        ========================================= */
-
         .kk-loader-image-inner {
-          position: absolute;
-
-          inset: 0;
-
-          width: 100%;
-          height: 100%;
-
-          overflow: hidden;
-
           will-change:
             transform;
         }

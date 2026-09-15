@@ -2,41 +2,105 @@
    GLOBAL RESET
 ========================================= */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   margin: 0;
   padding: 0;
+  width: 100%;
+  min-height: 100%;
+
   background: #f3f8ff;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+
+  scrollbar-gutter: stable;
 }
 
 body {
   margin: 0;
   padding: 0;
 
+  width: 100%;
+  min-width: 0;
   min-height: 100vh;
+  min-height: 100dvh;
 
   background: #f3f8ff;
 
   overflow-x: hidden;
+
+  font-family:
+    "Britti Sans Trial",
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  text-rendering: optimizeLegibility;
 }
 
 body.loader-active {
   overflow: hidden;
 }
 
+/* =========================================
+   FORM ELEMENTS
+========================================= */
+
 button,
 input,
 textarea,
 select {
+  margin: 0;
   font: inherit;
 }
 
-img {
+button {
+  border: 0;
+}
+
+input,
+textarea,
+select {
   max-width: 100%;
 }
+
+/* =========================================
+   MEDIA
+========================================= */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+video,
+canvas {
+  height: auto;
+}
+
+/* =========================================
+   LINKS
+========================================= */
 
 a {
   color: inherit;
@@ -44,26 +108,84 @@ a {
 }
 
 /* =========================================
+   TEXT / LAYOUT SAFETY
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  overflow-wrap: break-word;
+}
+
+ul,
+ol {
+  padding-left: 0;
+}
+
+main,
+section,
+header,
+footer,
+nav,
+article,
+div {
+  min-width: 0;
+}
+
+/* Prevent accidental horizontal overflow from
+   long URLs, text, buttons, etc. */
+
+a,
+button,
+input,
+textarea,
+select {
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
    CRITICAL LOADER FIRST-PAINT CSS
 
-   Ye refresh ke FIRST FRAME se loader
-   ko fixed/fullscreen rakhega.
+   Loader first frame se fullscreen rahega.
 ========================================= */
 
 .kk-loader {
   position: fixed !important;
 
-  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
 
-  width: 100vw !important;
+  width: 100% !important;
+
+  height: 100vh !important;
   height: 100dvh !important;
 
   z-index: 999999 !important;
 
   overflow: hidden !important;
 
-  background: #f3f8ff !important;
+  margin: 0 !important;
+  padding: 0 !important;
 
+  background: #f3f8ff !important;
   color: #0021af;
 
   opacity: 1;
@@ -71,28 +193,59 @@ a {
   visibility: visible;
 
   pointer-events: auto;
+
+  isolation: isolate;
 }
 
 .kk-loader-overlay {
   position: absolute !important;
 
-  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
 
   width: 100% !important;
   height: 100% !important;
 
+  margin: 0 !important;
+  padding: 0 !important;
+
   background: #f3f8ff !important;
 
   z-index: 1;
+
+  pointer-events: none;
 }
 
 .kk-loader-stage {
   position: absolute !important;
 
-  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
 
   width: 100% !important;
   height: 100% !important;
 
+  margin: 0 !important;
+  padding: 0 !important;
+
   overflow: hidden !important;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+/* =========================================
+   LOADER MEDIA SAFETY
+========================================= */
+
+.kk-loader img,
+.kk-loader video,
+.kk-loader canvas,
+.kk-loader svg {
+  max-width: none;
 }

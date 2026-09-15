@@ -1,11 +1,5 @@
-"use client";
-
-import { useState } from "react";
-
-import WebsiteLoader from "@/components/WebsiteLoader";
-import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import Footer from "@/components/Footer";
+
 import StatsSection from "@/components/StatsSection";
 import TruthSection from "@/components/Truthsection";
 import BusinessOutcomesSection from "@/components/BusinessOutcomesSection";
@@ -22,57 +16,57 @@ import AwardsSection from "@/components/AwardsSection";
 import InsightsSection from "@/components/InsightsSection";
 import FAQSection from "@/components/FAQSection";
 
+import WebsiteLoaderWrapper from "@/components/WebsiteLoaderWrapper";
 
 export default function Home() {
-  const [loaderDone, setLoaderDone] =
-    useState(false);
-
   return (
     <>
-     
-
       <main>
         <Hero />
+
         <StatsSection />
+
         <TruthSection />
+
         <BusinessOutcomesSection />
+
         <PortfolioSection />
+
         <GlobalPartnersSection />
+
         <SixDisciplinesSection />
+
         <IndustriesSection />
+
         <HowWeWorkSection />
+
         <TrustedTechnologyPartners />
+
         <TechnologyStackSection />
 
-<div
-  style={{
-    width: "100%",
-    height: "1px",
-    background: "#D7DFEB",
-    margin: 0,
-    padding: 0,
-  }}
-  aria-hidden="true"
-/>
+        <div
+          style={{
+            width: "100%",
+            height: "1px",
+            background: "#D7DFEB",
+            margin: 0,
+            padding: 0,
+          }}
+          aria-hidden="true"
+        />
 
-<TestimonialsSection />
-<ContactQuerySection />
-<AwardsSection />
-<InsightsSection />
-<FAQSection />
+        <TestimonialsSection />
 
-        {/* Future sections */}
+        <ContactQuerySection />
+
+        <AwardsSection />
+
+        <InsightsSection />
+
+        <FAQSection />
       </main>
 
-    
-
-      {!loaderDone && (
-        <WebsiteLoader
-          onComplete={() => {
-            setLoaderDone(true);
-          }}
-        />
-      )}
+      <WebsiteLoaderWrapper />
     </>
   );
 }
